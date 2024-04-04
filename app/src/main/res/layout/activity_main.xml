@@ -8,44 +8,98 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/main_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WebSocketDemo"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toTopOf="@+id/buttonConnect"
+        android:layout_marginStart="173dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="75dp"
+        android:text="@string/druids"
+        android:textAppearance="@style/GameNameTextStyle"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCreate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/buttonConnect"
+    <EditText
+        android:id="@+id/playerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connect"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="101dp"
+        android:layout_marginBottom="90dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/player_name"
+        android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonTutorial" />
+
+    <Button
+        android:id="@+id/buttonTutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="151dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="152dp"
+        android:layout_marginBottom="60dp"
+        android:onClick="tutorialButtonClicked"
+        android:text="@string/tutorial"
+        app:layout_constraintBottom_toTopOf="@+id/playerName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonJoin" />
+
+    <Button
+        android:id="@+id/buttonJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="147dp"
+        android:layout_marginBottom="5dp"
+        android:onClick="joinGameButtonClicked"
+        android:text="@string/join_game"
+        app:layout_constraintBottom_toTopOf="@+id/buttonTutorial"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCreate" />
+
+    <Button
+        android:id="@+id/buttonCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="81dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="25dp"
+        android:onClick="createGameButtonClicked"
+        android:text="@string/create_game"
+        app:layout_constraintBottom_toTopOf="@+id/buttonJoin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_label" />
 
     <TextView
-        android:id="@+id/textViewResponse"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Response"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonConnect" />
-
-    <Button
-        android:id="@+id/buttonSendMsg"
+        android:id="@+id/labelError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Send something"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="249dp"
+        android:layout_marginBottom="70dp"
+        android:text="@string/input_invalid"
+        android:textColor="#DD2C00"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonConnect" />
+        app:layout_constraintTop_toBottomOf="@+id/playerName"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

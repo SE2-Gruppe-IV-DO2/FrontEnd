@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Druids</string>
+    <string name="create_game">Spiel erstellen</string>
+    <string name="join_game">Spiel beitreten</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="druids">Druids</string>
+    <string name="player_name">Spielername</string>
+    <string name="input_invalid">Eingabe ungültig!</string>
+</resources>
