@@ -5,14 +5,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 import at.aau.serg.websocketdemoapp.networking.WebSocketMessageHandler;
 import okhttp3.OkHttpClient;
@@ -70,7 +68,12 @@ class WebSocketClientTest {
     @Test
     void testSendMessageSuccess() {
         wClient.sendMessageToServer("Test");
-
         verify(webSocket).send("Test");
+    }
+
+    @Test
+    void testSendMessageFailure() {
+        wClient.setWebSocket(null);
+        Assert.assertThrows(NullPointerException.class, () -> wClient.sendMessageToServer("Test"));
     }
 }
