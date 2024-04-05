@@ -1,23 +1,20 @@
 package at.aau.serg.websocketdemoapp;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
-
 public class MainActivity extends AppCompatActivity {
 
-    TextView textViewServerResponse;
 
-    WebSocketClient networkHandler;
+    EditText playerName;
+    TextView errorText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +27,23 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button buttonConnect = findViewById(R.id.buttonConnect);
-        buttonConnect.setOnClickListener(v -> connectToWebSocketServer());
-
-        Button buttonSendMsg = findViewById(R.id.buttonSendMsg);
-        buttonSendMsg.setOnClickListener(v -> sendMessage());
-
-        textViewServerResponse = findViewById(R.id.textViewResponse);
-
-        networkHandler = new WebSocketClient();
+        errorText = findViewById(R.id.labelError);
+        playerName = findViewById(R.id.playerName);
     }
 
+    public void createGameButtonClicked(View view) {
+
+    }
+
+    public void joinGameButtonClicked(View view) {
+
+    }
+
+    public void tutorialButtonClicked(View view) {
+
+    }
+
+/*
     private void connectToWebSocketServer() {
         // register a handler for received messages when setting up the connection
         networkHandler.connectToServer(this::messageReceivedFromServer);
@@ -55,4 +58,5 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Network", message);
         textViewServerResponse.setText(message);
     }
+ */
 }
