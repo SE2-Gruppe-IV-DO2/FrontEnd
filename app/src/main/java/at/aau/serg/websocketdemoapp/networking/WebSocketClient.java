@@ -1,10 +1,7 @@
 package at.aau.serg.websocketdemoapp.networking;
 
-import android.util.Log;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
@@ -29,6 +26,8 @@ public class WebSocketClient {
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
+            /* Derweil noch nicht brauchbar -> wenn Schnittstelle steht
+
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d("Network", "connected");
@@ -41,7 +40,7 @@ public class WebSocketClient {
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                // WebSocket connection closed
+                // connection closed
             }
 
             @Override
@@ -50,11 +49,18 @@ public class WebSocketClient {
                 // https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
                 Log.d("Network", "connection failure");
             }
+            */
+
         });
     }
 
-    public void sendMessageToServer(String msg) {
-        webSocket.send(msg);
+    public void sendMessageToServer(String msg) throws NullPointerException {
+        if(webSocket != null) {
+            webSocket.send(msg);
+        } else {
+            throw new NullPointerException();
+        }
+
     }
 
     @Override
@@ -66,8 +72,7 @@ public class WebSocketClient {
         }
     }
 
-    // Simple method to demonstrate unit testing and test coverage with sonarcloud
-    public static String concatenateStrings(String first, String second) {
-        return first + " " + second;
+    public void setWebSocket(WebSocket webSocket) {
+        this.webSocket = webSocket;
     }
 }
