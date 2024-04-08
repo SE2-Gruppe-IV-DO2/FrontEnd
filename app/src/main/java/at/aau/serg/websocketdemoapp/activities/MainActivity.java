@@ -1,7 +1,9 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,11 +34,20 @@ public class MainActivity extends AppCompatActivity {
 
         errorText = findViewById(R.id.labelError);
         playerName = findViewById(R.id.playerName);
+
+        Button createButton = findViewById(R.id.buttonCreate);
+
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // navigation zur nächsten Seite
+                Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    public void createGameButtonClicked(View view) {
-        // Create Game Button Click handling hier
-    }
+
 
     public void joinGameButtonClicked(View view) {
         // Join Game Button Click handling here
