@@ -11,10 +11,15 @@ public class WebSocketClient {
     /**
      * localhost from the Android emulator is reachable as 10.0.2.2
      * https://developer.android.com/studio/run/emulator-networking
+     * "ws://10.0.2.2:8080/websocket-example-handler"
      */
-    private final String WEBSOCKET_URI = "ws://10.0.2.2:8080/websocket-example-handler";
+    private final String WEBSOCKET_URI;
 
     private WebSocket webSocket;
+
+    public WebSocketClient(String ip) {
+        WEBSOCKET_URI = ip;
+    }
 
     public void connectToServer(WebSocketMessageHandler<String> messageHandler) {
         if (messageHandler == null)

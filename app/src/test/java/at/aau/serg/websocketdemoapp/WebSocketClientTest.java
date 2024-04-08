@@ -38,7 +38,7 @@ class WebSocketClientTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        wClient = new WebSocketClient();
+        wClient = new WebSocketClient("ws://10.0.2.2:8080/websocket-example-handler");
         wClient.setWebSocket(webSocket);
     }
 
