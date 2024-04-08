@@ -36,34 +36,56 @@ public class MainActivity extends AppCompatActivity {
         errorText = findViewById(R.id.labelError);
         playerName = findViewById(R.id.playerName);
 
+        createButtonClicked();
+        joinButtonClicked();
+
+
+    }
+
+    public void createButtonClicked(){
         Button createButton = findViewById(R.id.buttonCreate);
-
-
-
-
-            createButton.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onClick(View view) {
-                    if (!playerName.getText().toString().isEmpty()) {
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+                if (!playerName.getText().toString().isEmpty()) {
                     // navigation to create lobbyroom site
                     Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
                     intent.putExtra("playerName", playerName.getText().toString());
                     startActivity(intent);
 
-        }else {
-            errorText.setText("Input invalid!");
-            errorText.setVisibility(View.VISIBLE);
-        }
+                }else {
+                    errorText.setText("Input invalid!");
+                    errorText.setVisibility(View.VISIBLE);
                 }
-            });
+            }
+        });
+
     }
 
+    public void joinButtonClicked() {
+        Button joinButton = findViewById(R.id.buttonJoin);
 
 
-    public void joinGameButtonClicked(View view) {
-        // Join Game Button Click handling here
+
+        joinButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+                if (!playerName.getText().toString().isEmpty()) {
+                    // navigation to create lobbyroom site
+                    Intent intent = new Intent(MainActivity.this, JoinLobby.class);
+                    intent.putExtra("playerName", playerName.getText().toString());
+                    startActivity(intent);
+
+                }else {
+                    errorText.setText("Input invalid!");
+                    errorText.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
+
 
     public void tutorialButtonClicked(View view) {
         // Tutorial Button Click handling hier
