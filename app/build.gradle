@@ -59,8 +59,9 @@ sonar {
       property("sonar.projectKey", "SE2-Gruppe-IV-DO2_FrontEnd")
       property("sonar.organization", "se2-gruppe-iv-do2")
       property("sonar.host.url", "https://sonarcloud.io")
-    property "sonar.java.coveragePlugin", "jacoco"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+      property "sonar.java.coveragePlugin", "jacoco"
+      property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+      property "sonar.coverage.exclusion=**/activites/**"
   }
 }
 

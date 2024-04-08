@@ -1,14 +1,17 @@
-package at.aau.serg.websocketdemoapp;
+package at.aau.serg.websocketdemoapp.activities;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import at.aau.serg.websocketdemoapp.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,15 +35,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createGameButtonClicked(View view) {
-
+        // Create Game Button Click handling hier
     }
 
     public void joinGameButtonClicked(View view) {
-
+        // Join Game Button Click handling here
     }
 
     public void tutorialButtonClicked(View view) {
-
+        // Tutorial Button Click handling hier
     }
 
 /*
