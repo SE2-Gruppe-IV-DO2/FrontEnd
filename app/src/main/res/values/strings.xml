@@ -12,4 +12,5 @@
     <string name="start_game">Start Game</string>
     <string name="qr_code" translatable="false">QR-Code</string>
     <string name="cancel">Cancel</string>
+    <string name="participants">participants</string>
 </resources>
