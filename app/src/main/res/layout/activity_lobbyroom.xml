@@ -50,7 +50,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="174dp"
         android:layout_marginBottom="18dp"
-        android:text="@string/possible_number_of_players_3_5"
+        android:text="@string/possible_number_of_players_3_5_"
         android:textColor="#9C27B0"
         app:layout_constraintBottom_toTopOf="@+id/participants"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,6 @@
 package at.aau.serg.websocketdemoapp.activities;
 
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -44,20 +44,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void createButtonClicked(){
         Button createButton = findViewById(R.id.buttonCreate);
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                if (!playerName.getText().toString().isEmpty()) {
-                    // navigation to create lobbyroom site
-                    Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
-                    intent.putExtra("playerName", playerName.getText().toString());
-                    startActivity(intent);
+        createButton.setOnClickListener(view -> {
+            if (!playerName.getText().toString().isEmpty()) {
+                // navigation to create lobbyroom site
+                Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
+                intent.putExtra("playerName", playerName.getText().toString());
+                startActivity(intent);
 
-                }else {
-                    errorText.setText("Input invalid!");
-                    errorText.setVisibility(View.VISIBLE);
-                }
+            }else {
+
+                errorText.setVisibility(View.VISIBLE);
             }
         });
 
@@ -68,20 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        joinButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                if (!playerName.getText().toString().isEmpty()) {
-                    // navigation to create lobbyroom site
-                    Intent intent = new Intent(MainActivity.this, JoinLobby.class);
-                    intent.putExtra("playerName", playerName.getText().toString());
-                    startActivity(intent);
+        joinButton.setOnClickListener(view -> {
+            if (!playerName.getText().toString().isEmpty()) {
+                // navigation to create lobbyroom site
+                Intent intent = new Intent(MainActivity.this, JoinLobby.class);
+                intent.putExtra("playerName", playerName.getText().toString());
+                startActivity(intent);
 
-                }else {
-                    errorText.setText("Input invalid!");
-                    errorText.setVisibility(View.VISIBLE);
-                }
+            }else {
+                errorText.setVisibility(View.VISIBLE);
             }
         });
     }

@@ -13,4 +13,9 @@
     <string name="qr_code" translatable="false">QR-Code</string>
     <string name="cancel">Cancel</string>
     <string name="participants">participants</string>
+    <string name="possible_number_of_players_3_5_">Possible number of players: 3-5</string>
+    <string name="cancel2">Cancel</string>
+    <string name="enter_lobby_with_qr_code">Enter Lobby with QR-Code</string>
+    <string name="enter_lobby_with_code">Enter Lobby with Code</string>
+    <string name="enter_lobby_code">Enter Lobby Code:</string>
 </resources>
