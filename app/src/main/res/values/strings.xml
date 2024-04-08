@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Druids</string>
+    <string name="create_game">Create Game</string>
+    <string name="join_game">Join Game</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="druids">Druids</string>
+    <string name="player_name">Player name</string>
+    <string name="input_invalid">Input invalid!</string>
+</resources>
