@@ -37,14 +37,24 @@ public class MainActivity extends AppCompatActivity {
 
         Button createButton = findViewById(R.id.buttonCreate);
 
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // navigation zur nächsten Seite
-                Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
-                startActivity(intent);
-            }
-        });
+
+
+
+            createButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!playerName.getText().toString().isEmpty()) {
+                    // navigation to create lobbyroom site
+                    Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
+                    intent.putExtra("playerName", playerName.getText().toString());
+                    startActivity(intent);
+
+        }else {
+            errorText.setText("Input invalid!");
+            errorText.setVisibility(View.VISIBLE);
+        }
+                }
+            });
     }
 
 
