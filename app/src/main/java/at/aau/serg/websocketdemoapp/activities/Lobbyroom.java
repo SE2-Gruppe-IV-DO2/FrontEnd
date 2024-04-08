@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -35,13 +35,10 @@ public class Lobbyroom extends AppCompatActivity {
         Button breakButton = findViewById(R.id.buttonBreak);
 
 
-        breakButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // navigation zur nächsten Seite
-                Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
-                startActivity(intent);
-            }
+        breakButton.setOnClickListener(view -> {
+            // navigation zur nächsten Seite
+            Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
+            startActivity(intent);
         });
         showParticipants();
     }

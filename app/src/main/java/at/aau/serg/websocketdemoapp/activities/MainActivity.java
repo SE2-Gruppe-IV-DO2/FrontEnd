@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             createButton.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
                     if (!playerName.getText().toString().isEmpty()) {
