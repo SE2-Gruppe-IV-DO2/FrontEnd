@@ -6,4 +6,11 @@
     <string name="druids">Druids</string>
     <string name="player_name">Player name</string>
     <string name="input_invalid">Input invalid!</string>
+    <string name="code" translatable="false">CODE</string>
+    <string name="lobby_code" translatable="false">Lobby Code:</string>
+    <string name="possible_number_of_players_3_5">"possible_number_of_players_3_5"</string>
+    <string name="start_game">Start Game</string>
+    <string name="qr_code" translatable="false">QR-Code</string>
+    <string name="cancel">Cancel</string>
+    <string name="participants">participants</string>
 </resources>
