@@ -32,15 +32,8 @@ public class Lobbyroom extends AppCompatActivity {
 
         lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
-        Button breakButton = findViewById(R.id.buttonBreak);
-
-
-        breakButton.setOnClickListener(view -> {
-            // navigation zur nächsten Seite
-            Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
-            startActivity(intent);
-        });
         showParticipants();
+        cancelLobby();
     }
     /*
     public void createLobbyCode(){
@@ -49,11 +42,23 @@ public class Lobbyroom extends AppCompatActivity {
 
     }*/
 
+    //Show the Participants
     public void showParticipants() {
         String playerName=getIntent().getStringExtra("playerName");
-        participants.setText(playerName);
+        participants.append(playerName + "\n");
         //toDo die weiteren Mitspieler zeigen
         //participants.append(...);
+    }
+
+    public void cancelLobby() {
+        Button breakButton = findViewById(R.id.buttonBreak);
+        breakButton.setOnClickListener(view -> {
+            // navigation to the start site
+            Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
+            startActivity(intent);
+        });
+
+
     }
 
 }

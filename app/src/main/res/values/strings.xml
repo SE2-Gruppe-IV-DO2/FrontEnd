@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Druids</string>
     <string name="create_game">Create Game</string>
     <string name="join_game">Join Game</string>
@@ -8,9 +8,13 @@
     <string name="input_invalid">Input invalid!</string>
     <string name="code" translatable="false">CODE</string>
     <string name="lobby_code" translatable="false">Lobby Code:</string>
-    <string name="possible_number_of_players_3_5">"possible_number_of_players_3_5"</string>
     <string name="start_game">Start Game</string>
     <string name="qr_code" translatable="false">QR-Code</string>
     <string name="cancel">Cancel</string>
     <string name="participants">participants</string>
+    <string name="cancel2">Cancel</string>
+    <string name="enter_lobby_with_qr_code">Enter Lobby with QR-Code</string>
+    <string name="enter_lobby_with_code">Enter Lobby with Code</string>
+    <string name="enter_lobby_code">Enter Lobby Code:</string>
+    <string name="possible_number_of_players_3_5_" tools:ignore="TypographyDashes">Possible number of players: 3-5</string>
 </resources>
