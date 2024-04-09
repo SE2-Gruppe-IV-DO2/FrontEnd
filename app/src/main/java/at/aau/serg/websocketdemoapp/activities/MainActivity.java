@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         createButtonClicked();
         joinButtonClicked();
-
+        tutorialButtonClicked();
 
     }
 
@@ -78,8 +78,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void tutorialButtonClicked(View view) {
-        // Tutorial Button Click handling hier
+    public void tutorialButtonClicked() {
+        Button tutorialButton = findViewById(R.id.buttonTutorial);
+
+
+        tutorialButton.setOnClickListener(view -> {
+                // navigation to tutorial
+                Intent intent = new Intent(MainActivity.this, Tutorial.class);
+                startActivity(intent);
+
+        });
     }
 
 /*
