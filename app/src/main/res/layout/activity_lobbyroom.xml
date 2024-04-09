@@ -105,6 +105,7 @@
         android:layout_marginStart="143dp"
         android:layout_marginEnd="144dp"
         android:layout_marginBottom="8dp"
+        android:onClick="backButtonClicked"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

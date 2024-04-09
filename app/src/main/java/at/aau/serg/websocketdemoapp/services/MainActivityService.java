@@ -1,36 +1,64 @@
 package at.aau.serg.websocketdemoapp.services;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.activities.MainActivity;
 
 public class MainActivityService {
 
-    public void createGameService(View view) {
-        if (nameIsValid(view.findViewById(R.id.playerName).toString())) {
-            view.findViewById(R.id.labelError).setVisibility(View.INVISIBLE);
+    SharedPreferences sharedPreferences;
+    MainActivity mainActivity;
+
+    public MainActivityService(Context context, MainActivity activity) {
+        sharedPreferences = context.getSharedPreferences("druids_data", Context.MODE_PRIVATE);
+        this.mainActivity = activity;
+    }
+
+    public void createGameService(EditText editText, TextView textView) {
+        String playerName = editText.getText().toString();
+        if (nameIsValid(playerName)) {
+            textView.setVisibility(View.INVISIBLE);
+            savePlayerName(playerName);
+            mainActivity.changeToCreateActivity();
         } else {
-            view.findViewById(R.id.labelError).setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
         }
     }
 
-    public void joinGameService (View view){
-        if (nameIsValid(view.findViewById(R.id.playerName).toString())) {
-            view.findViewById(R.id.labelError).setVisibility(View.INVISIBLE);
+    public void joinGameService (EditText editText, TextView textView){
+        String playerName = editText.getText().toString();
+        if (nameIsValid(playerName)) {
+            textView.setVisibility(View.INVISIBLE);
+            savePlayerName(playerName);
+            mainActivity.changeToJoinActivity();
         } else {
-            view.findViewById(R.id.labelError).setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
         }
     }
 
-    public void tutorialService (View view){
-        if (nameIsValid(view.findViewById(R.id.playerName).toString())) {
-            view.findViewById(R.id.labelError).setVisibility(View.INVISIBLE);
+    public void tutorialService (EditText editText, TextView textView){
+        String playerName = editText.getText().toString();
+        if (nameIsValid(playerName)) {
+            textView.setVisibility(View.INVISIBLE);
+            savePlayerName(playerName);
         } else {
-            view.findViewById(R.id.labelError).setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
         }
     }
 
-    public boolean nameIsValid(String name) {
-        return name.matches("\\d");
+    private boolean nameIsValid(String name) {
+        return name.matches("^[a-zA-Z]+$");
+    }
+
+    private void savePlayerName(String playerName) {
+        if (nameIsValid(playerName)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("playerName", playerName);
+            editor.apply();
+        }
     }
 }

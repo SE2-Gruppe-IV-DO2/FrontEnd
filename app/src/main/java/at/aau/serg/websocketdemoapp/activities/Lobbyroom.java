@@ -2,8 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,11 +12,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
 
 public class Lobbyroom extends AppCompatActivity {
-
     TextView lobbyCode;
     TextView participants;
+    LobbyRoomService lobbyRoomService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,36 +29,17 @@ public class Lobbyroom extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
-        showParticipants();
-        cancelLobby();
-    }
-    /*
-    public void createLobbyCode(){
-        //toDo Lobbycode vom Server abfragen
-        //lobbyCode.setText(...);
-
-    }*/
-
-    //Show the Participants
-    public void showParticipants() {
-        String playerName=getIntent().getStringExtra("playerName");
-        participants.append(playerName + "\n");
-        //toDo die weiteren Mitspieler zeigen
-        //participants.append(...);
+        lobbyRoomService = new LobbyRoomService(this, Lobbyroom.this);
+        lobbyRoomService.setPlayerName(participants);
     }
 
-    public void cancelLobby() {
-        Button breakButton = findViewById(R.id.buttonBreak);
-        breakButton.setOnClickListener(view -> {
-            // navigation to the start site
-            Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
-            startActivity(intent);
-        });
-
-
+    public void backButtonClicked(View view) {
+        lobbyRoomService.backButtonClicked();
     }
 
+    public void changeToStartActivity() {
+        Intent intent = new Intent(Lobbyroom.this, MainActivity.class);
+        startActivity(intent);
+    }
 }
