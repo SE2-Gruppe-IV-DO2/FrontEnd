@@ -32,6 +32,7 @@ public class Lobbyroom extends AppCompatActivity {
 
         lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
+        lobbyCode.setText(getIntent().getStringExtra("lobbyCode"));
         showParticipants();
         cancelLobby();
     }

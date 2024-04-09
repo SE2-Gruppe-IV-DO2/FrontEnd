@@ -1,18 +1,26 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import org.junit.Assert;
+
+import android.util.Log;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 import at.aau.serg.websocketdemoapp.networking.WebSocketMessageHandler;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -34,6 +42,10 @@ class WebSocketClientTest {
     WebSocketMessageHandler<String> webSocketMessageHandler;
     @Mock
     Response response;
+    @Mock
+    Log log;
+    @Mock
+    Call call;
 
     @BeforeEach
     void setUp() {
@@ -49,7 +61,7 @@ class WebSocketClientTest {
 
     @Test
     void testConnectToServerFailure() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> wClient.connectToServer(null));
+        assertThrows(IllegalArgumentException.class, () -> wClient.connectToServer(null));
     }
 
     @Test
@@ -74,6 +86,52 @@ class WebSocketClientTest {
     @Test
     void testSendMessageFailure() {
         wClient.setWebSocket(null);
-        Assert.assertThrows(NullPointerException.class, () -> wClient.sendMessageToServer("Test"));
+        assertThrows(NullPointerException.class, () -> wClient.sendMessageToServer("Test"));
+    }
+/*
+    @Test
+    void testCreateLobby() {
+        String userID = "123";
+        String userName = "John";
+
+
+
+        wClient.createLobby(userID, userName);
+
+        verify(webSocket).send(anyString());
+    }
+
+    @Test
+    void testJoinLobby() {
+        String userID = "456";
+        String userName = "Jane";
+        String lobbyCode = "ABC123";
+
+        wClient.joinLobby(userID, userName, lobbyCode);
+
+        verify(webSocket).send(anyString());
+    }
+*/
+    @Test
+    void testSendMessageToServerSuccess() {
+        String message = "Hello Server";
+
+        wClient.sendMessageToServer(message);
+
+        verify(webSocket).send(eq(message));
+    }
+
+    @Test
+    void testSendMessageToServerFailure() {
+        wClient.setWebSocket(null);
+
+        assertThrows(NullPointerException.class, () -> wClient.sendMessageToServer("Test"));
+    }
+
+    @Test
+    void testDisconnect() {
+        Throwable throwable = mock(Throwable.class);
+
+        assertDoesNotThrow(() -> wClient.disconnect());
     }
 }

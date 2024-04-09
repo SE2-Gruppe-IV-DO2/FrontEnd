@@ -10,6 +10,8 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 mockitoCore = "3."
 okhttp = "4.10.0"
+stompAndroid = "1.0.0"
+stompProtocolAndroid = "2.3.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -23,6 +25,8 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 mockito-core = { module = "org.mockito:mockito-core", version = "5.11.0" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+stomp-android = { group = "com.yy", name = "stomp-android", version.ref = "stompAndroid" }
+stomp-protocol-android = { module = "com.naiksoftware:stomp-protocol-android", version.ref = "stompProtocolAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
