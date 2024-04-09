@@ -30,24 +30,28 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="522dp"
-            app:srcCompat="@drawable/tut1" />
+            app:srcCompat="@drawable/tut1"
+            android:contentDescription="@string/tutorial1" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="match_parent"
             android:layout_height="473dp"
-            app:srcCompat="@drawable/tut2" />
+            app:srcCompat="@drawable/tut2"
+            android:contentDescription="@string/tutorial2"/>
 
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="480dp"
-            app:srcCompat="@drawable/tut3" />
+            app:srcCompat="@drawable/tut3"
+            android:contentDescription="@string/tutorial3"/>
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="match_parent"
             android:layout_height="439dp"
-            app:srcCompat="@drawable/tut4" />
+            app:srcCompat="@drawable/tut4"
+            android:contentDescription="@string/tutorial4"/>
     </LinearLayout>
 </ScrollView>
