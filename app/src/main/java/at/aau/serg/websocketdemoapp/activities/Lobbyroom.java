@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class Lobbyroom extends AppCompatActivity {
 
@@ -30,18 +31,22 @@ public class Lobbyroom extends AppCompatActivity {
             return insets;
         });
 
+        createLobbyCode();
+
         lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
         lobbyCode.setText(getIntent().getStringExtra("lobbyCode"));
         showParticipants();
         cancelLobby();
     }
-    /*
-    public void createLobbyCode(){
-        //toDo Lobbycode vom Server abfragen
-        //lobbyCode.setText(...);
 
-    }*/
+    public void createLobbyCode(){
+        StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
+        stompHandler.connectToServer();
+        stompHandler.createLobby("TEST", "USER_NAME");
+        //toDo Lobbycode vom Server abfragen
+        //lobbyCode.setText(...)
+    }
 
     //Show the Participants
     public void showParticipants() {

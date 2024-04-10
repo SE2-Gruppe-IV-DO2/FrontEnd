@@ -60,20 +60,19 @@ public class StompHandler {
         }
     }
 
-    public Flowable<String> createLobby(String userID, String userName) {
+    public void createLobby(String userID, String userName) {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("userID", userID);
         payload.put("userName", userName);
         String jsonPayload = gson.toJson(payload);
 
-        Disposable disposable = stompClient.send("/create_new_game", jsonPayload).subscribe();
+        stompClient.topic("/topic/lobby-created").subscribe(topicMessage -> {
+            Log.d("Received", topicMessage.getPayload());
+        });
 
-        return stompClient.topic("topic/lobby-created")
-                .map(topicMessage -> {
-                    Log.d("Response", topicMessage.toString());
-                    return topicMessage.getPayload();
-                })
-                .subscribeOn(Schedulers.io());
+        stompClient.send("/app/create_new_lobby", userID).subscribe();
+
+
     }
 
     public Flowable<String> joinLobby(String lobbyCode, String userID, String userName) {
