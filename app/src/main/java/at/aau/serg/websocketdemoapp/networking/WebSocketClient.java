@@ -13,6 +13,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import ua.naiksoftware.stomp.StompClient;
 
 public class WebSocketClient {
 
@@ -22,12 +23,12 @@ public class WebSocketClient {
      * https://developer.android.com/studio/run/emulator-networking
      * "ws://10.0.2.2:8080/websocket-example-handler"
      */
+    StompClient stompClient;
     private final String WEBSOCKET_URI;
     private static final String TAG = "WebSocket";
     private WebSocket webSocket;
 
     public WebSocketClient(String ip) {
-
         WEBSOCKET_URI = ip;
     }
 
