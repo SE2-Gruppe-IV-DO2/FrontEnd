@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public void tutorialButtonClicked() {
         Button tutorialButton = findViewById(R.id.buttonTutorial);
         tutorialButton.setOnClickListener(view -> {
-
+            Intent intent = new Intent(MainActivity.this, Tutorial.class);
+            startActivity(intent);
         });
     }
 }
