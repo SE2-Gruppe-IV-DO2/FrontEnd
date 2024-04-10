@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ public class Lobbyroom extends AppCompatActivity {
 
     TextView lobbyCode;
     TextView participants;
+    final StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,28 +30,32 @@ public class Lobbyroom extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        Intent intent = getIntent();
         createLobbyCode();
 
+        stompHandler.connectToServer();
         lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
-        lobbyCode.setText(getIntent().getStringExtra("lobbyCode"));
+        participants.setText(intent.getStringExtra("playerName") + "\n");
         showParticipants();
         cancelLobby();
     }
 
     public void createLobbyCode(){
-        StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
-        stompHandler.connectToServer();
-        stompHandler.createLobby("TEST", "USER_NAME");
-        //toDo Lobbycode vom Server abfragen
-        //lobbyCode.setText(...)
+        new Thread(() -> {
+            // Pass a callback to receive the lobby code
+            stompHandler.createLobby("TEST", "USER_NAME", code -> {
+                // Handle the lobby code here, such as updating UI elements
+                runOnUiThread(() -> {
+                    lobbyCode.setText(code);
+                });
+            });
+        }).start();
     }
 
     //Show the Participants
     public void showParticipants() {
         String playerName=getIntent().getStringExtra("playerName");
-        participants.append(playerName + "\n");
         //toDo die weiteren Mitspieler zeigen
         //participants.append(...);
     }
@@ -63,8 +67,11 @@ public class Lobbyroom extends AppCompatActivity {
             Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
             startActivity(intent);
         });
-
-
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stompHandler.disconnect();
+    }
 }

@@ -5,10 +5,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
-import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -18,7 +16,7 @@ public class StompHandler {
     /**
      * localhost from the Android emulator is reachable as 10.0.2.2
      * https://developer.android.com/studio/run/emulator-networking
-     * "ws://10.0.2.2:8080/websocket-example-handler"
+     * "ws://10.0.2.2:8080/websocket-example-broker"
      */
     private StompClient stompClient;
     private Gson gson = new Gson();
@@ -60,7 +58,7 @@ public class StompHandler {
         }
     }
 
-    public void createLobby(String userID, String userName) {
+    public void createLobby(String userID, String userName, Consumer<String> lobbyCodeCallback) {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("userID", userID);
         payload.put("userName", userName);
@@ -68,39 +66,39 @@ public class StompHandler {
 
         stompClient.topic("/topic/lobby-created").subscribe(topicMessage -> {
             Log.d("Received", topicMessage.getPayload());
+            String lobbyCode = extractData(topicMessage.getPayload());
+            lobbyCodeCallback.accept(lobbyCode);
         });
 
-        stompClient.send("/app/create_new_lobby", userID).subscribe();
-
-
+        stompClient.send("/app/create_new_lobby", jsonPayload).subscribe();
     }
 
-    public Flowable<String> joinLobby(String lobbyCode, String userID, String userName) {
+    private String extractData(String message) {
+        return message;
+    }
+
+    public void joinLobby(String lobbyCode, String userID, String userName, Consumer<String> dataCallback) {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("lobbyCode", lobbyCode);
         payload.put("userID", userID);
         payload.put("userName", userName);
         String jsonPayload = gson.toJson(payload);
 
-        Disposable disposable = stompClient.send("/join_lobby", jsonPayload).subscribe();
+        stompClient.topic("/topic/lobby-joined").subscribe(topicMessage -> {
+            Log.d("Received", topicMessage.getPayload());
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
 
-        return stompClient.topic("topic/lobby-joined")
-                .map(topicMessage -> {
-                    Log.d("Response", topicMessage.toString());
-                    return topicMessage.getPayload();
-                })
-                .subscribeOn(Schedulers.io());
+        stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
 
-    public Flowable<String> helloMessage(String message) {
-        Log.d("Network", "helloMessage called");
-        return stompClient.topic("/topic/hello-response")
-                .map(topicMessage -> {
-                    Log.d("Network", "Received: " + topicMessage.getPayload());
-                    return topicMessage.getPayload();
-                })
-                .doOnSubscribe(disposable -> stompClient.send("/app/hello", message).subscribe())
-                .subscribeOn(Schedulers.io());
+    public void helloMessage(String message) {
+        stompClient.topic("/topic/hello-response").subscribe(topicMessage -> {
+            Log.d("Received", topicMessage.getPayload());
+        });
+
+        stompClient.send("/app/hello", message).subscribe();
     }
 
     public void disconnect() {

@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import at.aau.serg.websocketdemoapp.R;
-import ua.naiksoftware.stomp.Stomp;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import ua.naiksoftware.stomp.StompClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,40 +18,22 @@ public class MainActivity extends AppCompatActivity {
     TextView errorText;
     StompClient stompClient;
 
+    StompHandler stompHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://10.0.2.2:8080/websocket-example-handler");
-        stompClient.connect();
+        stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
+        stompHandler.connectToServer();
 
         errorText = findViewById(R.id.labelError);
         playerName = findViewById(R.id.playerName);
 
-        Button view = findViewById(R.id.buttonTutorial);
-        view.setOnClickListener(c -> {
-            new Thread(() -> {
-                final String[] result = {"test"};
-                try {
-                    stompClient.topic("/topic/hello-response").subscribe(stompMessage -> {
-                        Log.v("Resposne", stompMessage.getPayload());
-                        result[0] = stompMessage.getPayload().toString();
-                    });
-                    
-                    stompClient.send("/app/hello", "Hello, Server!");
-
-                    runOnUiThread(() -> {
-                        playerName.setText(result[0].toString());
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        });
-
         createButtonClicked();
         joinButtonClicked();
+        tutorialButtonClicked();
     }
 
     public void createButtonClicked(){
@@ -61,8 +42,7 @@ public class MainActivity extends AppCompatActivity {
             if (!playerName.getText().toString().isEmpty()) {
                 // navigation to create lobbyroom site
                 Intent intent = new Intent(MainActivity.this, Lobbyroom.class);
-                intent.putExtra("playerName", "");
-                intent.putExtra("lobbyCode", "");
+                intent.putExtra("playerName", playerName.getText().toString());
                 startActivity(intent);
             } else {
                 errorText.setVisibility(View.VISIBLE);
@@ -81,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 errorText.setVisibility(View.VISIBLE);
             }
+        });
+    }
+
+    public void tutorialButtonClicked() {
+        Button tutorialButton = findViewById(R.id.buttonTutorial);
+        tutorialButton.setOnClickListener(view -> {
+
         });
     }
 }
