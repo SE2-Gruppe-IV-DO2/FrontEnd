@@ -17,4 +17,8 @@
     <string name="enter_lobby_with_code">Enter Lobby with Code</string>
     <string name="enter_lobby_code">Enter Lobby Code:</string>
     <string name="possible_number_of_players_3_5_" tools:ignore="TypographyDashes">Possible number of players: 3-5</string>
+    <string name="tutorial1" translatable="false">tutorial1</string>
+    <string name="tutorial3" translatable="false">tutorial3</string>
+    <string name="tutorial4" translatable="false">tutorial4</string>
+    <string name="tutorial2" translatable="false">tutorial2</string>
 </resources>
