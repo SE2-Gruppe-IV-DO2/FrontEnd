@@ -43,9 +43,7 @@ public class Lobbyroom extends AppCompatActivity {
 
     public void createLobbyCode(){
         new Thread(() -> {
-            // Pass a callback to receive the lobby code
             stompHandler.createLobby("TEST", "USER_NAME", code -> {
-                // Handle the lobby code here, such as updating UI elements
                 runOnUiThread(() -> {
                     lobbyCode.setText(code);
                 });

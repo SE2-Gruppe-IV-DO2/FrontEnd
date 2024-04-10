@@ -99,7 +99,7 @@ public class StompHandler {
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_Received, topicMessage.getPayload())
-        )
+        );
 
         stompClient.send("/app/hello", message).subscribe();
     }
