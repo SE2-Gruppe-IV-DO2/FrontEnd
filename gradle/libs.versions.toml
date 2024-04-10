@@ -14,6 +14,7 @@ stompAndroid = "1.0.0"
 stompProtocolAndroid = "2.3.0"
 stomp = "2.31.2"
 stompSpring = "0.1.11"
+rxjava2 = "1.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -31,6 +32,7 @@ stomp-android = { group = "com.yy", name = "stomp-android", version.ref = "stomp
 stomp-protocol-android = { module = "com.naiksoftware:stomp-protocol-android", version.ref = "stompProtocolAndroid" }
 stomp = { group = "org.apache.activemq.examples.stomp", name = "stomp", version.ref = "stomp" }
 stomp-spring = { group = "de.lancom.systems.stomp", name = "stomp-spring", version.ref = "stompSpring" }
+rxjava2 = { group = "android.arch.paging", name = "rxjava2", version.ref = "rxjava2" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
