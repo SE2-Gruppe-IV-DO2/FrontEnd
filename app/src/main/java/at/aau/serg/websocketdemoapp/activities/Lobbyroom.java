@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,11 +12,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class Lobbyroom extends AppCompatActivity {
 
     TextView lobbyCode;
     TextView participants;
+    final StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +30,30 @@ public class Lobbyroom extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Intent intent = getIntent();
+        createLobbyCode();
 
+        stompHandler.connectToServer();
         lobbyCode = findViewById(R.id.lobbyCode);
         participants = findViewById(R.id.participants);
+        participants.setText(intent.getStringExtra("playerName") + "\n");
         showParticipants();
         cancelLobby();
     }
-    /*
-    public void createLobbyCode(){
-        //toDo Lobbycode vom Server abfragen
-        //lobbyCode.setText(...);
 
-    }*/
+    public void createLobbyCode(){
+        new Thread(() -> {
+            stompHandler.createLobby("TEST", "USER_NAME", code -> {
+                runOnUiThread(() -> {
+                    lobbyCode.setText(code);
+                });
+            });
+        }).start();
+    }
 
     //Show the Participants
     public void showParticipants() {
         String playerName=getIntent().getStringExtra("playerName");
-        participants.setText(playerName);
         //toDo die weiteren Mitspieler zeigen
         //participants.append(...);
     }
@@ -57,8 +65,11 @@ public class Lobbyroom extends AppCompatActivity {
             Intent intent = new Intent(Lobbyroom.this,MainActivity.class);
             startActivity(intent);
         });
-
-
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stompHandler.disconnect();
+    }
 }
