@@ -31,7 +31,7 @@ public class Lobbyroom extends AppCompatActivity {
         });
         participants = findViewById(R.id.participants);
         lobbyRoomService = new LobbyRoomService(this, Lobbyroom.this);
-        lobbyRoomService.setPlayerName(participants);
+        lobbyRoomService.onCreation();
     }
 
     public void backButtonClicked(View view) {

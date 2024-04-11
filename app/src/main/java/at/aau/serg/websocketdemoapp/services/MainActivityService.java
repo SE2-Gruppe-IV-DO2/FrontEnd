@@ -7,11 +7,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.activities.MainActivity;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class MainActivityService {
 
     SharedPreferences sharedPreferences;
     MainActivity mainActivity;
+
+    StompHandler stompHandler;
 
     public MainActivityService(Context context, MainActivity activity) {
         sharedPreferences = context.getSharedPreferences("druids_data", Context.MODE_PRIVATE);
