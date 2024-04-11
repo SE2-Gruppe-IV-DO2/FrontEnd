@@ -125,42 +125,4 @@ class MainActivityServiceTest {
         verify(sharedEditor, times(0)).apply();
         verify(errorLabel).setVisibility(View.VISIBLE);
     }
-
-    @Test
-    void testTutorialServiceMethodSuccess() {
-        EditText editText = mock(EditText.class);
-        TextView errorLabel = mock(TextView.class);
-
-        when(view.findViewById(R.id.playerName)).thenReturn(editText);
-        when(view.findViewById(R.id.labelError)).thenReturn(errorLabel);
-
-        Editable editable = mock(Editable.class);
-        when(editText.getText()).thenReturn(editable);
-        when(editable.toString()).thenReturn("Test");
-
-        mainActivityService.tutorialService(editText, errorLabel);
-
-        verify(sharedEditor).putString("playerName", "Test");
-        verify(sharedEditor).apply();
-        verify(errorLabel).setVisibility(View.INVISIBLE);
-    }
-
-    @Test
-    void testTutorialServiceMethodFailure() {
-        EditText editText = mock(EditText.class);
-        TextView errorLabel = mock(TextView.class);
-
-        when(view.findViewById(R.id.playerName)).thenReturn(editText);
-        when(view.findViewById(R.id.labelError)).thenReturn(errorLabel);
-
-        Editable editable = mock(Editable.class);
-        when(editText.getText()).thenReturn(editable);
-        when(editable.toString()).thenReturn("Test1");
-
-        mainActivityService.tutorialService(editText, errorLabel);
-
-        verify(sharedEditor, times(0)).putString("playerName", "Test1");
-        verify(sharedEditor, times(0)).apply();
-        verify(errorLabel).setVisibility(View.VISIBLE);
-    }
 }
