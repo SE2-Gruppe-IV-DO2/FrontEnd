@@ -2,8 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,13 +11,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.networking.StompHandler;
+import at.aau.serg.websocketdemoapp.services.JoinLobbyService;
 
 public class JoinLobby extends AppCompatActivity {
-
-
-    EditText enterLobbyCode;
-    final StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
+    JoinLobbyService joinLobbyService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +27,15 @@ public class JoinLobby extends AppCompatActivity {
             return insets;
         });
 
-        stompHandler.connectToServer();
-        enterLobbyCode = findViewById(R.id.enterLobbyCode);
-        cancelLobby2();
+        joinLobbyService = new JoinLobbyService(this, JoinLobby.this);
     }
 
-    public void cancelLobby2() {
-        Button breakButton2 = findViewById(R.id.buttonCancel2);
-        breakButton2.setOnClickListener(view -> {
-            // navigation to the start site
-            Intent intent = new Intent(JoinLobby.this,MainActivity.class);
-            startActivity(intent);
-        });
+    public void backButtonClicked(View view) {
+        joinLobbyService.backButtonClicked();
     }
 
-    public void enterLobby() {
-        Button enterButton = findViewById(R.id.buttonEnterLobby);
-
+    public void changeToStartActivity() {
+        Intent intent = new Intent(JoinLobby.this, MainActivity.class);
+        startActivity(intent);
     }
 }

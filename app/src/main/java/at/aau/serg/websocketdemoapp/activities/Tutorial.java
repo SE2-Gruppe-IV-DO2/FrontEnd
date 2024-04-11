@@ -35,7 +35,5 @@ public class Tutorial extends AppCompatActivity {
             Intent intent = new Intent(Tutorial.this,MainActivity.class);
             startActivity(intent);
         });
-
-
     }
 }
