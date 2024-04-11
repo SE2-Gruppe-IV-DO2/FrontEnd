@@ -59,20 +59,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, JoinLobby.class);
         startActivity(intent);
     }
-/*
-    private void connectToWebSocketServer() {
-        // register a handler for received messages when setting up the connection
-        networkHandler.connectToServer(this::messageReceivedFromServer);
-    }
 
-    private void sendMessage() {
-        networkHandler.sendMessageToServer("test message");
+    public void changeToTutorialActivity() {
+        Intent intent = new Intent(MainActivity.this, Tutorial.class);
+        startActivity(intent);
     }
-
-    private void messageReceivedFromServer(String message) {
-        // TODO handle received messages
-        Log.d("Network", message);
-        textViewServerResponse.setText(message);
-    }
- */
 }

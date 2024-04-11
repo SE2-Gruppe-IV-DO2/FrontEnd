@@ -44,13 +44,7 @@ public class MainActivityService {
     }
 
     public void tutorialService (EditText editText, TextView textView){
-        String playerName = editText.getText().toString();
-        if (nameIsValid(playerName)) {
-            textView.setVisibility(View.INVISIBLE);
-            savePlayerName(playerName);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-        }
+        mainActivity.changeToTutorialActivity();
     }
 
     private boolean nameIsValid(String name) {
