@@ -1,24 +1,26 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.activities.Lobbyroom;
+import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class LobbyRoomService {
+    private final LobbyRoom lobbyActivity;
+    private StompHandler stompHandler;
+    private final TextView participants;
+    private final DataHandler dataHandler;
+    private final TextView lobbyCode;
 
-    SharedPreferences sharedPreferences;
-    Lobbyroom lobbyActivity;
-    StompHandler stompHandler = new StompHandler("ws://10.0.2.2:8080/websocket-example-broker");
-    TextView participants;
-
-    public LobbyRoomService(Context context, Lobbyroom activity) {
-        sharedPreferences = context.getSharedPreferences("druids_data", Context.MODE_PRIVATE);
+    public LobbyRoomService(Context context, LobbyRoom activity) {
+        dataHandler = DataHandler.getInstance(context);
+        stompHandler = StompHandler.getInstance();
         this.lobbyActivity = activity;
         participants = lobbyActivity.findViewById(R.id.participants);
+        lobbyCode = lobbyActivity.findViewById(R.id.lobbyCode);
     }
 
     public void backButtonClicked() {
@@ -26,28 +28,16 @@ public class LobbyRoomService {
     }
 
     private void setPlayerName() {
-        participants.append(sharedPreferences.getString("playerName", "") + "\n");
+        participants.append(dataHandler.getPlayerName() + "\n");
     }
 
-    public Runnable setLobbyCode(String code) {
-        TextView lobbyCode = lobbyActivity.findViewById(R.id.lobbyCode);
-        lobbyCode.setText(code);
-        return null;
-    }
-
-    private String readPlayerName() {
-       return sharedPreferences.getString("playerName", "");
+    public void setLobbyCode() {
+        lobbyCode.setText(dataHandler.getLobbyCode());
     }
 
     public void onCreation() {
-        stompHandler.connectToServer();
-        new Thread(() -> {
-            Long time = System.currentTimeMillis()/1000;
-            stompHandler.createLobby(time.toString(), readPlayerName(), code -> {
-                lobbyActivity.runOnUiThread(setLobbyCode(code));
-            });
-        }).start();
         setPlayerName();
+        setLobbyCode();
     }
 
     public void setStompHandler(StompHandler stompHandler) {

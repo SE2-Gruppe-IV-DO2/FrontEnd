@@ -18,12 +18,20 @@ public class StompHandler {
      */
     private final StompClient stompClient;
     private final Gson gson = new Gson();
-    
+    private static StompHandler instance;
     private static final String TAG_Network = "Network";
     private static final String TAG_Received = "Received";
 
-    public StompHandler(String ip) {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, ip);
+    public StompHandler() {
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,"ws://10.0.2.2:8080/websocket-example-broker");
+        connectToServer();
+    }
+
+    public static StompHandler getInstance() {
+        if(instance == null) {
+            instance = new StompHandler();
+        }
+        return instance;
     }
 
     private void setLifecycle() {
@@ -48,7 +56,6 @@ public class StompHandler {
             }
         });
     }
-
 
     public void connectToServer() {
         if (stompClient != null) {

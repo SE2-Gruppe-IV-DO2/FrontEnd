@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +14,7 @@ import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.services.JoinLobbyService;
 
 public class JoinLobby extends AppCompatActivity {
-    JoinLobbyService joinLobbyService;
+    private JoinLobbyService joinLobbyService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +26,29 @@ public class JoinLobby extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         joinLobbyService = new JoinLobbyService(this, JoinLobby.this);
+        Button joinLobbyIDButton = findViewById(R.id.buttonEnterLobby);
+        Button cancelButton = findViewById(R.id.buttonCancel2);
+
+        joinLobbyIDButton.setOnClickListener(v -> JoinLobby.this.joinLobbyWithIDButtonClicked());
+        cancelButton.setOnClickListener(v -> JoinLobby.this.backButtonClicked());
     }
 
-    public void backButtonClicked(View view) {
+    public void joinLobbyWithIDButtonClicked() {
+        joinLobbyService.joinLobbyWithIDClicked();
+    }
+
+    public void backButtonClicked() {
         joinLobbyService.backButtonClicked();
     }
 
     public void changeToStartActivity() {
         Intent intent = new Intent(JoinLobby.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void changeToLobbyRoomActivity() {
+        Intent intent = new Intent(JoinLobby.this, LobbyRoom.class);
         startActivity(intent);
     }
 }

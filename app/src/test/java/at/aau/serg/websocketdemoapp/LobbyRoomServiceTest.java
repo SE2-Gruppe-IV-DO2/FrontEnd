@@ -1,17 +1,23 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.TextView;
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import at.aau.serg.websocketdemoapp.activities.Lobbyroom;
+
+import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
 
@@ -19,25 +25,33 @@ class LobbyRoomServiceTest {
     @Mock
     Context mockContext;
     @Mock
-    Lobbyroom mockLobbyActivity;
+    LobbyRoom mockLobbyActivity;
     @Mock
-    SharedPreferences mockSharedPreferences;
+    DataHandler dataHandler;
     @Mock
-    SharedPreferences.Editor mockEditor;
+    StompHandler stompHandler;
     @Mock
     TextView mockParticipants;
     @Mock
-    StompHandler mockStompHandler;
+    TextView mockLobbyCode;
+    @Mock
+    SharedPreferences sharedPreferences;
+    @Mock
+    SharedPreferences.Editor editor;
     LobbyRoomService lobbyRoomService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(mockContext.getSharedPreferences("druids_data", Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
-        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+
+        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
+        when(editor.putString(anyString(), anyString())).thenReturn(editor);
+
         when(mockLobbyActivity.findViewById(R.id.participants)).thenReturn(mockParticipants);
+        when(mockLobbyActivity.findViewById(R.id.lobbyCode)).thenReturn(mockLobbyCode);
+
         lobbyRoomService = new LobbyRoomService(mockContext, mockLobbyActivity);
-        lobbyRoomService.setStompHandler(mockStompHandler);
+        lobbyRoomService.setStompHandler(stompHandler);
     }
 
     @AfterEach
@@ -53,9 +67,9 @@ class LobbyRoomServiceTest {
 
     @Test
     void testOnCreation() {
-        when(mockSharedPreferences.getString("playerName", "")).thenReturn("TestPlayer");
         lobbyRoomService.onCreation();
-        verify(mockStompHandler, times(1)).connectToServer();
-        verify(mockParticipants, times(1)).append("TestPlayer\n");
+
+        verify(mockParticipants, times(1)).append(anyString());
+        verify(mockLobbyCode, times(1)).setText(anyString());
     }
 }

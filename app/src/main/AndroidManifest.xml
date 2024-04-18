@@ -22,7 +22,7 @@
             android:name=".activities.JoinLobby"
             android:exported="false" />
         <activity
-            android:name=".activities.Lobbyroom"
+            android:name=".activities.LobbyRoom"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
