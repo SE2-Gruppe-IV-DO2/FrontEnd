@@ -43,6 +43,7 @@ class JoinLobbyServiceTest {
         when(joinLobby.findViewById(R.id.enterLobbyCode)).thenReturn(editText);
         when(sharedPreferences.edit()).thenReturn(mock(SharedPreferences.Editor.class));
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
+        when(sharedPreferences.getString(anyString(), anyString())).thenReturn("Test");
         joinLobbyService = new JoinLobbyService(context, joinLobby);
     }
 

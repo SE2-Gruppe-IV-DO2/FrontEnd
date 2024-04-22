@@ -49,6 +49,8 @@ class LobbyRoomServiceTest {
 
         when(mockLobbyActivity.findViewById(R.id.participants)).thenReturn(mockParticipants);
         when(mockLobbyActivity.findViewById(R.id.lobbyCode)).thenReturn(mockLobbyCode);
+        when(sharedPreferences.getString(anyString(), anyString())).thenReturn("Test");
+
 
         lobbyRoomService = new LobbyRoomService(mockContext, mockLobbyActivity);
         lobbyRoomService.setStompHandler(stompHandler);
@@ -70,6 +72,6 @@ class LobbyRoomServiceTest {
         lobbyRoomService.onCreation();
 
         verify(mockParticipants, times(1)).append(anyString());
-        verify(mockLobbyCode, times(1)).setText(anyString());
+        verify(mockLobbyCode, times(1)).setText("Test");
     }
 }
