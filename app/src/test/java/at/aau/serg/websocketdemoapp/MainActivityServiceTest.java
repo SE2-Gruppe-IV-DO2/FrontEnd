@@ -64,8 +64,7 @@ class MainActivityServiceTest {
 
         mainActivityService.createGameService(editText, errorLabel);
 
-        verify(sharedEditor).putString("playerName", "Test");
-        verify(sharedEditor).apply();
+        verify(activity, times(1)).changeToCreateActivity();
         verify(errorLabel).setVisibility(View.INVISIBLE);
     }
 
@@ -102,8 +101,7 @@ class MainActivityServiceTest {
 
         mainActivityService.joinGameService(editText, errorLabel);
 
-        verify(sharedEditor).putString("playerName", "Test");
-        verify(sharedEditor).apply();
+        verify(activity, times(1)).changeToJoinActivity();
         verify(errorLabel).setVisibility(View.INVISIBLE);
     }
 

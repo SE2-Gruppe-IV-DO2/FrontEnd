@@ -1,23 +1,26 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.activities.MainActivity;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class MainActivityService {
 
-    SharedPreferences sharedPreferences;
-    MainActivity mainActivity;
+    private final DataHandler dataHandler;
+    private final MainActivity mainActivity;
+    private static final String TAG = "Stomp";
 
     StompHandler stompHandler;
 
     public MainActivityService(Context context, MainActivity activity) {
-        sharedPreferences = context.getSharedPreferences("druids_data", Context.MODE_PRIVATE);
+        stompHandler = StompHandler.getInstance();
+        dataHandler = DataHandler.getInstance(context);
         this.mainActivity = activity;
     }
 
@@ -26,6 +29,11 @@ public class MainActivityService {
         if (nameIsValid(playerName)) {
             textView.setVisibility(View.INVISIBLE);
             savePlayerName(playerName);
+            new Thread(() -> stompHandler.createLobby(dataHandler.getPlayerID(), dataHandler.getPlayerName(), callback -> {
+                dataHandler.setLobbyCode(callback);
+                Log.d(TAG, callback);
+            })).start();
+            Log.d("LobbyCode", dataHandler.getLobbyCode());
             mainActivity.changeToCreateActivity();
         } else {
             textView.setVisibility(View.VISIBLE);
@@ -43,7 +51,7 @@ public class MainActivityService {
         }
     }
 
-    public void tutorialService (EditText editText, TextView textView){
+    public void tutorialService (){
         mainActivity.changeToTutorialActivity();
     }
 
@@ -53,9 +61,8 @@ public class MainActivityService {
 
     private void savePlayerName(String playerName) {
         if (nameIsValid(playerName)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("playerName", playerName);
-            editor.apply();
+            dataHandler.setPlayerName(playerName);
+            dataHandler.setPlayerID(String.valueOf(System.currentTimeMillis() / 1000));
         }
     }
 }

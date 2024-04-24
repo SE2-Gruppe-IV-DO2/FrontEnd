@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Lobbyroom">
+    tools:context=".activities.LobbyRoom">
 
 
     <TextView
@@ -104,10 +104,10 @@
         android:layout_marginStart="143dp"
         android:layout_marginEnd="144dp"
         android:layout_marginBottom="8dp"
-        android:onClick="backButtonClicked"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonStart" />
 </androidx.constraintlayout.widget.ConstraintLayout>

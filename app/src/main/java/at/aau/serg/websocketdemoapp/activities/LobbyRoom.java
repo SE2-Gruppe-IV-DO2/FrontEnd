@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -14,8 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
 
-public class Lobbyroom extends AppCompatActivity {
-    TextView lobbyCode;
+public class LobbyRoom extends AppCompatActivity {
     TextView participants;
     LobbyRoomService lobbyRoomService;
 
@@ -29,17 +28,20 @@ public class Lobbyroom extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Button cancelButton = findViewById(R.id.buttonBreak);
+
         participants = findViewById(R.id.participants);
-        lobbyRoomService = new LobbyRoomService(this, Lobbyroom.this);
+        lobbyRoomService = new LobbyRoomService(this, LobbyRoom.this);
         lobbyRoomService.onCreation();
+        cancelButton.setOnClickListener(v -> backButtonClicked());
     }
 
-    public void backButtonClicked(View view) {
+    public void backButtonClicked() {
         lobbyRoomService.backButtonClicked();
     }
 
     public void changeToStartActivity() {
-        Intent intent = new Intent(Lobbyroom.this, MainActivity.class);
+        Intent intent = new Intent(LobbyRoom.this, MainActivity.class);
         startActivity(intent);
     }
 }
