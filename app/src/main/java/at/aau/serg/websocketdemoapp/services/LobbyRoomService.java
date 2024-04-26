@@ -24,7 +24,11 @@ public class LobbyRoomService {
     }
 
     public void backButtonClicked() {
-        lobbyActivity.changeToStartActivity();
+        lobbyActivity.changeToMainActivity();
+    }
+
+    public void startButtonClicked() {
+        lobbyActivity.changeToGameActivity();
     }
 
     private void setPlayerName() {

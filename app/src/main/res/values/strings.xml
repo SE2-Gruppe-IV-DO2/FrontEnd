@@ -21,4 +21,6 @@
     <string name="tutorial3" translatable="false">tutorial3</string>
     <string name="tutorial4" translatable="false">tutorial4</string>
     <string name="tutorial2" translatable="false">tutorial2</string>
+    <string name="back">Back</string>
+    <string name="tafel_der_dom_nen">Table of Domains</string>
 </resources>
