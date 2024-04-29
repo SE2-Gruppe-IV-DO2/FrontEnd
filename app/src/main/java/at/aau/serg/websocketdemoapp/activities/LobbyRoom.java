@@ -34,6 +34,9 @@ public class LobbyRoom extends AppCompatActivity {
         lobbyRoomService = new LobbyRoomService(this, LobbyRoom.this);
         lobbyRoomService.onCreation();
         cancelButton.setOnClickListener(v -> backButtonClicked());
+
+        Button startButton = findViewById(R.id.buttonStart);
+        startButton.setOnClickListener(v -> startGameActivity());
     }
 
     public void backButtonClicked() {
@@ -44,4 +47,12 @@ public class LobbyRoom extends AppCompatActivity {
         Intent intent = new Intent(LobbyRoom.this, MainActivity.class);
         startActivity(intent);
     }
+    public void startGameActivity() {lobbyRoomService.createGameButtonClicked();}
+
+    public void changeToGameActivity() {
+        Intent intent = new Intent(LobbyRoom.this, ActiveGame.class);
+        startActivity(intent);
+    }
+
+
 }

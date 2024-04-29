@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Dies ist der Bereich für die Mitte des Spieltisches. -->
+    <LinearLayout
+        android:id="@+id/table_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#DDD"> <!-- Grauer Hintergrund für die Visualisierung -->
+
+        <!-- Hier werden Karten, die in die Mitte gezogen wurden, angezeigt -->
+    </LinearLayout>
+
+    <!-- Dies ist der Bereich für die Spielerhand, aufgeteilt in drei Zeilen. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Erste Zeile der Karten -->
+        <LinearLayout
+            android:id="@+id/first_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+
+            <!-- Platzhalter für Karten, in der Praxis dynamisch hinzuzufügen -->
+        </LinearLayout>
+
+        <!-- Zweite Zeile der Karten -->
+        <LinearLayout
+            android:id="@+id/second_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+
+            <!-- Platzhalter für Karten, in der Praxis dynamisch hinzuzufügen -->
+        </LinearLayout>
+
+        <!-- Dritte Zeile der Karten -->
+        <LinearLayout
+            android:id="@+id/third_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+
+            <!-- Platzhalter für Karten, in der Praxis dynamisch hinzuzufügen -->
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
