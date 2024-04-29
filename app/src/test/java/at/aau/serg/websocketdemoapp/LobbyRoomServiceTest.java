@@ -68,6 +68,13 @@ class LobbyRoomServiceTest {
     }
 
     @Test
+
+    void testCreateButtonClicked() {
+        lobbyRoomService.createGameButtonClicked();
+        verify(mockLobbyActivity, times(1)).changeToGameActivity();
+    }
+
+    @Test
     void testOnCreation() {
         lobbyRoomService.onCreation();
 
