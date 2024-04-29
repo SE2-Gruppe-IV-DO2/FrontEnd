@@ -32,7 +32,7 @@ public class ActiveGame extends AppCompatActivity {
         //int [] cardResourceIds wurde nur provisorisch eingerichtet, sollte jedoch durch eine Methode in der ActiveGameService Klasse ausgetauscht werden
 
         int[] cardResourceIds = {
-                R.drawable.Gaia, R.drawable.blau1, R.drawable.blau2,
+                R.drawable.gaia, R.drawable.blau1, R.drawable.blau2,
                 R.drawable.gruen1, R.drawable.gruen3,R.drawable.gruen4,
                 R.drawable.gelb2,R.drawable.gelb4,R.drawable.gelb10,
                 R.drawable.violett2,R.drawable.violett3,R.drawable.violett5,
