@@ -1,6 +1,8 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -12,14 +14,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
 public class PointsView extends AppCompatActivity {
-    private int[][] pointsArray;
-    private TextView[][] pointsTextViews;
+    private PointsViewService pointsViewService;
+    private TextView[][] pointViews;
     private TextView[] sumViews;
+    private int players;
+    private static final int ROUNDS = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TableLayout layout;
+        Button backButton;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_points_view);
@@ -28,62 +35,91 @@ public class PointsView extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        pointsArray = new int[5][5];
-        pointsTextViews = new TextView[5][4];
-        sumViews =  new TextView[4];
-        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        players = 5;
+        backButton = findViewById(R.id.buttonBreak);
+        layout = findViewById(R.id.tableLayout);
+        backButton.setOnClickListener(v -> backButtonClicked());
+        pointsViewService = new PointsViewService(players);
+        pointViews = new TextView[ROUNDS][players];
+        sumViews = new TextView[players];
+        TableLayout tableLayout = createPointTable();
+        layout.addView(tableLayout);
+        updateUI();
+    }
 
-        TableRow headerRow = new TableRow(this);
-        headerRow.addView(createTextView(""));
-        for (int player = 1; player <= 4; player++) {
-            headerRow.addView(createTextView("Player " + player));
-        }
-        tableLayout.addView(headerRow);
+    public void backButtonClicked() {
+        Intent intent = new Intent(PointsView.this, LobbyRoom.class);
+        startActivity(intent);
+    }
 
-        for (int round = 0; round < 5; round++) {
-            TableRow roundRow = new TableRow(this);
-            roundRow.addView(createTextView("Round " + (round + 1)));
-            for (int player = 0; player < 4; player++) {
-                roundRow.addView(createTextView(""));
-                pointsTextViews[round][player]  = (TextView) roundRow.getVirtualChildAt(player);
-            }
-            tableLayout.addView(roundRow);
+    public TableLayout createPointTable() {
+        TableLayout tableLayout = new TableLayout(this);
+        tableLayout.addView(createPlayerRow());
+        for(int i = 0; i < ROUNDS; i++) {
+            tableLayout.addView(createRoundRow(i));
         }
+        tableLayout.addView(createSumRow());
+        return tableLayout;
+    }
+
+    public TableRow createSumRow() {
         TableRow sumRow = new TableRow(this);
-        sumRow.addView(createTextView("Sum "));
-        for(int player = 0; player < 4; player++) {
-            sumRow.addView(createTextView(""));
-            sumViews[player] = (TextView) sumRow.getVirtualChildAt(player + 1);
+        sumRow.addView(createTextView("Sum"));
+        for(int i = 0; i < players; i++) {
+            TextView t = createTextView("");
+            sumRow.addView(t);
+            sumViews[i] = t;
         }
-
-        tableLayout.addView(sumRow);
-        setPoints(1, 1, 100);
-        setPoints(3, 2, 75);
-        calcSum();
+        return sumRow;
     }
 
-    private TextView createTextView(String text) {
-        TextView textView = new TextView(this);
-        textView.setText(text);
-        textView.setPadding(16, 16, 16, 16);
-        return textView;
+    public TableRow createRoundRow(int round) {
+        TableRow roundRow = new TableRow(this);
+        roundRow.addView(createTextView("Round " + (round + 1)));
+        for(int i = 0; i < players; i++) {
+            TextView t = createTextView("");
+            roundRow.addView(t);
+            pointViews[round][i] = t;
+        }
+        return roundRow;
     }
 
-    private void setPoints(int round, int player, int points) {
-        pointsArray[round][player] = points;
-        TextView textView = pointsTextViews[round - 1][player];
-        textView.setText(String.valueOf(points));
+    public TableRow createPlayerRow() {
+        TableRow playerRow = new TableRow(this);
+        playerRow.addView(createTextView(""));
+        for(int i = 0; i < players; i++) {
+            playerRow.addView(createTextView("Player " + (i + 1)));
+        }
+        return playerRow;
     }
 
-    private void calcSum() {
-        for(int player = 0; player < 4; player++) {
-            int sum = 0;
-            for(int round = 0; round < 5; round++) {
-                int points = pointsArray[round][player];
-                sum += points;
+    public void updateUI() {
+        setPointViews();
+        setSumViews();
+    }
+
+    private void setPointViews() {
+        for(int i = 0; i < ROUNDS; i++) {
+            for(int j = 0; j < players; j++) {
+                if(pointsViewService.getPointsArray()[i][j] == 0) {
+                    pointViews[i][j].setText("");
+                } else {
+                    pointViews[i][j].setText(String.valueOf(pointsViewService.getPointsArray()[i][j]));
+                }
             }
-            TextView t = sumViews[player];
-            t.setText(String.valueOf(sum));
         }
+    }
+
+    private void setSumViews() {
+        for(int i = 0; i < players; i++) {
+            sumViews[i].setText(String.valueOf(pointsViewService.getSumArray()[i]));
+        }
+    }
+
+    private TextView createTextView(String content) {
+        TextView t =  new TextView(this);
+        t.setText(content);
+        t.setPadding(16, 16, 16, 16);
+        return t;
     }
 }
