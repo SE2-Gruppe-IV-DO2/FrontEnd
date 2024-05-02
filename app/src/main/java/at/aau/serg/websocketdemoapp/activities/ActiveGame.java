@@ -16,11 +16,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
@@ -49,7 +52,7 @@ public class ActiveGame extends AppCompatActivity {
         this.displayCardsPlayed(gameData);
     }
 
-    public void displayCardsInHand(String gameData) {
+    public void displayCardsInHand(String gameDataString) {
 
         // todo: handle gameData and remove manual creation of card list
 
@@ -60,6 +63,8 @@ public class ActiveGame extends AppCompatActivity {
         }
         cards = cards.stream().sorted().collect(Collectors.toList());
 
+//        GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
+//        cards = gameData.getCardList().stream().map(Object::toString).collect(Collectors.toList());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -84,29 +89,30 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     @SuppressLint("DiscouragedApi")
-    public void displayCardsPlayed(String gameData) {
-        /*
+    public void displayCardsPlayed(String gameDataString) {
+        GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
+
         // sample code to display played cards
 
-        // find playerPosition
+        /*// find playerPosition
         int playerPosition = gameData.getCardsPlayed().indexOf(
                 gameData.getCardsPlayed().stream().filter(c -> c.getPlayer().equals(me)).findFirst()
         );
         if (playerPosition == -1){
             playerPosition = gameData.getCardsPlayed().size() + 1;
-        }
+        }*/
 
         // played Card ids
         int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
                 R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
 
-        // set card data to imageview
+        /*// set card data to imageview
         for (int i = 1; i <= gameData.getCardsPlayed().size(); i++) {
             Card card = gameData.getCardsPlayed().get(i - 1);
             ImageView iv = findViewById(imageViewIds[(playerPosition - i) % imageViewIds.length]);
             iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable"));
-        }
-        */
+        }*/
+
     }
 
     //test method

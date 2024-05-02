@@ -74,4 +74,10 @@ class LobbyRoomServiceTest {
         verify(mockParticipants, times(1)).append(anyString());
         verify(mockLobbyCode, times(1)).setText("Test");
     }
+
+    @Test
+    void testCreateButtonClicked() {
+        lobbyRoomService.startGameButtonClicked();
+        verify(mockLobbyActivity, times(1)).changeToGameActivity();
+    }
 }
