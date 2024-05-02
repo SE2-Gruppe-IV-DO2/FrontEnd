@@ -102,6 +102,19 @@ public class StompHandler {
 
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
+    public void dealNewRound(String lobbyCode, Consumer<String> dataCallback) {
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("lobbyCode", lobbyCode);
+        String jsonPayload = gson.toJson(payload);
+
+        stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
+            Log.d(TAG_Received, topicMessage.getPayload());
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+
+        stompClient.send("/app/deal_new_round", jsonPayload).subscribe();
+    }
 
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->

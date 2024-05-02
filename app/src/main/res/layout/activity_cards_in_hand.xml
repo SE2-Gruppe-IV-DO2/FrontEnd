@@ -20,6 +20,7 @@
 
     <ImageView
         android:id="@+id/playedCardPlayerX"
+        android:visibility="invisible"
         android:layout_width="100dp"
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +32,8 @@
         app:srcCompat="@drawable/card_back" />
 
     <ImageView
-        android:id="@+id/playedCardPlayer1"
+        android:id="@+id/playedCardPlayer4"
+        android:visibility="invisible"
         android:layout_width="100dp"
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +46,8 @@
         app:srcCompat="@drawable/card_back" />
 
     <ImageView
-        android:id="@+id/playedCardPlayer2"
+        android:id="@+id/playedCardPlayer3"
+        android:visibility="invisible"
         android:layout_width="100dp"
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,7 +60,8 @@
         app:srcCompat="@drawable/card_back" />
 
     <ImageView
-        android:id="@+id/playedCardPlayer3"
+        android:id="@+id/playedCardPlayer2"
+        android:visibility="invisible"
         android:layout_width="100dp"
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,7 +74,8 @@
         app:srcCompat="@drawable/card_back" />
 
     <ImageView
-        android:id="@+id/playedCardPlayer4"
+        android:id="@+id/playedCardPlayer1"
+        android:visibility="invisible"
         android:layout_width="100dp"
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"

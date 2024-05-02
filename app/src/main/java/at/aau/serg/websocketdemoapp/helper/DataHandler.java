@@ -47,4 +47,13 @@ public class DataHandler {
     public String getLobbyCode() {
         return sharedPreferences.getString("lobbyCode", "");
     }
+
+    public void setGameData(String data) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("gameData", data);
+    }
+
+    public String getGameData() {
+        return sharedPreferences.getString("gameData", "");
+    }
 }
