@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -38,9 +39,17 @@ public class LobbyRoomService {
     public void onCreation() {
         setPlayerName();
         setLobbyCode();
+        subscribeForPlayerChangedEvent();
     }
 
     public void setStompHandler(StompHandler stompHandler) {
         this.stompHandler = stompHandler;
+    }
+
+    private void subscribeForPlayerChangedEvent() {
+        new Thread(() -> stompHandler.subscribeForPlayerChangedEvent(serverResponse -> {
+            Log.d("SUBSCRIBE", serverResponse);
+        })
+        ).start();
     }
 }

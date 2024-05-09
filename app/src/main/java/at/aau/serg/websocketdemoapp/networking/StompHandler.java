@@ -103,6 +103,14 @@ public class StompHandler {
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
 
+    public void subscribeForPlayerChangedEvent(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/active_player_changed").subscribe(topicMessage -> {
+            Log.d(TAG_Received, topicMessage.getPayload());
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+    }
+
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_Received, topicMessage.getPayload())
