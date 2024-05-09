@@ -13,6 +13,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
@@ -20,7 +24,6 @@ public class PointsView extends AppCompatActivity {
     private PointsViewService pointsViewService;
     private TextView[][] pointViews;
     private TextView[] sumViews;
-    private int players;
     private static final int ROUNDS = 5;
 
     @Override
@@ -35,13 +38,13 @@ public class PointsView extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        players = 5;
+        pointsViewService = new PointsViewService();
         backButton = findViewById(R.id.buttonBreak);
         layout = findViewById(R.id.tableLayout);
         backButton.setOnClickListener(v -> backButtonClicked());
-        pointsViewService = new PointsViewService(players);
-        pointViews = new TextView[ROUNDS][players];
-        sumViews = new TextView[players];
+
+        pointViews = new TextView[ROUNDS][pointsViewService.getPlayerPoints().size()];
+        sumViews = new TextView[pointsViewService.getPlayerPoints().size()];
         TableLayout tableLayout = createPointTable();
         layout.addView(tableLayout);
         updateUI();
@@ -65,7 +68,7 @@ public class PointsView extends AppCompatActivity {
     public TableRow createSumRow() {
         TableRow sumRow = new TableRow(this);
         sumRow.addView(createTextView("Sum"));
-        for(int i = 0; i < players; i++) {
+        for(int i = 0; i < pointsViewService.getPlayerPoints().size(); i++) {
             TextView t = createTextView("");
             sumRow.addView(t);
             sumViews[i] = t;
@@ -76,7 +79,7 @@ public class PointsView extends AppCompatActivity {
     public TableRow createRoundRow(int round) {
         TableRow roundRow = new TableRow(this);
         roundRow.addView(createTextView("Round " + (round + 1)));
-        for(int i = 0; i < players; i++) {
+        for(int i = 0; i < pointsViewService.getPlayerPoints().size(); i++) {
             TextView t = createTextView("");
             roundRow.addView(t);
             pointViews[round][i] = t;
@@ -87,8 +90,8 @@ public class PointsView extends AppCompatActivity {
     public TableRow createPlayerRow() {
         TableRow playerRow = new TableRow(this);
         playerRow.addView(createTextView(""));
-        for(int i = 0; i < players; i++) {
-            playerRow.addView(createTextView("Player " + (i + 1)));
+        for (String s : pointsViewService.getPlayerPoints().keySet()) {
+            playerRow.addView(createTextView(s));
         }
         return playerRow;
     }
@@ -99,19 +102,21 @@ public class PointsView extends AppCompatActivity {
     }
 
     private void setPointViews() {
-        for(int i = 0; i < ROUNDS; i++) {
-            for(int j = 0; j < players; j++) {
-                if(pointsViewService.getPointsArray()[i][j] == 0) {
-                    pointViews[i][j].setText("");
-                } else {
-                    pointViews[i][j].setText(String.valueOf(pointsViewService.getPointsArray()[i][j]));
-                }
+        Map<String, HashMap<Integer, Integer>> playerPoints = pointsViewService.getPlayerPoints();
+        for (int round = 0; round < ROUNDS; round++) {
+            int playerIndex = 0;
+            for (Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
+                HashMap<Integer, Integer> roundsMap = entry.getValue();
+                Integer pointsOrNull = roundsMap.get(round + 1);
+                int points = (pointsOrNull != null) ? pointsOrNull : 0;
+                pointViews[round][playerIndex].setText(String.valueOf(points));
+                playerIndex++;
             }
         }
     }
 
     private void setSumViews() {
-        for(int i = 0; i < players; i++) {
+        for(int i = 0; i < pointsViewService.getPlayerPoints().size(); i++) {
             sumViews[i].setText(String.valueOf(pointsViewService.getSumArray()[i]));
         }
     }

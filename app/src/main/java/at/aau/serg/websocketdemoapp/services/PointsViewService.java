@@ -1,34 +1,33 @@
 package at.aau.serg.websocketdemoapp.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PointsViewService {
-    private int[][] pointsArray;
+    Map<String, HashMap<Integer, Integer>> playerPoints;
     private int[] sumArray;
-    private static final int ROUNDS = 5;
-    private final int players;
 
-    public PointsViewService(int players) {
-        this.players = players;
-        pointsArray = new int[ROUNDS][players];
-        sumArray = new int[players];
-    }
-
-    public void setPoints(int round, int player, int points) {
-        pointsArray[round - 1][player - 1] = points;
-        calcSum();
+    public PointsViewService() {
+        playerPoints = new HashMap<>();
     }
 
     public void calcSum() {
-        for(int i = 0; i < players; i++) {
+        sumArray = new int[playerPoints.size()];
+        int playerIndex = 0;
+        for (Map.Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
+            HashMap<Integer, Integer> roundsMap = entry.getValue();
             int sum = 0;
-            for(int j = 0; j < ROUNDS; j++) {
-                sum += pointsArray[j][i];
+            assert roundsMap != null;
+            for (int points : roundsMap.values()) {
+                sum += points;
             }
-            sumArray[i] = sum;
+            sumArray[playerIndex] = sum;
+            playerIndex++;
         }
     }
 
-    public int[][] getPointsArray() {
-        return pointsArray;
+    public Map<String, HashMap<Integer, Integer>> getPlayerPoints() {
+        return playerPoints;
     }
 
     public int[] getSumArray() {

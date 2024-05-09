@@ -1,11 +1,15 @@
 package at.aau.serg.websocketdemoapp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
@@ -14,7 +18,7 @@ class PointsViewServiceTest {
 
     @BeforeEach
     void setUp() {
-        pointsViewService = new PointsViewService(3);
+        pointsViewService = new PointsViewService();
     }
 
     @AfterEach
@@ -23,44 +27,28 @@ class PointsViewServiceTest {
     }
 
     @Test
-    void testSetPointsAndCalcSum() {
-        pointsViewService.setPoints(1, 1, 10);
-        pointsViewService.setPoints(1, 2, 15);
-        pointsViewService.setPoints(2, 1, 5);
-
-        int[][] pointsArray = pointsViewService.getPointsArray();
-        int[] sumArray = pointsViewService.getSumArray();
-
-        assertEquals(10, pointsArray[0][0]);
-        assertEquals(15, pointsArray[0][1]);
-        assertEquals(5, pointsArray[1][0]);
-
-        assertEquals(15, sumArray[0]);
-        assertEquals(15, sumArray[1]);
-        assertEquals(0, sumArray[2]);
+    void testGetSumArrayNull() {
+        assertNull(pointsViewService.getSumArray());
     }
 
     @Test
-    void testZeroPoints() {
-        int[][] pointsArray = pointsViewService.getPointsArray();
-        int[] sumArray = pointsViewService.getSumArray();
+    void testCalcSum() {
+        Map<String, HashMap<Integer, Integer>> testMap = pointsViewService.getPlayerPoints();
+        testMap.put("Test 1", new HashMap<>());
+        testMap.put("Test 2", new HashMap<>());
+        testMap.put("Test 3", new HashMap<>());
 
-        for (int[] roundPoints : pointsArray) {
-            for (int points : roundPoints) {
-                assertEquals(0, points);
-            }
-        }
+        Objects.requireNonNull(testMap.get("Test 1")).put(1, 35);
+        Objects.requireNonNull(testMap.get("Test 2")).put(1, -3);
+        Objects.requireNonNull(testMap.get("Test 3")).put(1, 18);
+        pointsViewService.calcSum();
+        int[] result = {-3, 18, 35};
 
-        for (int sum : sumArray) {
-            assertEquals(0, sum);
-        }
+        Assertions.assertArrayEquals(result, pointsViewService.getSumArray());
     }
 
     @Test
-    void testInvalidRoundPlayer() {
-        assertThrows(ArrayIndexOutOfBoundsException.class,
-                () -> pointsViewService.setPoints(6, 2, 20));
-        assertThrows(ArrayIndexOutOfBoundsException.class,
-                () -> pointsViewService.setPoints(3, 4, 20));
+    void testGetPlayerPoints() {
+        Assertions.assertEquals(0, pointsViewService.getPlayerPoints().size());
     }
 }

@@ -52,9 +52,9 @@ public class LobbyRoom extends AppCompatActivity {
     }
 
     public void changeToGameActivity() {
-        /* For testing
+         //For testing
         Intent intent = new Intent(LobbyRoom.this, PointsView.class);
         startActivity(intent);
-         */
+
     }
 }
