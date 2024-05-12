@@ -55,11 +55,7 @@ public class LobbyRoom extends AppCompatActivity {
         //For testing
         Intent intent = new Intent(LobbyRoom.this, PointsView.class);
         startActivity(intent);
+
     }
-
-
-
-
-
 
 }
