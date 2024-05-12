@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -27,7 +28,7 @@ public class CardFragment extends Fragment {
 
     boolean clickable;
 
-
+    private static SecureRandom secureRandom = new SecureRandom();
     public static CardFragment newInstance(String cardName, int cardWidth, int leftMargin, float rotation) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
@@ -78,7 +79,7 @@ public class CardFragment extends Fragment {
         view.setTranslationY(300f);
 
         String color = "#00000000";
-        if (Math.random() > 0.8f) {
+        if (secureRandom.nextDouble() > 0.8f) {
             color = "#70FF0000";
         }
         View overlay = view.findViewById(R.id.redOverlay);

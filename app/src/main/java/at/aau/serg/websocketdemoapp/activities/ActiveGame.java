@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
 
+import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,9 +118,11 @@ public class ActiveGame extends AppCompatActivity {
 
     //test method
     private String getRandomCardName() {
+        SecureRandom secureRandom = new SecureRandom();
         String[] colors = new String[]{"card_blue", "card_red", "card_yellow", "card_green", "card_purple"};
-        int i = (int) Math.round(Math.random() * 4);
-        return colors[i] + Math.round(Math.random() * 11 + 1);
+        int i = secureRandom.nextInt(colors.length);
+        int number = secureRandom.nextInt(11) + 1;
+        return colors[i] + number;
     }
 
     private int getDeviceWidthPx() {
