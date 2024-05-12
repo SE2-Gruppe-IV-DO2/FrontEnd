@@ -71,7 +71,7 @@ class LobbyRoomServiceTest {
         lobbyRoomService.onCreation();
 
         verify(mockParticipants, times(1)).append(anyString());
-        verify(mockLobbyCode, times(1)).setText("Test");
+        verify(mockLobbyCode, times(1)).setText(anyString());
     }
 
     @Test

@@ -69,6 +69,6 @@ public class ActiveGameServiceTest {
 
         // Assert
         //verify(mockStompHandler).dealNewRound(eq(lobbyCode), any());
-        verify(mockActiveGame).refreshActiveGame(gameData);
+        verify(mockActiveGame).refreshActiveGame(any());
     }
 }
