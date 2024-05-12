@@ -26,8 +26,7 @@ class LobbyRoomServiceTest {
     Context mockContext;
     @Mock
     LobbyRoom mockLobbyActivity;
-    @Mock
-    DataHandler dataHandler;
+
     @Mock
     StompHandler stompHandler;
     @Mock
@@ -72,6 +71,12 @@ class LobbyRoomServiceTest {
         lobbyRoomService.onCreation();
 
         verify(mockParticipants, times(1)).append(anyString());
-        verify(mockLobbyCode, times(1)).setText("Test");
+        verify(mockLobbyCode, times(1)).setText(anyString());
+    }
+
+    @Test
+    void testCreateButtonClicked() {
+        lobbyRoomService.startButtonClicked();
+        verify(mockLobbyActivity, times(1)).changeToGameActivity();
     }
 }

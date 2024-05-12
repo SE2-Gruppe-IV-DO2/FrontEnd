@@ -29,6 +29,9 @@
             android:name=".activities.LobbyRoom"
             android:exported="false" />
         <activity
+            android:name=".activities.ActiveGame"
+            android:exported="false" />
+        <activity
             android:name=".activities.MainActivity"
             android:exported="true">
 

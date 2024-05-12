@@ -27,9 +27,7 @@ public class LobbyRoomService {
         lobbyActivity.changeToMainActivity();
     }
 
-    public void startButtonClicked() {
-        lobbyActivity.changeToGameActivity();
-    }
+    public void startButtonClicked() {lobbyActivity.changeToGameActivity();}
 
     private void setPlayerName() {
         participants.append(dataHandler.getPlayerName() + "\n");
