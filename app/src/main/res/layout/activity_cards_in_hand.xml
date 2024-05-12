@@ -87,4 +87,17 @@
         android:rotation="315"
         app:srcCompat="@drawable/card_back" />
 
+    <Button
+        android:id="@+id/pointsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="279dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="7dp"
+        android:text="Points View"
+        app:layout_constraintBottom_toTopOf="@+id/playedCardPlayer2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

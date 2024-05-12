@@ -108,7 +108,7 @@ public class StompHandler {
         String jsonPayload = gson.toJson(payload);
 
         stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
-            Log.d(TAG_Received, topicMessage.getPayload());
+            Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });

@@ -51,7 +51,7 @@ public class PointsView extends AppCompatActivity {
     }
 
     public void backButtonClicked() {
-        Intent intent = new Intent(PointsView.this, LobbyRoom.class);
+        Intent intent = new Intent(PointsView.this, ActiveGame.class);
         startActivity(intent);
     }
 

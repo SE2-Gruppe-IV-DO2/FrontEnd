@@ -1,11 +1,13 @@
 package at.aau.serg.websocketdemoapp.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -46,6 +48,8 @@ public class ActiveGame extends AppCompatActivity {
 
         activeGameService = new ActiveGameService(this, ActiveGame.this);
         activeGameService.getData();
+        Button pointView = findViewById(R.id.pointsView);
+        pointView.setOnClickListener(v -> pointViewClicked());
     }
 
     public void refreshActiveGame(String gameData) {
@@ -134,5 +138,10 @@ public class ActiveGame extends AppCompatActivity {
 
     public void onCardClicked(String color, int value) {
         // Handle card click
+    }
+
+    public void pointViewClicked() {
+        Intent intent = new Intent(ActiveGame.this, PointsView.class);
+        startActivity(intent);
     }
 }
