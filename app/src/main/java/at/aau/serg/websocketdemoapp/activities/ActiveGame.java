@@ -95,7 +95,7 @@ public class ActiveGame extends AppCompatActivity {
 
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed(String gameDataString) {
-        GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
+        //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
 
         // sample code to display played cards
 
@@ -136,10 +136,10 @@ public class ActiveGame extends AppCompatActivity {
         return displayMetrics.widthPixels;
     }
 
-    public void onCardClicked(String color, int value) {
+    /*public void onCardClicked(String color, int value) {
         // Handle card click
     }
-
+    */
     public void pointViewClicked() {
         Intent intent = new Intent(ActiveGame.this, PointsView.class);
         startActivity(intent);

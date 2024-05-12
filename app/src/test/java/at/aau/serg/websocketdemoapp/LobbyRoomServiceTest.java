@@ -26,8 +26,7 @@ class LobbyRoomServiceTest {
     Context mockContext;
     @Mock
     LobbyRoom mockLobbyActivity;
-    @Mock
-    DataHandler dataHandler;
+
     @Mock
     StompHandler stompHandler;
     @Mock
