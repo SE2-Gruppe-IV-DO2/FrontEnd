@@ -19,8 +19,8 @@ public class StompHandler {
     private final StompClient stompClient;
     private final Gson gson = new Gson();
     private static StompHandler instance;
-    private static final String TAG_Network = "Network";
-    private static final String TAG_Received = "Received";
+    private static final String TAG_NETWORK = "Network";
+    private static final String TAG_RECEIVED = "Received";
 
     public StompHandler() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,"ws://10.0.2.2:8080/websocket-example-broker");
@@ -39,19 +39,19 @@ public class StompHandler {
             switch (lifecycleEvent.getType()) {
 
                 case OPENED:
-                    Log.d(TAG_Network, "Stomp connection opened");
+                    Log.d(TAG_NETWORK, "Stomp connection opened");
                     break;
 
                 case ERROR:
-                    Log.e(TAG_Network, "Error", lifecycleEvent.getException());
+                    Log.e(TAG_NETWORK, "Error", lifecycleEvent.getException());
                     break;
 
                 case CLOSED:
-                    Log.d(TAG_Network, "Stomp connection closed");
+                    Log.d(TAG_NETWORK, "Stomp connection closed");
                     break;
                     
                 case FAILED_SERVER_HEARTBEAT:
-                    Log.d(TAG_Network, "Stomp server heartbeat");
+                    Log.d(TAG_NETWORK, "Stomp server heartbeat");
                     break;
             }
         });
@@ -63,7 +63,7 @@ public class StompHandler {
                 stompClient.connect();
                 setLifecycle();
             } catch (Exception e) {
-                Log.e(TAG_Network, e.getMessage());
+                Log.e(TAG_NETWORK, e.getMessage());
             }
         }
     }
@@ -75,7 +75,7 @@ public class StompHandler {
         String jsonPayload = gson.toJson(payload);
 
         stompClient.topic("/topic/lobby-created").subscribe(topicMessage -> {
-            Log.d(TAG_Received, topicMessage.getPayload());
+            Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String lobbyCode = extractData(topicMessage.getPayload());
             lobbyCodeCallback.accept(lobbyCode);
         });
@@ -95,7 +95,7 @@ public class StompHandler {
         String jsonPayload = gson.toJson(payload);
 
         stompClient.topic("/topic/lobby-joined").subscribe(topicMessage -> {
-            Log.d(TAG_Received, topicMessage.getPayload());
+            Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
@@ -118,7 +118,7 @@ public class StompHandler {
 
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
-                Log.d(TAG_Received, topicMessage.getPayload())
+                Log.d(TAG_RECEIVED, topicMessage.getPayload())
         );
 
         stompClient.send("/app/hello", message).subscribe();
@@ -129,7 +129,7 @@ public class StompHandler {
             try {
                 stompClient.disconnect();
             } catch (Exception e) {
-                Log.e(TAG_Network, e.getMessage());
+                Log.e(TAG_NETWORK, e.getMessage());
             }
         }
     }

@@ -16,6 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.PointsView"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".activities.Tutorial"
             android:exported="false" />
         <activity
@@ -39,4 +43,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

@@ -64,7 +64,7 @@ class LobbyRoomServiceTest {
     @Test
     void testBackButtonClicked() {
         lobbyRoomService.backButtonClicked();
-        verify(mockLobbyActivity, times(1)).changeToStartActivity();
+        verify(mockLobbyActivity, times(1)).changeToMainActivity();
     }
 
     @Test
