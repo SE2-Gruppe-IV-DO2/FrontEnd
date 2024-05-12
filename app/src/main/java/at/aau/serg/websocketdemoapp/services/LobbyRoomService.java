@@ -24,10 +24,10 @@ public class LobbyRoomService {
     }
 
     public void backButtonClicked() {
-        lobbyActivity.changeToStartActivity();
+        lobbyActivity.changeToMainActivity();
     }
 
-    public void startGameButtonClicked() {lobbyActivity.changeToGameActivity();}
+    public void startButtonClicked() {lobbyActivity.changeToGameActivity();}
 
     private void setPlayerName() {
         participants.append(dataHandler.getPlayerName() + "\n");
