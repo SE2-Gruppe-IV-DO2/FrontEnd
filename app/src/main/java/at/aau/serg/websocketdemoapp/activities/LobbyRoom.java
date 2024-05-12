@@ -35,25 +35,17 @@ public class LobbyRoom extends AppCompatActivity {
         lobbyRoomService = new LobbyRoomService(this, LobbyRoom.this);
         lobbyRoomService.onCreation();
         cancelButton.setOnClickListener(v -> backButtonClicked());
-        startButton.setOnClickListener(v -> startButtonClicked());
+
     }
 
     public void backButtonClicked() {
         lobbyRoomService.backButtonClicked();
     }
 
-    public void startButtonClicked() {
-        lobbyRoomService.startGameButtonClicked();}
-
-    public void changeToStartActivity() {
-        Intent intent = new Intent(LobbyRoom.this, MainActivity.class);
-        startActivity(intent);
-    }
 
 
-    public void changeToGameActivity() {
-        //For testing
-        Intent intent = new Intent(LobbyRoom.this, PointsView.class);
-        startActivity(intent);
-    }
+
+
+
+
 }
