@@ -32,7 +32,7 @@ import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
 
-    private ActiveGameService activeGameService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class ActiveGame extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        ActiveGameService activeGameService;
         activeGameService = new ActiveGameService(this, ActiveGame.this);
         activeGameService.getData();
         Button pointView = findViewById(R.id.pointsView);
