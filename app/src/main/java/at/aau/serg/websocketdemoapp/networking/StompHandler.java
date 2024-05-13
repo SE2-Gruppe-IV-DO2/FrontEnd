@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -114,6 +115,22 @@ public class StompHandler {
         });
 
         stompClient.send("/app/deal_new_round", jsonPayload).subscribe();
+    }
+
+    public void initGameStartSubscription(LobbyRoom roomActivity) {
+        stompClient.topic("/topic/game_for_lobby_started").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+
+            roomActivity.changeToGameActivity();
+        });
+    }
+
+    public void startGameForLobby(String lobbyCode) {
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("lobbyCode", lobbyCode);
+        String jsonPayload = gson.toJson(payload);
+
+        stompClient.send("/app/start_game_for_lobby", jsonPayload).subscribe();
     }
 
     public void helloMessage(String message) {
