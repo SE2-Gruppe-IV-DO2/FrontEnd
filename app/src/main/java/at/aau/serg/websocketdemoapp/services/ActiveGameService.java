@@ -6,8 +6,6 @@ import android.util.Log;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
-import lombok.Data;
-import lombok.Getter;
 
 public class ActiveGameService {
     private final DataHandler dataHandler;

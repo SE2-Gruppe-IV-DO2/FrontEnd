@@ -72,6 +72,16 @@ public class ActiveGameServiceTest {
     }
 
     @Test
+    public void testDefaultConstructor() {
+        // Act
+        activeGameService = new ActiveGameService(mockContext, mockActiveGame);
+        activeGameService.getData();
+
+        // Assert
+        verify(mockActiveGame).refreshActiveGame(any());
+    }
+
+    @Test
     public void getData_CallsDealNewRoundAndRefreshActiveGame() {
         // Act
         activeGameService.getData();
