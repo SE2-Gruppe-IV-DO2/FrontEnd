@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -77,6 +78,6 @@ class LobbyRoomServiceTest {
     @Test
     void testCreateButtonClicked() {
         lobbyRoomService.startButtonClicked();
-        verify(mockLobbyActivity, times(1)).changeToGameActivity();
+        verify(stompHandler, times(1)).startGameForLobby(anyString());
     }
 }

@@ -29,13 +29,14 @@ public class LobbyRoom extends AppCompatActivity {
             return insets;
         });
         Button cancelButton = findViewById(R.id.buttonBreak);
-        Button startButton = findViewById(R.id.buttonStart);
 
         participants = findViewById(R.id.participants);
         lobbyRoomService = new LobbyRoomService(this, LobbyRoom.this);
         lobbyRoomService.onCreation();
         cancelButton.setOnClickListener(v -> backButtonClicked());
-        startButton.setOnClickListener(v -> startButtonClicked());
+
+        Button startGameButton = findViewById(R.id.buttonStart);
+        startGameButton.setOnClickListener(v -> startButtonClicked());
     }
 
     public void backButtonClicked() {
