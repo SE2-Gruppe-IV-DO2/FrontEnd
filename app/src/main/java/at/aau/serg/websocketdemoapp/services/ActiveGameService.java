@@ -6,12 +6,15 @@ import android.util.Log;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
+import lombok.Data;
+import lombok.Getter;
 
 public class ActiveGameService {
     private final DataHandler dataHandler;
     private final ActiveGame activeGame;
-    StompHandler stompHandler;
+    private final StompHandler stompHandler;
     private static final String TAG = "Stomp";
+
     private boolean isCurrentlyActivePlayer = false;
 
     public ActiveGameService(Context context, ActiveGame activeGame) {
@@ -19,7 +22,15 @@ public class ActiveGameService {
         this.activeGame = activeGame;
         stompHandler = StompHandler.getInstance();
 
-        subscribeForPlayerChangedEvent(dataHandler.getPlayerID());
+        subscribeForPlayerChangedEvent();
+    }
+
+    public ActiveGameService(ActiveGame activeGame, DataHandler dataHandler) {
+        this.dataHandler = dataHandler;
+        this.activeGame = activeGame;
+        stompHandler = StompHandler.getInstance();
+
+        subscribeForPlayerChangedEvent();
     }
 
     public void getData() {
@@ -30,19 +41,24 @@ public class ActiveGameService {
         activeGame.refreshActiveGame(dataHandler.getGameData());
     }
 
-    private void subscribeForPlayerChangedEvent(String playerId) {
+    private void subscribeForPlayerChangedEvent() {
         stompHandler.subscribeForPlayerChangedEvent(serverResponse -> {
-            if (playerId.equals(serverResponse)) {
-                Log.d("SUBSCRIBE", "IS ACTIVE PLAYER");
-                isCurrentlyActivePlayer = true;
-                activeGame.updateActivePlayerInformation(dataHandler.getPlayerName());
-            }
-            else {
-                Log.d("SUBSCRIBE", "NOT LONGER ACTIVE PLAYER");
-                isCurrentlyActivePlayer = false;
-                activeGame.updateActivePlayerInformation("OTHER_PLAYER_NAME");
-            }
+            setActivePlayer(serverResponse);
         });
     }
 
+    public void setActivePlayer(String activePlayerId) {
+        if (dataHandler.getPlayerID().equals(activePlayerId)) {
+            isCurrentlyActivePlayer = true;
+            activeGame.updateActivePlayerInformation(dataHandler.getPlayerName());
+        }
+        else {
+            isCurrentlyActivePlayer = false;
+            activeGame.updateActivePlayerInformation("OTHER_PLAYER_NAME");
+        }
+    }
+
+    public boolean isCurrentlyActivePlayer() {
+        return isCurrentlyActivePlayer;
+    }
 }

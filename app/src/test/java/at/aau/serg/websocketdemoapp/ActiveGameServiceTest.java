@@ -1,5 +1,7 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,33 +60,25 @@ public class ActiveGameServiceTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
 
+        when(sharedPreferences.edit()).thenReturn(mock(SharedPreferences.Editor.class));
+        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
+
         when(mockDataHandler.getPlayerID()).thenReturn(PLAYER_ID);
         when(mockDataHandler.getLobbyCode()).thenReturn(LOBBY_CODE);
         when(mockDataHandler.getPlayerName()).thenReturn(PLAYER_NAME);
         when(mockDataHandler.getGameData()).thenReturn(GAME_DATA);
 
-        when(sharedPreferences.edit()).thenReturn(mock(SharedPreferences.Editor.class));
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
-        when(sharedPreferences.getString(anyString(), anyString())).thenReturn("testGameData");
+        activeGameService = new ActiveGameService(mockActiveGame, mockDataHandler);
     }
 
     @Test
     public void getData_CallsDealNewRoundAndRefreshActiveGame() {
         // Act
-        activeGameService = new ActiveGameService(mockContext, mockActiveGame);
         activeGameService.getData();
 
         // Assert
         //verify(mockStompHandler).dealNewRound(eq(LOBBY_CODE), eq(PLAYER_ID), any());
         verify(mockActiveGame).refreshActiveGame(any());
-    }
-
-    @Test
-    public void testSubscribeForPlayerChangedEvent_PlayerIsActive() {
-        activeGameService = new ActiveGameService(mockContext, mockActiveGame);
-
-        // Verify that subscribeForPlayerChangedEvent is called once
-        //verify(mockStompHandler, times(1)).subscribeForPlayerChangedEvent(any());
     }
 
     @Test
@@ -96,10 +90,9 @@ public class ActiveGameServiceTest {
             return null;
         }).when(mockStompHandler).subscribeForPlayerChangedEvent(any());
 
-        activeGameService = new ActiveGameService(mockContext, mockActiveGame);
-
         // Assert
         //verify(mockActiveGame, times(1)).updateActivePlayerInformation(PLAYER_NAME);
+        //assert (activeGameService.isCurrentlyActivePlayer());
     }
 
     @Test
@@ -111,9 +104,22 @@ public class ActiveGameServiceTest {
             return null;
         }).when(mockStompHandler).subscribeForPlayerChangedEvent(any());
 
-        activeGameService = new ActiveGameService(mockContext, mockActiveGame);
-
         // Assert
-        //verify(mockStompHandler, times(1)).subscribeForPlayerChangedEvent("OTHER_PLAYER_NAME");
+        assert (!activeGameService.isCurrentlyActivePlayer());
+
+    }
+
+    @Test
+    public void testSetActivePlayer_ActivePlayer() {
+        activeGameService.setActivePlayer(PLAYER_ID);
+
+        assertTrue(activeGameService.isCurrentlyActivePlayer());
+    }
+
+    @Test
+    public void testSetActivePlayer_InactivePlayer() {
+        activeGameService.setActivePlayer("player2");
+
+        assertFalse(activeGameService.isCurrentlyActivePlayer());
     }
 }
