@@ -1,10 +1,10 @@
 package at.aau.serg.websocketdemoapp.dto;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class GameData {
@@ -16,7 +16,14 @@ public class GameData {
     public static class Card {
         String imgPath;
         int value;
-        // ...
+        String color;
+    }
+
+    public void parseJsonString(String jsonString) {
+        Gson gson = new Gson();
+        GameData gameData = gson.fromJson(jsonString, GameData.class);
+        this.cardList = gameData.getCardList();
+        this.cardsPlayed = gameData.getCardsPlayed();
     }
 }
 

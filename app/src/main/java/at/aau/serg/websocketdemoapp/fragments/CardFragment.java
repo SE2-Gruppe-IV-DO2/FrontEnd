@@ -5,18 +5,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import java.security.SecureRandom;
-import java.util.Objects;
 
 import at.aau.serg.websocketdemoapp.R;
 
@@ -25,6 +25,8 @@ public class CardFragment extends Fragment {
     int cardWidth;
     int leftMargin;
     float rotation;
+
+    GestureDetector gestureDetector;
 
     boolean clickable;
 
@@ -62,12 +64,24 @@ public class CardFragment extends Fragment {
         if (bundle != null){
             iv.setImageResource(getResources().getIdentifier(cardName, "drawable", requireContext().getPackageName()));
         }
-        // Initialize UI elements and set click listener
-        view.setOnClickListener(new View.OnClickListener() {
+
+        gestureDetector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public void onClick(View v) {
-                // Handle card click
-                Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (Math.abs(velocityX) < Math.abs(velocityY)) {
+                    if (velocityY < 0) {
+                        Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return super.onFling(e1, e2, velocityX, velocityY);
+            }
+        });
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
             }
         });
 

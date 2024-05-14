@@ -18,22 +18,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.gson.Gson;
-
 import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

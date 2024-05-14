@@ -1,7 +1,6 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -60,5 +59,6 @@ public class LobbyRoomService {
         stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
         });
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
+
     }
 }
