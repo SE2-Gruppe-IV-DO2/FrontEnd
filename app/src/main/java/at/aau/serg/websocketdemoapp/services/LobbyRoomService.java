@@ -1,7 +1,6 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -22,11 +21,15 @@ public class LobbyRoomService {
         this.lobbyActivity = activity;
         participants = lobbyActivity.findViewById(R.id.participants);
         lobbyCode = lobbyActivity.findViewById(R.id.lobbyCode);
+
+        initGameStartSubscription();
     }
 
     public void backButtonClicked() {
-        lobbyActivity.changeToStartActivity();
+        lobbyActivity.changeToMainActivity();
     }
+
+    public void startButtonClicked() {startGameForLobby();}
 
     private void setPlayerName() {
         participants.append(dataHandler.getPlayerName() + "\n");
@@ -44,6 +47,19 @@ public class LobbyRoomService {
 
     public void setStompHandler(StompHandler stompHandler) {
         this.stompHandler = stompHandler;
+    }
+
+    public void initGameStartSubscription() {
+        this.stompHandler.initGameStartSubscription(this.lobbyActivity);
+    }
+
+    public void startGameForLobby() {
+        // TODO: Remove this! Fügt 2 virtuelle Spieler zur Lobby um starten zu können
+        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
+        });
+        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
+        });
+        this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 
     private void subscribeForPlayerChangedEvent() {

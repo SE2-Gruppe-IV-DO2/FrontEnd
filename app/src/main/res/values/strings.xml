@@ -21,4 +21,12 @@
     <string name="tutorial3" translatable="false">tutorial3</string>
     <string name="tutorial4" translatable="false">tutorial4</string>
     <string name="tutorial2" translatable="false">tutorial2</string>
+    <string name="back">Back</string>
+    <string name="tafel_der_dom_nen">Table of Domains</string>
+    <string name="points_view">Points View</string>
+    <string name="playedcard1" translatable="false">playedcard1</string>
+    <string name="playedcard5" translatable="false">playedcard5</string>
+    <string name="playedcard4" translatable="false">playedcard4</string>
+    <string name="playedcard3" translatable="false">playedcard3</string>
+    <string name="playedcard2" translatable="false">playedcard2</string>
 </resources>

@@ -15,4 +15,7 @@
     <string name="cancel2">Abbruch</string>
     <string name="enter_lobby_with_qr_code">Lobby mit QR-Code beitreten</string>
     <string name="enter_lobby_with_code">Lobby mit Code beitreten</string>
+    <string name="back">Zurück</string>
+    <string name="tafel_der_dom_nen">Tafel der Domänen</string>
+    <string name="points_view">Punkteuebersicht</string>
 </resources>
