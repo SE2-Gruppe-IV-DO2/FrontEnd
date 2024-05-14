@@ -144,4 +144,9 @@ public class ActiveGame extends AppCompatActivity {
         Intent intent = new Intent(ActiveGame.this, PointsView.class);
         startActivity(intent);
     }
+
+    public void updateActivePlayerInformation(String activePlayerName) {
+        //TODO: Do in other issue!
+
+    }
 }
