@@ -12,6 +12,11 @@ import at.aau.serg.websocketdemoapp.networking.StompHandler;
 public class LobbyRoomService {
     private final LobbyRoom lobbyActivity;
     private StompHandler stompHandler;
+
+    public TextView getParticipants() {
+        return participants;
+    }
+
     private final TextView participants;
     private final DataHandler dataHandler;
     private final TextView lobbyCode;
@@ -34,7 +39,7 @@ public class LobbyRoomService {
     public void startButtonClicked() {this.startGame();}
 
     private void setPlayerName() {
-        participants.append(dataHandler.getPlayerName() + "\n");
+        addPlayerNameToLobby(dataHandler.getPlayerName());
     }
 
     public void setLobbyCode() {
@@ -54,12 +59,13 @@ public class LobbyRoomService {
         this.stompHandler.initGameStartSubscription(this.lobbyActivity);
     }
 
-    public void initPlayerJoinedLobbySubscription() {
-        Log.d("JOIN", "boin bound");
-        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
-            participants.append(serverResponse + "\n");
-            Log.d("JOIN", "serverResponse:" + serverResponse);
+    public void addPlayerNameToLobby(String playerName) {
+        participants.append(playerName + "\n");
+    }
 
+    public void initPlayerJoinedLobbySubscription() {
+        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
+            addPlayerNameToLobby(serverResponse);
         });
     }
 

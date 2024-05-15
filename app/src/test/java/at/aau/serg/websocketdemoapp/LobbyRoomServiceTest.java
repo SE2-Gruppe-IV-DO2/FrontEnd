@@ -86,4 +86,14 @@ class LobbyRoomServiceTest {
         lobbyRoomService.startButtonClicked();
         verify(stompHandler, times(1)).startGameForLobby(any());
     }
+
+    @Test
+    public void addPlayerNameToLobby_ShouldAppendNameWithNewLine() {
+        String playerName = "TestPlayer";
+        when(lobbyRoomService.getParticipants().getText()).thenReturn(new StringBuilder());
+
+        lobbyRoomService.addPlayerNameToLobby(playerName);
+
+        verify(lobbyRoomService.getParticipants()).append(playerName + "\n");
+    }
 }
