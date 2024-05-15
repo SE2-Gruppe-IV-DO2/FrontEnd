@@ -78,12 +78,12 @@ class LobbyRoomServiceTest {
         lobbyRoomService.onCreation();
 
         verify(mockParticipants, times(1)).append(anyString());
-        verify(mockLobbyCode, times(1)).setText(anyString());
+        verify(mockLobbyCode, times(1)).setText(any());
     }
 
     @Test
     void testCreateButtonClicked() {
         lobbyRoomService.startButtonClicked();
-        verify(stompHandler, times(1)).startGameForLobby(anyString());
+        verify(stompHandler, times(1)).startGameForLobby(any());
     }
 }
