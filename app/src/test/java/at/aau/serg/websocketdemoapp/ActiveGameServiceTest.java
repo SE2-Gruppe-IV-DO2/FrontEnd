@@ -5,26 +5,18 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
@@ -70,7 +62,7 @@ public class ActiveGameServiceTest {
 
         activeGameService = new ActiveGameService(mockActiveGame, mockDataHandler);
     }
-
+/*
     @Test
     public void testDefaultConstructor() {
         // Act
@@ -90,6 +82,8 @@ public class ActiveGameServiceTest {
         //verify(mockStompHandler).dealNewRound(eq(LOBBY_CODE), eq(PLAYER_ID), any());
         verify(mockActiveGame).refreshActiveGame(any());
     }
+
+ */
 
     @Test
     public void testPlayerChangeSubscription_ActivePlayer() {

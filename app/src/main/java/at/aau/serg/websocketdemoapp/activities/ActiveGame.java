@@ -20,16 +20,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
     private GameData gameData;
+    private final DataHandler dataHandler = DataHandler.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +50,12 @@ public class ActiveGame extends AppCompatActivity {
         pointView.setOnClickListener(v -> pointViewClicked());
     }
 
-    public void refreshActiveGame(String gameData) {
-        this.displayCardsInHand(gameData);
+    public void refreshActiveGame() {
+        this.displayCardsInHand();
         this.displayCardsPlayed();
     }
 
-    public void displayCardsInHand(String gameDataString) {
+    public void displayCardsInHand() {
 
         // todo: handle gameData and remove manual creation of card list
 
@@ -68,26 +68,25 @@ public class ActiveGame extends AppCompatActivity {
         cards = cards.stream().sorted().collect(Collectors.toList());
          */
 
-        gameData.parseJsonString(gameDataString);
-        List<String> cards = gameData.getCardList().stream().map(Object::toString).collect(Collectors.toList());
+        gameData.parseJsonString(dataHandler.getGameData());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         FrameLayout container = findViewById(R.id.cardsInHand);
         int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                (-2 * cards.size() + 65), getResources().getDisplayMetrics());
+                (-2 * gameData.getCardList().size() + 65), getResources().getDisplayMetrics());
 
         int cardWidthPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 120, getResources().getDisplayMetrics());
         int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2;
 
         // display cards
-        for (int c = 1; c <= cards.size(); c++) {
+        for (int c = 1; c <= gameData.getCardList().size(); c++) {
             // Implement this method to get random color
-            int marginLeft = midPoint + (c - Math.round(cards.size() / 2f)) * overlapPx;
-            float rotation = (c - Math.round(cards.size() / 2f)) * 0.75f;
+            int marginLeft = midPoint + (c - Math.round(gameData.getCardList().size() / 2f)) * overlapPx;
+            float rotation = (c - Math.round(gameData.getCardList().size() / 2f)) * 0.75f;
             CardFragment cardFragment = CardFragment
-                    .newInstance(cards.get(c-1), cardWidthPx, marginLeft, rotation);
+                    .newInstance(gameData.getCardList().get(c-1).toString(), cardWidthPx, marginLeft, rotation);
             transaction.add(container.getId(), cardFragment, "card_" + (c));
         }
         transaction.commit();

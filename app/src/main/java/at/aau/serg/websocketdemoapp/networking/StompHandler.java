@@ -2,12 +2,14 @@ package at.aau.serg.websocketdemoapp.networking;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -19,14 +21,15 @@ public class StompHandler {
      */
     private final StompClient stompClient;
     private final Gson gson = new Gson();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
-    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    //private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,actualServerUrl);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,localServerUrl);
         connectToServer();
     }
 
@@ -105,16 +108,18 @@ public class StompHandler {
 
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
-    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) {
-        HashMap<String, String> payload = new HashMap<>();
-        payload.put("lobbyCode", lobbyCode);
-        payload.put("userID", userID);
 
-        String jsonPayload = gson.toJson(payload);
+    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) throws Exception{
+        DealRoundRequest dealRoundRequest = new DealRoundRequest();
+        dealRoundRequest.setLobbyCode(lobbyCode);
+        dealRoundRequest.setUserID(userID);
+
+        String jsonPayload = objectMapper.writeValueAsString(dealRoundRequest);
 
         stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
+            Log.d("DealRound", data);
             dataCallback.accept(data);
         });
 

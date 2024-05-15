@@ -71,6 +71,7 @@ public class CardFragment extends Fragment {
                 if (Math.abs(velocityX) < Math.abs(velocityY)) {
                     if (velocityY < 0) {
                         Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
+
                     }
                 }
                 return super.onFling(e1, e2, velocityX, velocityY);

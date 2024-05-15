@@ -3,7 +3,6 @@ package at.aau.serg.websocketdemoapp.dto;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -24,11 +23,16 @@ public class GameData {
     }
 
     public void parseJsonString(String jsonString) {
+        HandCardsRequest handCardsRequest;
         try {
-            JavaType cardListType = objectMapper.getTypeFactory().constructCollectionType(List.class, Card.class);
-            this.cardList = objectMapper.readValue(jsonString, cardListType);
+            handCardsRequest = objectMapper.readValue(jsonString, HandCardsRequest.class);
         } catch (JsonProcessingException e) {
-            Log.e("Parse Error", String.valueOf(e));
+            throw new RuntimeException(e);
+        }
+        if (handCardsRequest != null) {
+            cardList = handCardsRequest.getHandCards();
+        } else {
+            Log.d("JSON PARSE", "Passed String was empty");
         }
     }
 }
