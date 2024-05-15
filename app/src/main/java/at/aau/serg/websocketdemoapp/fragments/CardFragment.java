@@ -19,18 +19,21 @@ import androidx.fragment.app.Fragment;
 import java.security.SecureRandom;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.helper.FlingListener;
 
 public class CardFragment extends Fragment {
     private String cardName;
     int cardWidth;
     int leftMargin;
     float rotation;
+    private FlingListener flingListener;
 
     GestureDetector gestureDetector;
 
     boolean clickable;
 
     private static SecureRandom secureRandom = new SecureRandom();
+
     public static CardFragment newInstance(String cardName, int cardWidth, int leftMargin, float rotation) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
@@ -40,6 +43,10 @@ public class CardFragment extends Fragment {
         args.putFloat("rotation", rotation);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setFlingListener(FlingListener listener) {
+        this.flingListener = listener;
     }
 
     @Override
@@ -70,8 +77,8 @@ public class CardFragment extends Fragment {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (Math.abs(velocityX) < Math.abs(velocityY)) {
                     if (velocityY < 0) {
+                        handleFlingAction(cardName);
                         Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
-
                     }
                 }
                 return super.onFling(e1, e2, velocityX, velocityY);
@@ -103,5 +110,11 @@ public class CardFragment extends Fragment {
         overlay.setBackgroundColor(Color.parseColor(color));
 
         return view;
+    }
+
+    private void handleFlingAction(String cardName) {
+        if (flingListener != null) {
+            flingListener.onCardFling(cardName);
+        }
     }
 }

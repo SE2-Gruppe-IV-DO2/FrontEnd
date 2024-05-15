@@ -13,16 +13,14 @@ import lombok.Data;
 
 @Data
 public class GameData {
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private List<Card> cardList;
     private List<Card> cardsPlayed;
 
-    public GameData() {
-        objectMapper = new ObjectMapper();
-        cardsPlayed = new ArrayList<>();
-    }
-
     public void parseJsonString(String jsonString) {
+        Log.d("JSON", jsonString);
+        cardList = new ArrayList<>();
+        cardsPlayed = new ArrayList<>();
         HandCardsRequest handCardsRequest;
         try {
             handCardsRequest = objectMapper.readValue(jsonString, HandCardsRequest.class);
@@ -34,6 +32,16 @@ public class GameData {
         } else {
             Log.d("JSON PARSE", "Passed String was empty");
         }
+    }
+
+    public Card findCardByCardName(String cardName) {
+        Card card = null;
+        for (Card c : cardList) {
+            if(c.toString().equals(cardName)) {
+                card = c;
+            }
+        }
+        return card;
     }
 }
 

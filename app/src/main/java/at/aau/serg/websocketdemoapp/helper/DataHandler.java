@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class DataHandler {
     private final SharedPreferences sharedPreferences;
@@ -51,7 +50,6 @@ public class DataHandler {
 
     public void setGameData(String data) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Log.d("Game Data", data);
         editor.putString("gameData", data);
         editor.apply();
     }

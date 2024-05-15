@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -24,12 +25,14 @@ import java.security.SecureRandom;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
+import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
     private GameData gameData;
     private final DataHandler dataHandler = DataHandler.getInstance(this);
+    private ActiveGameService activeGameService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,7 @@ public class ActiveGame extends AppCompatActivity {
             return insets;
         });
         gameData = new GameData();
-        ActiveGameService activeGameService;
-        activeGameService = new ActiveGameService(this, ActiveGame.this);
+        activeGameService = new ActiveGameService(this, ActiveGame.this, gameData);
         activeGameService.getData();
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
@@ -56,19 +58,11 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void displayCardsInHand() {
-
         // todo: handle gameData and remove manual creation of card list
 
-        // temporary adding of cards
-        /*
-        List<String> cards = new LinkedList<>();
-        for (int i = 1; i <= 15; i++) {
-            cards.add(getRandomCardName());
+        if (gameData.getCardList() == null) {
+            gameData.parseJsonString(dataHandler.getGameData());
         }
-        cards = cards.stream().sorted().collect(Collectors.toList());
-         */
-
-        gameData.parseJsonString(dataHandler.getGameData());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -80,6 +74,8 @@ public class ActiveGame extends AppCompatActivity {
                 120, getResources().getDisplayMetrics());
         int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2;
 
+        container.removeAllViews();
+
         // display cards
         for (int c = 1; c <= gameData.getCardList().size(); c++) {
             // Implement this method to get random color
@@ -87,6 +83,7 @@ public class ActiveGame extends AppCompatActivity {
             float rotation = (c - Math.round(gameData.getCardList().size() / 2f)) * 0.75f;
             CardFragment cardFragment = CardFragment
                     .newInstance(gameData.getCardList().get(c-1).toString(), cardWidthPx, marginLeft, rotation);
+            cardFragment.setFlingListener(activeGameService);
             transaction.add(container.getId(), cardFragment, "card_" + (c));
         }
         transaction.commit();
@@ -104,17 +101,17 @@ public class ActiveGame extends AppCompatActivity {
         /*// find playerPosition
 
         }*/
-
+        int playerPosition = 1;
         // played Card ids
         int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
                 R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
 
-        /*// set card data to imageview
-        for (int i = 1; i <= gameData.getCardsPlayed().size(); i++) {
-            Card card = gameData.getCardsPlayed().get(i - 1);
-            ImageView iv = findViewById(imageViewIds[(playerPosition - i) % imageViewIds.length]);
-            iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable"));
-        }*/
+        // set card data to imageview
+        if (gameData.getCardsPlayed().size() > 0) {
+            Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
+            ImageView iv = findViewById(imageViewIds[(playerPosition)]);
+            iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable", this.getPackageName()));
+        }
 
     }
 

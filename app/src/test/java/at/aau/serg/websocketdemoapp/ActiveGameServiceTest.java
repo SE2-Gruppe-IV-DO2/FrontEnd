@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
+import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
@@ -37,6 +38,9 @@ public class ActiveGameServiceTest {
 
     @Mock
     SharedPreferences sharedPreferences;
+
+    @Mock
+    GameData mockGameData;
 
     @Mock
     private StompClient stompClient;
@@ -60,7 +64,7 @@ public class ActiveGameServiceTest {
         when(mockDataHandler.getPlayerName()).thenReturn(PLAYER_NAME);
         when(mockDataHandler.getGameData()).thenReturn(GAME_DATA);
 
-        activeGameService = new ActiveGameService(mockActiveGame, mockDataHandler);
+        activeGameService = new ActiveGameService(mockActiveGame, mockDataHandler, mockGameData);
     }
 /*
     @Test

@@ -1,5 +1,7 @@
 package at.aau.serg.websocketdemoapp.helper;
 
+import androidx.annotation.NonNull;
+
 import lombok.Data;
 import lombok.Getter;
 
@@ -29,8 +31,13 @@ public class Card {
         this.imgPath = card.imgPath;
     }
 
+    @NonNull
     @Override
     public String toString() {
+        return "card_" + color + value;
+    }
+
+    public String getName() {
         return "card_" + color + value;
     }
 }
