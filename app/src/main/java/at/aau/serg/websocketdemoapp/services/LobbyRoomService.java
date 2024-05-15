@@ -29,7 +29,7 @@ public class LobbyRoomService {
         lobbyActivity.changeToMainActivity();
     }
 
-    public void startButtonClicked() {startGameForLobby();}
+    public void startButtonClicked() {this.startGame();}
 
     private void setPlayerName() {
         participants.append(dataHandler.getPlayerName() + "\n");
@@ -52,7 +52,7 @@ public class LobbyRoomService {
         this.stompHandler.initGameStartSubscription(this.lobbyActivity);
     }
 
-    public void startGameForLobby() {
+    public void startGame() {
         // TODO: Remove this! Fügt 2 virtuelle Spieler zur Lobby um starten zu können
         stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
         });

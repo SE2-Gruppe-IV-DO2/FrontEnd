@@ -18,4 +18,5 @@
     <string name="back">Zurück</string>
     <string name="tafel_der_dom_nen">Tafel der Domänen</string>
     <string name="points_view">Punkteuebersicht</string>
+    <string name="active_player">Aktiver Spieler:</string>
 </resources>

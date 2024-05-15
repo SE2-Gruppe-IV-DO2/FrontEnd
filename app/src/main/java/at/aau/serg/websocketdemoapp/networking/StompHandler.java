@@ -22,9 +22,11 @@ public class StompHandler {
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
+    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,"ws://10.0.2.2:8080/websocket-example-broker");
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,actualServerUrl);
         connectToServer();
     }
 
@@ -103,10 +105,11 @@ public class StompHandler {
 
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
-    public void dealNewRound(String lobbyCode, String playerID, Consumer<String> dataCallback) {
+    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("lobbyCode", lobbyCode);
-        payload.put("userID", playerID);
+        payload.put("userID", userID);
+
         String jsonPayload = gson.toJson(payload);
 
         stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
@@ -132,6 +135,13 @@ public class StompHandler {
         String jsonPayload = gson.toJson(payload);
 
         stompClient.send("/app/start_game_for_lobby", jsonPayload).subscribe();
+    }
+
+    public void subscribeForPlayerChangedEvent(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/active_player_changed").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
     }
 
     public void playCard(String jsonPayload) {
