@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -146,7 +147,7 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void updateActivePlayerInformation(String activePlayerName) {
-        //TODO: Do in other issue!
-
+        Toast toast = Toast.makeText(this, getString(R.string.active_player) + activePlayerName, Toast.LENGTH_LONG);
+        toast.show();
     }
 }
