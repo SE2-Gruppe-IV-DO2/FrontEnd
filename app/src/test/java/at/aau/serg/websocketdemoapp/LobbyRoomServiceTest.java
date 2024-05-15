@@ -38,6 +38,9 @@ class LobbyRoomServiceTest {
     SharedPreferences sharedPreferences;
     @Mock
     SharedPreferences.Editor editor;
+
+    @Mock
+    DataHandler dataHandler;
     LobbyRoomService lobbyRoomService;
 
     @BeforeEach
@@ -51,6 +54,9 @@ class LobbyRoomServiceTest {
         when(mockLobbyActivity.findViewById(R.id.lobbyCode)).thenReturn(mockLobbyCode);
         when(sharedPreferences.getString(anyString(), anyString())).thenReturn("Test");
 
+        when(dataHandler.getPlayerID()).thenReturn("playerId");
+        when(dataHandler.getPlayerName()).thenReturn("playerName");
+        when(dataHandler.getLobbyCode()).thenReturn("lobbyCode");
 
         lobbyRoomService = new LobbyRoomService(mockContext, mockLobbyActivity);
         lobbyRoomService.setStompHandler(stompHandler);
