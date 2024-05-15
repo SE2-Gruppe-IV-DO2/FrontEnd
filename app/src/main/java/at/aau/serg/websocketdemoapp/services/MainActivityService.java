@@ -32,9 +32,12 @@ public class MainActivityService {
             new Thread(() -> stompHandler.createLobby(dataHandler.getPlayerID(), dataHandler.getPlayerName(), callback -> {
                 dataHandler.setLobbyCode(callback);
                 Log.d(TAG, callback);
+
+                Log.d("LobbyCode", dataHandler.getLobbyCode());
+                mainActivity.changeToCreateActivity();
             })).start();
-            Log.d("LobbyCode", dataHandler.getLobbyCode());
-            mainActivity.changeToCreateActivity();
+            //Log.d("LobbyCode", dataHandler.getLobbyCode());
+            //mainActivity.changeToCreateActivity();
         } else {
             textView.setVisibility(View.VISIBLE);
         }

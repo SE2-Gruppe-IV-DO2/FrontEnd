@@ -22,6 +22,7 @@ public class LobbyRoomService {
         participants = lobbyActivity.findViewById(R.id.participants);
         lobbyCode = lobbyActivity.findViewById(R.id.lobbyCode);
 
+        initPlayerJoinedLobbySubscription();
         initGameStartSubscription();
     }
 
@@ -50,6 +51,12 @@ public class LobbyRoomService {
 
     public void initGameStartSubscription() {
         this.stompHandler.initGameStartSubscription(this.lobbyActivity);
+    }
+
+    public void initPlayerJoinedLobbySubscription() {
+        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
+            participants.append(serverResponse + "\n");
+        });
     }
 
     public void startGame() {
