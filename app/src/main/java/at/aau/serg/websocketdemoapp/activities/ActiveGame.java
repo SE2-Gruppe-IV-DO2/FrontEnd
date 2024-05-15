@@ -147,7 +147,12 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void updateActivePlayerInformation(String activePlayerName) {
-        Toast toast = Toast.makeText(this, getString(R.string.active_player) + activePlayerName, Toast.LENGTH_LONG);
-        toast.show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -54,17 +55,20 @@ public class LobbyRoomService {
     }
 
     public void initPlayerJoinedLobbySubscription() {
+        Log.d("JOIN", "boin bound");
         this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
             participants.append(serverResponse + "\n");
+            Log.d("JOIN", "serverResponse:" + serverResponse);
+
         });
     }
 
     public void startGame() {
         // TODO: Remove this! Fügt 2 virtuelle Spieler zur Lobby um starten zu können
-        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
-        });
-        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
-        });
+        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
+        //});
+        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
+        //});
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 }
