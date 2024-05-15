@@ -27,14 +27,10 @@ public class ActiveGameService {
     }
 
     public void getData() {
-        final String[] cardString = new String[1];
-        new Thread(() -> stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), callback -> {
-            cardString[0] = callback;
-            Log.d(TAG, callback);
-            dataHandler.setGameData(callback);
-        })).start();
-        gameData.parseJsonString(cardString[0]);
-        activeGame.refreshActiveGame(dataHandler.getGameData());
+        stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), callback -> {
+            Log.d("Handcards", callback);
+            activeGame.runOnUiThread(() -> activeGame.refreshActiveGame(callback));
+        });
     }
 
     public void playCard(String color, int value) {

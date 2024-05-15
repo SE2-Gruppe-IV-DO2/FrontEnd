@@ -19,15 +19,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.security.SecureRandom;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
+    private GameData gameData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class ActiveGame extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        gameData = new GameData();
         ActiveGameService activeGameService;
         activeGameService = new ActiveGameService(this, ActiveGame.this);
         activeGameService.getData();
@@ -48,7 +51,7 @@ public class ActiveGame extends AppCompatActivity {
 
     public void refreshActiveGame(String gameData) {
         this.displayCardsInHand(gameData);
-        this.displayCardsPlayed(gameData);
+        this.displayCardsPlayed();
     }
 
     public void displayCardsInHand(String gameDataString) {
@@ -56,14 +59,16 @@ public class ActiveGame extends AppCompatActivity {
         // todo: handle gameData and remove manual creation of card list
 
         // temporary adding of cards
+        /*
         List<String> cards = new LinkedList<>();
         for (int i = 1; i <= 15; i++) {
             cards.add(getRandomCardName());
         }
         cards = cards.stream().sorted().collect(Collectors.toList());
+         */
 
-//        GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
-//        cards = gameData.getCardList().stream().map(Object::toString).collect(Collectors.toList());
+        gameData.parseJsonString(gameDataString);
+        List<String> cards = gameData.getCardList().stream().map(Object::toString).collect(Collectors.toList());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -88,17 +93,16 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     @SuppressLint("DiscouragedApi")
-    public void displayCardsPlayed(String gameDataString) {
+    public void displayCardsPlayed() {
         //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
 
         // sample code to display played cards
 
+       // if (gameData.getCardsPlayed().size() != 0) {
+
+       // }
         /*// find playerPosition
-        int playerPosition = gameData.getCardsPlayed().indexOf(
-                gameData.getCardsPlayed().stream().filter(c -> c.getPlayer().equals(me)).findFirst()
-        );
-        if (playerPosition == -1){
-            playerPosition = gameData.getCardsPlayed().size() + 1;
+
         }*/
 
         // played Card ids
