@@ -29,4 +29,5 @@
     <string name="playedcard4" translatable="false">playedcard4</string>
     <string name="playedcard3" translatable="false">playedcard3</string>
     <string name="playedcard2" translatable="false">playedcard2</string>
+    <string name="active_player">"Active player: "</string>
 </resources>

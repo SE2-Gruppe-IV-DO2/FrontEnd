@@ -65,8 +65,7 @@ class JoinLobbyServiceTest {
         Editable editable = mock(Editable.class);
         when(editable.toString()).thenReturn("12345");
         when(editText.getText()).thenReturn(editable);
-        SharedPreferences.Editor editor = mock(SharedPreferences.Editor.class);
-        when(sharedPreferences.edit()).thenReturn(editor);
+
         joinLobbyService.joinLobbyWithIDClicked();
         verify(joinLobby).changeToLobbyRoomActivity();
     }
