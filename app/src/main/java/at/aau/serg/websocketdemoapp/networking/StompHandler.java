@@ -25,11 +25,11 @@ public class StompHandler {
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
-    //private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,localServerUrl);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
         connectToServer();
     }
 
@@ -149,8 +149,15 @@ public class StompHandler {
         });
     }
 
+    public void subscribeForPlayCard(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/card_played").subscribe(topicMessage ->{
+           String data = extractData(topicMessage.getPayload());
+           dataCallback.accept(data);
+        });
+    }
+
     public void playCard(String jsonPayload) {
-        stompClient.send("/app/play_card", jsonPayload).subscribe();
+        stompClient.send("/app/play_card", jsonPayload);
     }
 
     public void helloMessage(String message) {

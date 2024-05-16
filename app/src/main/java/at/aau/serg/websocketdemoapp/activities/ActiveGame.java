@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -54,7 +55,6 @@ public class ActiveGame extends AppCompatActivity {
 
     public void refreshActiveGame() {
         this.displayCardsInHand();
-        this.displayCardsPlayed();
     }
 
     public void displayCardsInHand() {
@@ -76,9 +76,7 @@ public class ActiveGame extends AppCompatActivity {
 
         container.removeAllViews();
 
-        // display cards
         for (int c = 1; c <= gameData.getCardList().size(); c++) {
-            // Implement this method to get random color
             int marginLeft = midPoint + (c - Math.round(gameData.getCardList().size() / 2f)) * overlapPx;
             float rotation = (c - Math.round(gameData.getCardList().size() / 2f)) * 0.75f;
             CardFragment cardFragment = CardFragment
@@ -91,28 +89,33 @@ public class ActiveGame extends AppCompatActivity {
 
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed() {
+        ImageView view = findViewById(R.id.playedCardPlayerX);
+        Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size());
+        Log.d("DISPLAY CARD", card.toString());
+        view.setImageResource(getResources().getIdentifier(card.getName(), "drawable", this.getPackageName()));
+
         //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
 
         // sample code to display played cards
 
-       // if (gameData.getCardsPlayed().size() != 0) {
-
-       // }
         /*// find playerPosition
-
+        int playerPosition = gameData.getCardsPlayed().indexOf(
+                gameData.getCardsPlayed().stream().filter(c -> c.getPlayer().equals(me)).findFirst()
+        );
+        if (playerPosition == -1){
+            playerPosition = gameData.getCardsPlayed().size() + 1;
         }*/
-        int playerPosition = 1;
+
         // played Card ids
-        int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
-                R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
+        //int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
+          //      R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
 
-        // set card data to imageview
-        if (gameData.getCardsPlayed().size() > 0) {
-            Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
-            ImageView iv = findViewById(imageViewIds[(playerPosition)]);
-            iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable", this.getPackageName()));
-        }
-
+        /*// set card data to imageview
+        for (int i = 1; i <= gameData.getCardsPlayed().size(); i++) {
+            Card card = gameData.getCardsPlayed().get(i - 1);
+            ImageView iv = findViewById(imageViewIds[(playerPosition - i) % imageViewIds.length]);
+            iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable"));
+        }*/
     }
 
     //test method
@@ -131,17 +134,15 @@ public class ActiveGame extends AppCompatActivity {
         return displayMetrics.widthPixels;
     }
 
-    /*public void onCardClicked(String color, int value) {
-        // Handle card click
-    }
-    */
     public void pointViewClicked() {
         Intent intent = new Intent(ActiveGame.this, PointsView.class);
         startActivity(intent);
     }
 
     public void updateActivePlayerInformation(String activePlayerName) {
-        Toast toast = Toast.makeText(this, getString(R.string.active_player) + activePlayerName, Toast.LENGTH_LONG);
-        toast.show();
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(this, getString(R.string.active_player) + activePlayerName, Toast.LENGTH_LONG);
+            toast.show();
+        });
     }
 }

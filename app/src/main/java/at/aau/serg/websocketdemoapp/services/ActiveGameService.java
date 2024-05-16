@@ -3,6 +3,8 @@ package at.aau.serg.websocketdemoapp.services;
 import android.content.Context;
 import android.util.Log;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
@@ -19,8 +21,7 @@ public class ActiveGameService implements FlingListener {
     private final StompHandler stompHandler;
     private static final String TAG = "DealRound";
     private final GameData gameData;
-
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private boolean isCurrentlyActivePlayer = false;
 
     public ActiveGameService(Context context, ActiveGame activeGame, GameData gameData) {
@@ -30,6 +31,7 @@ public class ActiveGameService implements FlingListener {
         this.gameData = gameData;
 
         subscribeForPlayerChangedEvent();
+        subscribeForPlayCardEvent();
     }
 
     public ActiveGameService(ActiveGame activeGame, DataHandler dataHandler, GameData gameData) {
@@ -39,12 +41,13 @@ public class ActiveGameService implements FlingListener {
         this.gameData = gameData;
 
         subscribeForPlayerChangedEvent();
+        subscribeForPlayCardEvent();
     }
 
     @Override
     public void onCardFling(String cardName) {
         Card card = gameData.findCardByCardName(cardName);
-        gameData.getCardsPlayed().add(card);
+        playCard(card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
@@ -62,9 +65,7 @@ public class ActiveGameService implements FlingListener {
     }
 
     private void subscribeForPlayerChangedEvent() {
-        stompHandler.subscribeForPlayerChangedEvent(serverResponse -> {
-            setActivePlayer(serverResponse);
-        });
+        stompHandler.subscribeForPlayerChangedEvent(this::setActivePlayer);
     }
 
     public void setActivePlayer(String activePlayerId) {
@@ -80,6 +81,29 @@ public class ActiveGameService implements FlingListener {
 
     public boolean isCurrentlyActivePlayer() {
         return isCurrentlyActivePlayer;
+    }
+
+    private void subscribeForPlayCardEvent() {
+        stompHandler.subscribeForPlayCard(response -> {
+            Log.d("RECEIVED CARD", response);
+            handlePlayCardResponse(response);
+        });
+    }
+
+    private void handlePlayCardResponse(String playCardJSON) {
+        activeGame.runOnUiThread(() -> {
+            Log.d(TAG, "Handling playCard response");
+            Card card = null;
+            try {
+                card = objectMapper.readValue(playCardJSON, Card.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            gameData.getCardsPlayed().add(card);
+            Log.d(TAG, "Displaying played cards");
+            activeGame.displayCardsPlayed();
+            subscribeForPlayCardEvent();
+        });
     }
 
     public void playCard(String color, int value) {

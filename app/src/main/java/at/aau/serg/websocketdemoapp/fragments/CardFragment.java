@@ -13,26 +13,20 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-
-import java.security.SecureRandom;
-
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
+import lombok.Setter;
 
 public class CardFragment extends Fragment {
     private String cardName;
     int cardWidth;
     int leftMargin;
     float rotation;
+    @Setter
     private FlingListener flingListener;
-
     GestureDetector gestureDetector;
 
-    boolean clickable;
-
-    private static SecureRandom secureRandom = new SecureRandom();
 
     public static CardFragment newInstance(String cardName, int cardWidth, int leftMargin, float rotation) {
         CardFragment fragment = new CardFragment();
@@ -43,10 +37,6 @@ public class CardFragment extends Fragment {
         args.putFloat("rotation", rotation);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setFlingListener(FlingListener listener) {
-        this.flingListener = listener;
     }
 
     @Override
@@ -65,7 +55,7 @@ public class CardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_card, container, false);
-        ImageView iv = (ImageView) view.findViewById(R.id.cardImageView);
+        ImageView iv = view.findViewById(R.id.cardImageView);
 
         Bundle bundle = getArguments();
         if (bundle != null){
@@ -75,22 +65,18 @@ public class CardFragment extends Fragment {
         gestureDetector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (Math.abs(velocityX) < Math.abs(velocityY)) {
-                    if (velocityY < 0) {
+                if (Math.abs(velocityX) < Math.abs(velocityY) && velocityY < 0) {
                         handleFlingAction(cardName);
                         Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
                     }
-                }
+
                 return super.onFling(e1, e2, velocityX, velocityY);
             }
         });
 
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
-                return true;
-            }
+        view.setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return true;
         });
 
         FrameLayout.LayoutParams params =
@@ -101,9 +87,7 @@ public class CardFragment extends Fragment {
         view.setTranslationY(300f);
 
         String color = "#00000000";
-        if (secureRandom.nextDouble() > 0.8f) {
-            color = "#70FF0000";
-        }
+
         View overlay = view.findViewById(R.id.redOverlay);
         params.setMargins(10,10,10,10);
         overlay.setLayoutParams(params);
