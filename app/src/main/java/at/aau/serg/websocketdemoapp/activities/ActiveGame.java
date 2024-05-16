@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,8 +20,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import java.security.SecureRandom;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
@@ -46,9 +46,9 @@ public class ActiveGame extends AppCompatActivity {
         });
         gameData = new GameData();
         activeGameService = new ActiveGameService(this, ActiveGame.this, gameData);
-        activeGameService.getData();
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
+        activeGameService.getData();
     }
 
     public void refreshActiveGame() {
@@ -114,15 +114,6 @@ public class ActiveGame extends AppCompatActivity {
             ImageView iv = findViewById(imageViewIds[(playerPosition - i) % imageViewIds.length]);
             iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable"));
         }*/
-    }
-
-    //test method
-    private String getRandomCardName() {
-        SecureRandom secureRandom = new SecureRandom();
-        String[] colors = new String[]{"card_blue", "card_red", "card_yellow", "card_green", "card_purple"};
-        int i = secureRandom.nextInt(colors.length);
-        int number = secureRandom.nextInt(11) + 1;
-        return colors[i] + number;
     }
 
     private int getDeviceWidthPx() {

@@ -25,11 +25,11 @@ public class StompHandler {
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
-    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    //private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, localServerUrl);
         connectToServer();
     }
 
@@ -157,7 +157,7 @@ public class StompHandler {
     }
 
     public void playCard(String jsonPayload) {
-        stompClient.send("/app/play_card", jsonPayload);
+        stompClient.send("/app/play_card", jsonPayload).subscribe();
     }
 
     public void subscribeForPlayerJoinedLobbyEvent(Consumer<String> dataCallback) {
