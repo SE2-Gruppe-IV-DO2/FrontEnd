@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -88,9 +89,10 @@ public class ActiveGame extends AppCompatActivity {
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed() {
         ImageView view = findViewById(R.id.playedCardPlayerX);
-        Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size());
+        Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
         Log.d("DISPLAY CARD", card.toString());
         view.setImageResource(getResources().getIdentifier(card.getName(), "drawable", this.getPackageName()));
+        view.setVisibility(View.VISIBLE);
 
         //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
 

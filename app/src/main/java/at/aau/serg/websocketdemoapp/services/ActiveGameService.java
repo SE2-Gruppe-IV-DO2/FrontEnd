@@ -49,12 +49,14 @@ public class ActiveGameService implements FlingListener {
     public void onCardFling(String cardName) {
         Card card = gameData.findCardByCardName(cardName);
         Log.d("CARD FOUND", card.getColor() + card.getValue());
-        playCard(card.getColor(), card.getValue());
+        //playCard(card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
+        gameData.getCardsPlayed().add(card);
         Log.d("FLINGED", card.toString());
         activeGame.refreshActiveGame();
+        activeGame.displayCardsPlayed();
     }
 
     public void getData() {

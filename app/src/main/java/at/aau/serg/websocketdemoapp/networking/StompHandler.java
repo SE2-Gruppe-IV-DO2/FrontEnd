@@ -152,6 +152,7 @@ public class StompHandler {
     public void subscribeForPlayCard(Consumer<String> dataCallback) {
         stompClient.topic("/topic/card_played").subscribe(topicMessage ->{
            String data = extractData(topicMessage.getPayload());
+           Log.d("PLAY CARD RESPONSE", data);
            dataCallback.accept(data);
         });
     }
