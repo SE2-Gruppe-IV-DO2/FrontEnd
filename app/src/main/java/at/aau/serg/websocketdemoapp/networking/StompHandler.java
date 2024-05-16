@@ -160,6 +160,16 @@ public class StompHandler {
         stompClient.send("/app/play_card", jsonPayload);
     }
 
+    public void subscribeForPlayerJoinedLobbyEvent(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/player_joined_lobby").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            Log.d("TEST", data);
+
+            dataCallback.accept(data);
+        });
+    }
+
+
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_RECEIVED, topicMessage.getPayload())

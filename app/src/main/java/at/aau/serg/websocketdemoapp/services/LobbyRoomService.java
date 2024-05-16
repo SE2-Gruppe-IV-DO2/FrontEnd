@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -11,6 +12,11 @@ import at.aau.serg.websocketdemoapp.networking.StompHandler;
 public class LobbyRoomService {
     private final LobbyRoom lobbyActivity;
     private StompHandler stompHandler;
+
+    public TextView getParticipants() {
+        return participants;
+    }
+
     private final TextView participants;
     private final DataHandler dataHandler;
     private final TextView lobbyCode;
@@ -22,6 +28,7 @@ public class LobbyRoomService {
         participants = lobbyActivity.findViewById(R.id.participants);
         lobbyCode = lobbyActivity.findViewById(R.id.lobbyCode);
 
+        initPlayerJoinedLobbySubscription();
         initGameStartSubscription();
     }
 
@@ -32,7 +39,7 @@ public class LobbyRoomService {
     public void startButtonClicked() {this.startGame();}
 
     private void setPlayerName() {
-        participants.append(dataHandler.getPlayerName() + "\n");
+        addPlayerNameToLobby(dataHandler.getPlayerName());
     }
 
     public void setLobbyCode() {
@@ -52,12 +59,22 @@ public class LobbyRoomService {
         this.stompHandler.initGameStartSubscription(this.lobbyActivity);
     }
 
+    public void addPlayerNameToLobby(String playerName) {
+        participants.append(playerName + "\n");
+    }
+
+    public void initPlayerJoinedLobbySubscription() {
+        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
+            addPlayerNameToLobby(serverResponse);
+        });
+    }
+
     public void startGame() {
         // TODO: Remove this! Fügt 2 virtuelle Spieler zur Lobby um starten zu können
-        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
-        });
-        stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
-        });
+        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
+        //});
+        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
+        //});
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
 
     }
