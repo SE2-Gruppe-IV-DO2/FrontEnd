@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
+
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
 import lombok.Setter;
@@ -67,7 +68,7 @@ public class CardFragment extends Fragment {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (Math.abs(velocityX) < Math.abs(velocityY) && velocityY < 0) {
                         handleFlingAction(cardName);
-                        Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), cardName, Toast.LENGTH_SHORT).show();
                     }
 
                 return super.onFling(e1, e2, velocityX, velocityY);

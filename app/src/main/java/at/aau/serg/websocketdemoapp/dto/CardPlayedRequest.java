@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class CardPlayedRequest {
     @JsonProperty("cardType")
-    CardType cardType;
+    private CardType cardType;
     @JsonProperty("color")
-    String color;
+    private String color;
     @JsonProperty("value")
-    Integer value;
+    private String value;
 }

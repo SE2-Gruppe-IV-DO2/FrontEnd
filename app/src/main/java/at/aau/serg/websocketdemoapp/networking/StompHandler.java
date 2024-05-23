@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.networking;
 
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -21,7 +20,6 @@ public class StompHandler {
      */
     private final StompClient stompClient;
     private final Gson gson = new Gson();
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
@@ -109,12 +107,10 @@ public class StompHandler {
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
 
-    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) throws Exception{
+    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) {
         DealRoundRequest dealRoundRequest = new DealRoundRequest();
         dealRoundRequest.setLobbyCode(lobbyCode);
         dealRoundRequest.setUserID(userID);
-
-        String jsonPayload = objectMapper.writeValueAsString(dealRoundRequest);
 
         stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
@@ -123,7 +119,7 @@ public class StompHandler {
             dataCallback.accept(data);
         });
 
-        stompClient.send("/app/deal_new_round", jsonPayload).subscribe();
+        stompClient.send("/app/deal_new_round", gson.toJson(dealRoundRequest)).subscribe();
     }
 
     public void initGameStartSubscription(LobbyRoom roomActivity) {

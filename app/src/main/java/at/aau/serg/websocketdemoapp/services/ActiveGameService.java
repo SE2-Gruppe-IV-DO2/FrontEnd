@@ -1,6 +1,8 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +13,7 @@ import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
@@ -49,23 +52,34 @@ public class ActiveGameService implements FlingListener {
     public void onCardFling(String cardName) {
         Card card = gameData.findCardByCardName(cardName);
         Log.d("CARD FOUND", card.getColor() + card.getValue());
-        //playCard(card.getColor(), card.getValue());
+        playCard(card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
-        gameData.getCardsPlayed().add(card);
         Log.d("FLINGED", card.toString());
         activeGame.refreshActiveGame();
-        activeGame.displayCardsPlayed();
     }
 
     public void getData() {
-        try {
-            stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), dataHandler::setGameData);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        activeGame.refreshActiveGame();
+        new Thread(() -> {
+            stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), response -> {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    HandCardsRequest handCardsRequest;
+                    try {
+                        handCardsRequest = objectMapper.readValue(response, HandCardsRequest.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    gameData.setCardList(handCardsRequest.getHandCards());
+                    dataHandler.setGameData(response);
+
+                    // Check if the activity is still in a valid state before refreshing the game
+                    if (!activeGame.isFinishing() && !activeGame.isDestroyed()) {
+                        activeGame.refreshActiveGame();
+                    }
+                });
+            });
+        }).start();
     }
 
     private void subscribeForPlayerChangedEvent() {
@@ -89,28 +103,26 @@ public class ActiveGameService implements FlingListener {
 
     private void subscribeForPlayCardEvent() {
         stompHandler.subscribeForPlayCard(response -> {
-            Log.d("RECEIVED CARD", response);
+            Log.d(TAG, "Received play card response: " + response);
             handlePlayCardResponse(response);
         });
     }
 
     private void handlePlayCardResponse(String playCardJSON) {
         activeGame.runOnUiThread(() -> {
-            Log.d(TAG, "Handling playCard response");
-            CardPlayedRequest cardPlayedRequest = null;
             try {
-                cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
+                CardPlayedRequest cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
+                Log.d(TAG, "Card played: " + cardPlayedRequest);
+                Card c = new Card();
+                c.setValue(Integer.valueOf(cardPlayedRequest.getValue()));
+                c.setColor(cardPlayedRequest.getColor());
+                c.setImgPath("card_" + cardPlayedRequest.getColor() + cardPlayedRequest.getValue());
+                gameData.getCardsPlayed().add(c);
+                Log.d("CARD PLAYED", "Added card to played list: " + c);
+                activeGame.displayCardsPlayed();
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                Log.e(TAG, "Error parsing play card response", e);
             }
-            Log.d("CARD PLAYED", cardPlayedRequest.toString());
-            Card c = new Card();
-            c.setValue(cardPlayedRequest.getValue());
-            c.setColor(cardPlayedRequest.getColor());
-            c.setImgPath("card_" + cardPlayedRequest.getColor() + cardPlayedRequest.getValue());
-            gameData.getCardsPlayed().add(c);
-            Log.d(TAG, c.toString());
-            activeGame.displayCardsPlayed();
         });
     }
 
@@ -120,7 +132,7 @@ public class ActiveGameService implements FlingListener {
         playCardRequest.setUserID(dataHandler.getPlayerID());
         playCardRequest.setColor(color);
         Integer i = value;
-        playCardRequest.setValue(i);
+        playCardRequest.setValue(String.valueOf(i));
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);

@@ -88,11 +88,16 @@ public class ActiveGame extends AppCompatActivity {
 
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed() {
-        ImageView view = findViewById(R.id.playedCardPlayerX);
-        Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
-        Log.d("DISPLAY CARD", card.toString());
-        view.setImageResource(getResources().getIdentifier(card.getName(), "drawable", this.getPackageName()));
-        view.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            // Assume that the last card added is the one to display
+            ImageView view = findViewById(R.id.playedCardPlayerX);
+            // Fixing the index out of bounds issue
+            Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
+            Log.d("CARD PLAYED", "Displaying card: " + card);
+            int resId = getResources().getIdentifier(card.getImgPath(), "drawable", getPackageName());
+            view.setImageResource(resId);
+            view.setVisibility(View.VISIBLE);
+        });
 
         //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
 
@@ -131,16 +136,6 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void updateActivePlayerInformation(String activePlayerName) {
-        runOnUiThread(() -> {
-            Toast toast = Toast.makeText(this, getString(R.string.active_player) + activePlayerName, Toast.LENGTH_LONG);
-            toast.show();
-        });
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show());
     }
 }
