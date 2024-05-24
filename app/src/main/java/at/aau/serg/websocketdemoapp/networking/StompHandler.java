@@ -166,7 +166,6 @@ public class StompHandler {
         });
     }
 
-
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_RECEIVED, topicMessage.getPayload())

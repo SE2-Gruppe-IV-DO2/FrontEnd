@@ -1,8 +1,5 @@
 package at.aau.serg.websocketdemoapp.dto;
 
-import android.util.Log;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -14,25 +11,8 @@ import lombok.Data;
 @Data
 public class GameData {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private List<Card> cardList;
-    private List<Card> cardsPlayed;
-
-    public void parseJsonString(String jsonString) {
-        Log.d("JSON", jsonString);
-        cardList = new ArrayList<>();
-        cardsPlayed = new ArrayList<>();
-        HandCardsRequest handCardsRequest;
-        try {
-            handCardsRequest = objectMapper.readValue(jsonString, HandCardsRequest.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        if (handCardsRequest != null) {
-            cardList = handCardsRequest.getHandCards();
-        } else {
-            Log.d("JSON PARSE", "Passed String was empty");
-        }
-    }
+    private List<Card> cardList = new ArrayList<>();
+    private List<Card> cardsPlayed = new ArrayList<>();
 
     public Card findCardByCardName(String cardName) {
         Card card = null;
@@ -44,5 +24,3 @@ public class GameData {
         return card;
     }
 }
-
-

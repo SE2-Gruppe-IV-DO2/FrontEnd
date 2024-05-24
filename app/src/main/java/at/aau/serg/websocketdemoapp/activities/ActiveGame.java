@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,17 +19,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
+import java.util.List;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
-import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
     private GameData gameData;
-    private final DataHandler dataHandler = DataHandler.getInstance(this);
+    private final int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
+            R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
     private ActiveGameService activeGameService;
 
     @Override
@@ -57,12 +55,6 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void displayCardsInHand() {
-        // todo: handle gameData and remove manual creation of card list
-
-        if (gameData.getCardList() == null) {
-            gameData.parseJsonString(dataHandler.getGameData());
-        }
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         FrameLayout container = findViewById(R.id.cardsInHand);
@@ -88,39 +80,14 @@ public class ActiveGame extends AppCompatActivity {
 
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed() {
-        runOnUiThread(() -> {
-            // Assume that the last card added is the one to display
-            ImageView view = findViewById(R.id.playedCardPlayerX);
-            // Fixing the index out of bounds issue
-            Card card = gameData.getCardsPlayed().get(gameData.getCardsPlayed().size() - 1);
-            Log.d("CARD PLAYED", "Displaying card: " + card);
+        List<Card> cardsPlayed = gameData.getCardsPlayed();
+        for (int i = 0; i < cardsPlayed.size(); i++) {
+            Card card = cardsPlayed.get(i);
+            ImageView imageView = findViewById(imageViewIds[i]);
             int resId = getResources().getIdentifier(card.getImgPath(), "drawable", getPackageName());
-            view.setImageResource(resId);
-            view.setVisibility(View.VISIBLE);
-        });
-
-        //GameData gameData = new Gson().fromJson(gameDataString, GameData.class);
-
-        // sample code to display played cards
-
-        /*// find playerPosition
-        int playerPosition = gameData.getCardsPlayed().indexOf(
-                gameData.getCardsPlayed().stream().filter(c -> c.getPlayer().equals(me)).findFirst()
-        );
-        if (playerPosition == -1){
-            playerPosition = gameData.getCardsPlayed().size() + 1;
-        }*/
-
-        // played Card ids
-        //int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
-          //      R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
-
-        /*// set card data to imageview
-        for (int i = 1; i <= gameData.getCardsPlayed().size(); i++) {
-            Card card = gameData.getCardsPlayed().get(i - 1);
-            ImageView iv = findViewById(imageViewIds[(playerPosition - i) % imageViewIds.length]);
-            iv.setImageResource(getResources().getIdentifier(card.getName(), "drawable"));
-        }*/
+            imageView.setImageResource(resId);
+            imageView.setVisibility(View.VISIBLE);
+        }
     }
 
     private int getDeviceWidthPx() {
