@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
@@ -37,6 +39,8 @@ import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 class ActiveGameServiceTest {
+    @Mock
+    Context context;
     @Mock
     private DataHandler mockDataHandler;
     @Mock
@@ -70,8 +74,15 @@ class ActiveGameServiceTest {
         when(mockDataHandler.getPlayerName()).thenReturn(PLAYER_NAME);
         when(mockDataHandler.getGameData()).thenReturn(GAME_DATA);
         StompHandler.setInstance(mockStompHandler);
-        activeGameService = new ActiveGameService(mockActiveGame, mockDataHandler, mockGameData);
+        DataHandler.setInstance(mockDataHandler);
+        activeGameService = new ActiveGameService(context, mockActiveGame, mockGameData);
         gson = new Gson();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        activeGameService = null;
+        gson = null;
     }
 
     @Test
@@ -139,9 +150,7 @@ class ActiveGameServiceTest {
         Card expectedCard = new Card(CardType.RED, 5);
         List<Card> cardList = new ArrayList<>();
 
-        String playCardJSON = gson.toJson(cardPlayedRequest);
-
-        when(mockObjectMapper.readValue(playCardJSON, CardPlayedRequest.class)).thenReturn(cardPlayedRequest);
+        when(mockObjectMapper.readValue(gson.toJson(cardPlayedRequest), CardPlayedRequest.class)).thenReturn(cardPlayedRequest);
         when(mockGameData.getCardsPlayed()).thenReturn(cardList);
 
         doAnswer(invocation -> {
@@ -150,7 +159,7 @@ class ActiveGameServiceTest {
             return null;
         }).when(mockActiveGame).runOnUiThread(any(Runnable.class));
 
-        activeGameService.handlePlayCardResponse(playCardJSON);
+        activeGameService.handlePlayCardResponse(gson.toJson(cardPlayedRequest));
 
         assertEquals(1, cardList.size());
         assertEquals(expectedCard.getValue(), cardList.get(0).getValue());
@@ -172,5 +181,23 @@ class ActiveGameServiceTest {
         activeGameService.playCard(color, value);
 
         verify(mockStompHandler).playCard(anyString());
+    }
+
+    @Test
+    void testGetData() throws JsonProcessingException{
+        String lobbyCode = "testLobby";
+        String playerID = "player1";
+
+        HandCardsRequest handCardsRequest = new HandCardsRequest();
+        handCardsRequest.setPlayerID(playerID);
+        handCardsRequest.setHandCards(new ArrayList<>());
+
+        when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
+        when(mockDataHandler.getPlayerID()).thenReturn(playerID);
+        when(mockObjectMapper.readValue(gson.toJson(handCardsRequest), HandCardsRequest.class)).thenReturn(handCardsRequest);
+
+        activeGameService.getData();
+
+        //verify(mockStompHandler).dealNewRound(anyString(), anyString(), any());
     }
 }

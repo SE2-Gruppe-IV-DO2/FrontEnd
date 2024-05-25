@@ -39,16 +39,6 @@ public class ActiveGameService implements FlingListener {
         subscribeForPlayCardEvent();
     }
 
-    public ActiveGameService(ActiveGame activeGame, DataHandler dataHandler, GameData gameData) {
-        this.dataHandler = dataHandler;
-        this.activeGame = activeGame;
-        stompHandler = StompHandler.getInstance();
-        this.gameData = gameData;
-
-        subscribeForPlayerChangedEvent();
-        subscribeForPlayCardEvent();
-    }
-
     @Override
     public void onCardFling(String cardName) {
         Card card = gameData.findCardByCardName(cardName);
