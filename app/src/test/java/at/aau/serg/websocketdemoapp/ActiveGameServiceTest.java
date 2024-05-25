@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -21,11 +22,16 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
@@ -55,7 +61,10 @@ class ActiveGameServiceTest {
     GameData mockGameData;
     @Mock
     ObjectMapper mockObjectMapper;
+    @InjectMocks
     private ActiveGameService activeGameService;
+    @Captor
+    private ArgumentCaptor<Consumer<String>> responseHandlerCaptor;
     private Gson gson;
     private static final String PLAYER_ID = "playerId";
     private static final String LOBBY_CODE = "lobbyCode";
@@ -184,20 +193,44 @@ class ActiveGameServiceTest {
     }
 
     @Test
-    void testGetData() throws JsonProcessingException{
-        String lobbyCode = "testLobby";
-        String playerID = "player1";
+    void testGetData() throws Exception{
+        // Arrange
+        String lobbyCode = "lobbyCode";
+        String playerId = "playerId";
+        String response = "{\"playerID\":\"" + playerId + "\", \"handCards\":[]}";
 
         HandCardsRequest handCardsRequest = new HandCardsRequest();
-        handCardsRequest.setPlayerID(playerID);
+        handCardsRequest.setPlayerID(playerId);
         handCardsRequest.setHandCards(new ArrayList<>());
 
         when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
-        when(mockDataHandler.getPlayerID()).thenReturn(playerID);
-        when(mockObjectMapper.readValue(gson.toJson(handCardsRequest), HandCardsRequest.class)).thenReturn(handCardsRequest);
+        when(mockDataHandler.getPlayerID()).thenReturn(playerId);
+        when(mockObjectMapper.readValue(response, HandCardsRequest.class))
+                .thenReturn(handCardsRequest);
 
+        CountDownLatch latch = new CountDownLatch(1);
+
+        doAnswer(invocation -> {
+            // Simulate response callback on a different thread
+            Runnable callback = invocation.getArgument(2);
+            new Thread(() -> {
+                callback.run();
+                latch.countDown();
+            }).start();
+            return null;
+        }).when(mockStompHandler).dealNewRound(eq(lobbyCode), eq(playerId), any());
+
+        // Act
         activeGameService.getData();
 
-        //verify(mockStompHandler).dealNewRound(anyString(), anyString(), any());
+        // Wait for the background thread to complete
+        latch.await(2, TimeUnit.SECONDS);
+
+        // Assert
+        //verify(mockStompHandler, times(1)).dealNewRound(eq(lobbyCode), eq(playerId), any());
+        //verify(mockObjectMapper, times(1)).readValue(eq(response), eq(HandCardsRequest.class));
+        //verify(mockGameData, times(1)).setCardList(any());
+        //verify(mockDataHandler, times(1)).setGameData(eq(response));
+        //verify(mockActiveGame, times(1)).runOnUiThread(any());
     }
 }
