@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -19,15 +22,27 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
+
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
 public class ActiveGame extends AppCompatActivity {
     private GameData gameData;
+    private StompHandler stompHandler;
+    private DataHandler dataHandler;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final int[] imageViewIds = {R.id.playedCardPlayerX, R.id.playedCardPlayer1,
             R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
     private ActiveGameService activeGameService;
@@ -43,11 +58,13 @@ public class ActiveGame extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        stompHandler = StompHandler.getInstance();
+        dataHandler = DataHandler.getInstance(this);
         gameData = new GameData();
         activeGameService = new ActiveGameService(this, ActiveGame.this, gameData);
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
-        activeGameService.getData();
+        getData();
     }
 
     public void refreshActiveGame() {
@@ -104,5 +121,25 @@ public class ActiveGame extends AppCompatActivity {
 
     public void updateActivePlayerInformation(String activePlayerName) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show());
+    }
+
+    public void getData() {
+        new Thread(() -> stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(),
+                response -> new Handler(Looper.getMainLooper()).post(() -> {
+                    HandCardsRequest handCardsRequest;
+                    try {
+                        handCardsRequest = objectMapper.readValue(response, HandCardsRequest.class);
+                    } catch (JsonProcessingException e) {
+                        throw new JsonParsingException("Failed to parse JSON response", e);
+                    }
+                    if (handCardsRequest.getPlayerID().equals(dataHandler.getPlayerID())) {
+                        gameData.setCardList(handCardsRequest.getHandCards());
+                        dataHandler.setGameData(response);
+
+                        if (!isFinishing() && !isDestroyed()) {
+                            runOnUiThread(this::refreshActiveGame);
+                        }
+                    }
+                }))).start();
     }
 }

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,14 +29,11 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
-import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
@@ -190,47 +186,5 @@ class ActiveGameServiceTest {
         activeGameService.playCard(color, value);
 
         verify(mockStompHandler).playCard(anyString());
-    }
-
-    @Test
-    void testGetData() throws Exception{
-        // Arrange
-        String lobbyCode = "lobbyCode";
-        String playerId = "playerId";
-        String response = "{\"playerID\":\"" + playerId + "\", \"handCards\":[]}";
-
-        HandCardsRequest handCardsRequest = new HandCardsRequest();
-        handCardsRequest.setPlayerID(playerId);
-        handCardsRequest.setHandCards(new ArrayList<>());
-
-        when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
-        when(mockDataHandler.getPlayerID()).thenReturn(playerId);
-        when(mockObjectMapper.readValue(response, HandCardsRequest.class))
-                .thenReturn(handCardsRequest);
-
-        CountDownLatch latch = new CountDownLatch(1);
-
-        doAnswer(invocation -> {
-            // Simulate response callback on a different thread
-            Runnable callback = invocation.getArgument(2);
-            new Thread(() -> {
-                callback.run();
-                latch.countDown();
-            }).start();
-            return null;
-        }).when(mockStompHandler).dealNewRound(eq(lobbyCode), eq(playerId), any());
-
-        // Act
-        activeGameService.getData();
-
-        // Wait for the background thread to complete
-        latch.await(2, TimeUnit.SECONDS);
-
-        // Assert
-        //verify(mockStompHandler, times(1)).dealNewRound(eq(lobbyCode), eq(playerId), any());
-        //verify(mockObjectMapper, times(1)).readValue(eq(response), eq(HandCardsRequest.class));
-        //verify(mockGameData, times(1)).setCardList(any());
-        //verify(mockDataHandler, times(1)).setGameData(eq(response));
-        //verify(mockActiveGame, times(1)).runOnUiThread(any());
     }
 }

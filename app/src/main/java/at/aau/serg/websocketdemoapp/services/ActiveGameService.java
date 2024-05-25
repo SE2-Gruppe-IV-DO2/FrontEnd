@@ -1,8 +1,6 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,11 +11,9 @@ import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
-import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
-import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 
 public class ActiveGameService implements FlingListener {
@@ -49,26 +45,6 @@ public class ActiveGameService implements FlingListener {
         }
         Log.d("FLING", card.toString());
         activeGame.refreshActiveGame();
-    }
-
-    public void getData() throws JsonParsingException {
-        new Thread(() -> stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(),
-                response -> new Handler(Looper.getMainLooper()).post(() -> {
-            HandCardsRequest handCardsRequest;
-            try {
-                handCardsRequest = objectMapper.readValue(response, HandCardsRequest.class);
-            } catch (JsonProcessingException e) {
-                throw new JsonParsingException("Failed to parse JSON response", e);
-            }
-            if (handCardsRequest.getPlayerID().equals(dataHandler.getPlayerID())) {
-                gameData.setCardList(handCardsRequest.getHandCards());
-                dataHandler.setGameData(response);
-
-                if (!activeGame.isFinishing() && !activeGame.isDestroyed()) {
-                    activeGame.runOnUiThread(activeGame::refreshActiveGame);
-                }
-            }
-        }))).start();
     }
 
     private void subscribeForPlayerChangedEvent() {
