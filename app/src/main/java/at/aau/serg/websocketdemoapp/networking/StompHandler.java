@@ -38,6 +38,10 @@ public class StompHandler {
         return instance;
     }
 
+    public static void setInstance(StompHandler instance) {
+        StompHandler.instance = instance;
+    }
+
     private void setLifecycle() {
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {

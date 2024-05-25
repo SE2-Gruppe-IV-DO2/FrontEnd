@@ -107,7 +107,7 @@ public class ActiveGameService implements FlingListener {
         });
     }
 
-    private void handlePlayCardResponse(String playCardJSON) {
+    public void handlePlayCardResponse(String playCardJSON) {
         activeGame.runOnUiThread(() -> {
             try {
                 CardPlayedRequest cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
@@ -130,8 +130,7 @@ public class ActiveGameService implements FlingListener {
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
         playCardRequest.setColor(color);
-        Integer i = value;
-        playCardRequest.setValue(String.valueOf(i));
+        playCardRequest.setValue(String.valueOf(value));
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
