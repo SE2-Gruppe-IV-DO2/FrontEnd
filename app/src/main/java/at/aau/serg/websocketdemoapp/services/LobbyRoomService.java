@@ -1,22 +1,21 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
+import lombok.Getter;
+import lombok.Setter;
 
 public class LobbyRoomService {
     private final LobbyRoom lobbyActivity;
+    @Setter
     private StompHandler stompHandler;
 
-    public TextView getParticipants() {
-        return participants;
-    }
-
+    @Getter
     private final TextView participants;
     private final DataHandler dataHandler;
     private final TextView lobbyCode;
@@ -51,10 +50,6 @@ public class LobbyRoomService {
         setLobbyCode();
     }
 
-    public void setStompHandler(StompHandler stompHandler) {
-        this.stompHandler = stompHandler;
-    }
-
     public void initGameStartSubscription() {
         this.stompHandler.initGameStartSubscription(this.lobbyActivity);
     }
@@ -64,17 +59,10 @@ public class LobbyRoomService {
     }
 
     public void initPlayerJoinedLobbySubscription() {
-        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(serverResponse -> {
-            addPlayerNameToLobby(serverResponse);
-        });
+        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(this::addPlayerNameToLobby);
     }
 
     public void startGame() {
-        // TODO: Remove this! Fügt 2 virtuelle Spieler zur Lobby um starten zu können
-        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
-        //});
-        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
-        //});
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 }

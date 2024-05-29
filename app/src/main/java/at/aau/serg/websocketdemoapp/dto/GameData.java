@@ -1,23 +1,26 @@
 package at.aau.serg.websocketdemoapp.dto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.serg.websocketdemoapp.helper.Card;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class GameData {
-    private List<Card> cardList;
-    private List<Card> cardsPlayed;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private List<Card> cardList = new ArrayList<>();
+    private List<Card> cardsPlayed = new ArrayList<>();
 
-    // todo add all fields
-
-    public static class Card {
-        String imgPath;
-        int value;
-        // ...
+    public Card findCardByCardName(String cardName) {
+        Card card = null;
+        for (Card c : cardList) {
+            if(c.toString().equals(cardName)) {
+                card = c;
+            }
+        }
+        return card;
     }
 }
-
-

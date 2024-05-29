@@ -18,6 +18,10 @@ public class DataHandler {
         return instance;
     }
 
+    public static void setInstance(DataHandler dataHandler) {
+        DataHandler.instance = dataHandler;
+    }
+
     public void setPlayerName(String playerName) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("playerName", playerName);
@@ -51,6 +55,7 @@ public class DataHandler {
     public void setGameData(String data) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("gameData", data);
+        editor.apply();
     }
 
     public String getGameData() {
