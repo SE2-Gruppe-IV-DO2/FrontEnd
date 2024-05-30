@@ -13,22 +13,20 @@ public class JoinLobbyService {
     private final JoinLobby joinLobbyActivity;
     private final DataHandler dataHandler;
     private static final String TAG = "JoinLobby";
-    private final EditText lobbyField;
     private final StompHandler stompHandler;
 
     public JoinLobbyService(Context context, JoinLobby joinLobby) {
         stompHandler = StompHandler.getInstance();
         dataHandler = DataHandler.getInstance(context);
         this.joinLobbyActivity = joinLobby;
-        lobbyField = joinLobbyActivity.findViewById(R.id.enterLobbyCode);
     }
 
     public void backButtonClicked() {
         joinLobbyActivity.changeToStartActivity();
     }
 
-    public void joinLobbyWithIDClicked() {
-        dataHandler.setLobbyCode(lobbyField.getText().toString());
+    public void joinLobbyWithIDClicked(String lobbyCode) {
+        dataHandler.setLobbyCode(lobbyCode);
         new Thread(() -> stompHandler.joinLobby(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), dataHandler.getPlayerName(), callback -> {
             dataHandler.setLobbyCode(callback);
             Log.d(TAG, callback);

@@ -66,7 +66,7 @@ class JoinLobbyServiceTest {
         when(editable.toString()).thenReturn("12345");
         when(editText.getText()).thenReturn(editable);
 
-        joinLobbyService.joinLobbyWithIDClicked();
+        joinLobbyService.joinLobbyWithIDClicked("lobbyCode");
         verify(joinLobby).changeToLobbyRoomActivity();
     }
 }

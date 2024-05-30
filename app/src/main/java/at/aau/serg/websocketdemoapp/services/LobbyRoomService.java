@@ -35,13 +35,7 @@ public class LobbyRoomService {
     private BarcodeEncoder mEncoder;
 
     public LobbyRoomService(Context context, LobbyRoom activity) {
-        dataHandler = DataHandler.getInstance(context);
-        stompHandler = StompHandler.getInstance();
-        this.lobbyActivity = activity;
-        participants = lobbyActivity.findViewById(R.id.participants);
-        lobbyCodeTextfield = lobbyActivity.findViewById(R.id.lobbyCode);
-
-        initGameStartSubscription();
+        this(DataHandler.getInstance(context), activity);
     }
 
     public LobbyRoomService(DataHandler handler, LobbyRoom activity) {
@@ -114,7 +108,6 @@ public class LobbyRoomService {
 
         MultiFormatWriter mWriter = new MultiFormatWriter();
 
-        Log.d("lobbyCode", lobbyCode);
         BitMatrix mMatrix = mWriter.encode(lobbyCode, BarcodeFormat.QR_CODE, 250, 250);
         Bitmap mBitmap = mEncoder.createBitmap(mMatrix);
 
