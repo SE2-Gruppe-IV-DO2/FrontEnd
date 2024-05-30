@@ -12,6 +12,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -43,6 +44,9 @@ class LobbyRoomServiceTest {
     TextView mockParticipants;
     @Mock
     TextView mockLobbyCode;
+
+    @Mock
+    ImageView mockQRCodeImage;
     @Mock
     SharedPreferences sharedPreferences;
     @Mock
@@ -68,6 +72,8 @@ class LobbyRoomServiceTest {
 
         when(mockLobbyActivity.findViewById(R.id.participants)).thenReturn(mockParticipants);
         when(mockLobbyActivity.findViewById(R.id.lobbyCode)).thenReturn(mockLobbyCode);
+        when(mockLobbyActivity.findViewById(R.id.qrCode)).thenReturn(mockQRCodeImage);
+
         when(sharedPreferences.getString(anyString(), anyString())).thenReturn("Test");
 
         mockBarcodeEncoder = mock(BarcodeEncoder.class);
