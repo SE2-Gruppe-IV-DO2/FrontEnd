@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -61,7 +62,7 @@ class LobbyRoomServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        openMocks(this);
 
         when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);

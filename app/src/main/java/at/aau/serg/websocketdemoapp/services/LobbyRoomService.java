@@ -120,10 +120,10 @@ public class LobbyRoomService {
                 qrCodeImageView.setImageBitmap(mBitmap);
 
             } catch (Exception e) {
-                System.out.println(e.toString());
+                System.out.println(e);
             }
         } catch (WriterException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 }
