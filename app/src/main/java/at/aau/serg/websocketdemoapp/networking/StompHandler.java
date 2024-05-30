@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -35,6 +36,10 @@ public class StompHandler {
             instance = new StompHandler();
         }
         return instance;
+    }
+
+    public static void setInstance(StompHandler instance) {
+        StompHandler.instance = instance;
     }
 
     private void setLifecycle() {
@@ -105,20 +110,20 @@ public class StompHandler {
 
         stompClient.send("/app/join_lobby", jsonPayload).subscribe();
     }
-    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) {
-        HashMap<String, String> payload = new HashMap<>();
-        payload.put("lobbyCode", lobbyCode);
-        payload.put("userID", userID);
 
-        String jsonPayload = gson.toJson(payload);
+    public void dealNewRound(String lobbyCode, String userID, Consumer<String> dataCallback) {
+        DealRoundRequest dealRoundRequest = new DealRoundRequest();
+        dealRoundRequest.setLobbyCode(lobbyCode);
+        dealRoundRequest.setUserID(userID);
 
         stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
+            Log.d("DealRound", data);
             dataCallback.accept(data);
         });
 
-        stompClient.send("/app/deal_new_round", jsonPayload).subscribe();
+        stompClient.send("/app/deal_new_round", gson.toJson(dealRoundRequest)).subscribe();
     }
 
     public void initGameStartSubscription(LobbyRoom roomActivity) {
@@ -140,6 +145,27 @@ public class StompHandler {
     public void subscribeForPlayerChangedEvent(Consumer<String> dataCallback) {
         stompClient.topic("/topic/active_player_changed").subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+    }
+
+    public void subscribeForPlayCard(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/card_played").subscribe(topicMessage ->{
+           String data = extractData(topicMessage.getPayload());
+           Log.d("PLAY CARD RESPONSE", data);
+           dataCallback.accept(data);
+        });
+    }
+
+    public void playCard(String jsonPayload) {
+        stompClient.send("/app/play_card", jsonPayload).subscribe();
+    }
+
+    public void subscribeForPlayerJoinedLobbyEvent(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/player_joined_lobby").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            Log.d("TEST", data);
+
             dataCallback.accept(data);
         });
     }
