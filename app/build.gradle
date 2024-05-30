@@ -82,7 +82,13 @@ dependencies {
     testRuntimeOnly libs.junit.jupiter.engine
     testImplementation libs.mockito.core
 
+    testImplementation libs.robolectric
+
     compileOnly libs.lombok
     annotationProcessor libs.lombok
+
+    implementation libs.zxing.android.embedded
+    implementation libs.core
+
 
 }
