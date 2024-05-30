@@ -31,8 +31,6 @@ class JoinLobbyServiceTest {
     @Mock
     EditText editText;
     @Mock
-    StompHandler stompHandler;
-    @Mock
     Context context;
     @Mock
     SharedPreferences sharedPreferences;

@@ -2,9 +2,6 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.EditText;
-
-import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.JoinLobby;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;

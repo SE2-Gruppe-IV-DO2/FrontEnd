@@ -3,7 +3,6 @@ package at.aau.serg.websocketdemoapp.services;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
