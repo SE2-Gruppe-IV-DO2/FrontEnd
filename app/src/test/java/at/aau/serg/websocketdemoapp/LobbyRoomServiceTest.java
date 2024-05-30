@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -122,5 +123,13 @@ class LobbyRoomServiceTest {
         lobbyRoomService.addPlayerNameToLobby(playerName);
 
         verify(lobbyRoomService.getParticipants()).append(playerName + "\n");
+    }
+
+    @Test
+    void testFailingOnCreation() {
+        assertThrows(RuntimeException.class, ()->{
+            lobbyRoomService = new LobbyRoomService(dataHandler, mockLobbyActivity);
+            lobbyRoomService.createLobbyQRCode("", null);
+        });
     }
 }
