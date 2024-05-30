@@ -2,24 +2,18 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import lombok.Getter;
-import lombok.Setter;
 
 public class LobbyRoomService {
     private final LobbyRoom lobbyActivity;
