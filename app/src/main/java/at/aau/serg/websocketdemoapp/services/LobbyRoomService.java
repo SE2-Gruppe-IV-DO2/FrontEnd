@@ -23,7 +23,6 @@ import lombok.Setter;
 
 public class LobbyRoomService {
     private final LobbyRoom lobbyActivity;
-    @Setter
     private StompHandler stompHandler;
 
     @Getter
@@ -70,7 +69,7 @@ public class LobbyRoomService {
         setPlayerName();
         setLobbyCode();
         try {
-            createLobbyQRCode(dataHandler.getLobbyCode());
+            createLobbyQRCode(dataHandler.getLobbyCode(), null);
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
@@ -101,27 +100,18 @@ public class LobbyRoomService {
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 
-    private void createLobbyQRCode(String lobbyCode) throws WriterException {
+    public void createLobbyQRCode(String lobbyCode, Bitmap optBitmap) throws WriterException {
         if (mEncoder == null)
             mEncoder = new BarcodeEncoder();
 
         MultiFormatWriter mWriter = new MultiFormatWriter();
 
         BitMatrix mMatrix = mWriter.encode(lobbyCode, BarcodeFormat.QR_CODE, 250, 250);
-        Bitmap mBitmap = mEncoder.createBitmap(mMatrix);
-
-        // Change the color of the background (the white was not the right white...)
-        for (int x = 0; x < mBitmap.getWidth(); x++) {
-            for (int y = 0; y < mBitmap.getHeight(); y++) {
-                // Get the pixel color at (x, y)
-                int pixel = mBitmap.getPixel(x, y);
-                // Check if the pixel is white
-                if (pixel == Color.WHITE) {
-                    // Change it to your desired background color
-                    mBitmap.setPixel(x, y, ContextCompat.getColor(lobbyActivity, com.google.android.material.R.color.cardview_light_background));
-                }
-            }
-        }
+        Bitmap mBitmap;
+        if (optBitmap == null)
+            mBitmap = mEncoder.createBitmap(mMatrix);
+        else
+            mBitmap = optBitmap;
 
         // Getting QR-Code as Bitmap
         ImageView qrCodeImageView = lobbyActivity.findViewById(R.id.qrCode);

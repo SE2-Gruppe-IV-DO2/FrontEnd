@@ -15,7 +15,6 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
@@ -60,6 +59,7 @@ class LobbyRoomServiceTest {
 
     @Mock
     DataHandler dataHandler;
+
 
     LobbyRoomService lobbyRoomService;
 
