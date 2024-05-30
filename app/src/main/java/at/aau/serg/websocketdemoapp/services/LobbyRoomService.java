@@ -63,7 +63,7 @@ public class LobbyRoomService {
         setPlayerName();
         setLobbyCode();
         try {
-            createLobbyQRCode(dataHandler.getLobbyCode(), null);
+            createLobbyQRCode(dataHandler.getLobbyCode());
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
@@ -94,18 +94,14 @@ public class LobbyRoomService {
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 
-    public void createLobbyQRCode(String lobbyCode, Bitmap optBitmap) throws WriterException {
+    public void createLobbyQRCode(String lobbyCode) throws WriterException {
         if (mEncoder == null)
             mEncoder = new BarcodeEncoder();
 
         MultiFormatWriter mWriter = new MultiFormatWriter();
 
         BitMatrix mMatrix = mWriter.encode(lobbyCode, BarcodeFormat.QR_CODE, 250, 250);
-        Bitmap mBitmap;
-        if (optBitmap == null)
-            mBitmap = mEncoder.createBitmap(mMatrix);
-        else
-            mBitmap = optBitmap;
+        Bitmap mBitmap = mEncoder.createBitmap(mMatrix);
 
         // Getting QR-Code as Bitmap
         ImageView qrCodeImageView = lobbyActivity.findViewById(R.id.qrCode);

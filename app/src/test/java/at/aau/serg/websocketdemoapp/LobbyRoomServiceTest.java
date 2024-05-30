@@ -129,7 +129,7 @@ class LobbyRoomServiceTest {
     void testFailingOnCreation() {
         assertThrows(RuntimeException.class, ()->{
             lobbyRoomService = new LobbyRoomService(dataHandler, mockLobbyActivity);
-            lobbyRoomService.createLobbyQRCode("", null);
+            lobbyRoomService.createLobbyQRCode("");
         });
     }
 }
