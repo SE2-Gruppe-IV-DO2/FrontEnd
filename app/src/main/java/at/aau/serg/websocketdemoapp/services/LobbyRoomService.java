@@ -70,7 +70,11 @@ public class LobbyRoomService {
     public void onCreation() {
         setPlayerName();
         setLobbyCode();
-        createLobbyQRCode(dataHandler.getLobbyCode());
+        try {
+            createLobbyQRCode(dataHandler.getLobbyCode());
+        } catch (WriterException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setStompHandler(StompHandler stompHandler) {
@@ -90,40 +94,31 @@ public class LobbyRoomService {
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 
-    private void createLobbyQRCode(String lobbyCode) {
+    private void createLobbyQRCode(String lobbyCode) throws WriterException {
         if (mEncoder == null)
             mEncoder = new BarcodeEncoder();
 
         MultiFormatWriter mWriter = new MultiFormatWriter();
 
-        try {
-            Log.d("lobbyCode", lobbyCode);
-            BitMatrix mMatrix = mWriter.encode(lobbyCode, BarcodeFormat.QR_CODE, 250, 250);
-            Bitmap mBitmap = mEncoder.createBitmap(mMatrix);
+        Log.d("lobbyCode", lobbyCode);
+        BitMatrix mMatrix = mWriter.encode(lobbyCode, BarcodeFormat.QR_CODE, 250, 250);
+        Bitmap mBitmap = mEncoder.createBitmap(mMatrix);
 
-            // Change the color of the background (the white was not the right white...)
-            for (int x = 0; x < mBitmap.getWidth(); x++) {
-                for (int y = 0; y < mBitmap.getHeight(); y++) {
-                    // Get the pixel color at (x, y)
-                    int pixel = mBitmap.getPixel(x, y);
-                    // Check if the pixel is white
-                    if (pixel == Color.WHITE) {
-                        // Change it to your desired background color
-                        mBitmap.setPixel(x, y, ContextCompat.getColor(lobbyActivity, com.google.android.material.R.color.cardview_light_background));
-                    }
+        // Change the color of the background (the white was not the right white...)
+        for (int x = 0; x < mBitmap.getWidth(); x++) {
+            for (int y = 0; y < mBitmap.getHeight(); y++) {
+                // Get the pixel color at (x, y)
+                int pixel = mBitmap.getPixel(x, y);
+                // Check if the pixel is white
+                if (pixel == Color.WHITE) {
+                    // Change it to your desired background color
+                    mBitmap.setPixel(x, y, ContextCompat.getColor(lobbyActivity, com.google.android.material.R.color.cardview_light_background));
                 }
             }
-
-            try {
-                // Getting QR-Code as Bitmap
-                ImageView qrCodeImageView = lobbyActivity.findViewById(R.id.qrCode);
-                qrCodeImageView.setImageBitmap(mBitmap);
-
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } catch (WriterException e) {
-            System.out.println(e);
         }
+
+        // Getting QR-Code as Bitmap
+        ImageView qrCodeImageView = lobbyActivity.findViewById(R.id.qrCode);
+        qrCodeImageView.setImageBitmap(mBitmap);
     }
 }
