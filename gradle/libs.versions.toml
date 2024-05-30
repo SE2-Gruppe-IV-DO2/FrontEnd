@@ -10,17 +10,8 @@ lombok = "1.18.20"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
-mockitoCore = "3."
 okhttp = "4.10.0"
-powermockApiMockito2 = "x.x.x"
-powermockModuleJunit4 = "2.x"
-powermockModuleJunit4Version = "1.6.4"
-powermockPowermockModuleJunit4 = "x.x.x"
 robolectric = "4.9"
-stompAndroid = "1.0.0"
-stompProtocolAndroid = "2.3.0"
-stomp = "2.31.2"
-stompSpring = "0.1.11"
 rxjava2 = "1.0.1"
 zxingAndroidEmbedded = "4.3.0"
 
@@ -38,16 +29,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 mockito-core = { module = "org.mockito:mockito-core", version = "5.11.0" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermockModuleJunit4" }
-powermock-api-mockito2-vxxx = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermockApiMockito2" }
-powermock-module-junit4 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermockModuleJunit4" }
-powermock-module-junit4-v164 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermockModuleJunit4Version" }
-powermock-module-junit4-vxxx = { module = "org.powermock:powermock-module-junit4", version.ref = "powermockPowermockModuleJunit4" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-stomp-android = { group = "com.yy", name = "stomp-android", version.ref = "stompAndroid" }
-stomp-protocol-android = { module = "com.naiksoftware:stomp-protocol-android", version.ref = "stompProtocolAndroid" }
-stomp = { group = "org.apache.activemq.examples.stomp", name = "stomp", version.ref = "stomp" }
-stomp-spring = { group = "de.lancom.systems.stomp", name = "stomp-spring", version.ref = "stompSpring" }
 rxjava2 = { group = "android.arch.paging", name = "rxjava2", version.ref = "rxjava2" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
