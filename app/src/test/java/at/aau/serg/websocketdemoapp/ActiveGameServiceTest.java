@@ -139,6 +139,7 @@ class ActiveGameServiceTest {
         cardList.add(mockCard);
         when(mockGameData.findCardByCardName(anyString())).thenReturn(mockCard);
         when(mockGameData.getCardList()).thenReturn(cardList);
+        activeGameService.setActivePlayer(PLAYER_ID);
 
         activeGameService.onCardFling(cardName);
 
@@ -150,6 +151,7 @@ class ActiveGameServiceTest {
     @Test
     void testHandlePlayCardResponse() throws JsonProcessingException {
         CardPlayedRequest cardPlayedRequest = new CardPlayedRequest();
+        cardPlayedRequest.setCardType(CardType.RED);
         cardPlayedRequest.setColor("red");
         cardPlayedRequest.setValue("5");
         Card expectedCard = new Card(CardType.RED, 5);
@@ -183,7 +185,7 @@ class ActiveGameServiceTest {
         when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
         when(mockDataHandler.getPlayerID()).thenReturn(playerID);
 
-        activeGameService.playCard(color, value);
+        activeGameService.playCard(color, color, value);
 
         verify(mockStompHandler).playCard(anyString());
     }
