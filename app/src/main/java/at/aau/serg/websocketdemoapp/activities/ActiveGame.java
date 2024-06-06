@@ -47,6 +47,9 @@ public class ActiveGame extends AppCompatActivity {
             R.id.playedCardPlayer2, R.id.playedCardPlayer3, R.id.playedCardPlayer4};
     private ActiveGameService activeGameService;
 
+    private boolean pendingFragmentTransaction = false;
+    private boolean isResumed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,12 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void displayCardsInHand() {
+
+        if (!isResumed) {
+            pendingFragmentTransaction = true;
+            return;
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         FrameLayout container = findViewById(R.id.cardsInHand);
@@ -92,7 +101,7 @@ public class ActiveGame extends AppCompatActivity {
             cardFragment.setFlingListener(activeGameService);
             transaction.add(container.getId(), cardFragment, "card_" + (c));
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     @SuppressLint("DiscouragedApi")
@@ -141,5 +150,21 @@ public class ActiveGame extends AppCompatActivity {
                         }
                     }
                 }))).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isResumed = true;
+        if (pendingFragmentTransaction) {
+            displayCardsInHand();
+            pendingFragmentTransaction = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isResumed = false;
     }
 }
