@@ -3,7 +3,6 @@ package at.aau.serg.websocketdemoapp.helper;
 import static android.content.Context.SENSOR_SERVICE;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -70,12 +69,5 @@ public class ShakeDetector implements SensorEventListener {
         if (accelerometer != null) {
             mSensorMgr.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
-    }
-
-    public void setShakeThreshold(float threshold){
-        threshold = SHAKE_THRESHOLD;
-    }
-    public void setMinTimeBetweenShakesMillisecs(int time){
-        time = MIN_TIME_BETWEEN_SHAKES_MILLISECS;
     }
 }

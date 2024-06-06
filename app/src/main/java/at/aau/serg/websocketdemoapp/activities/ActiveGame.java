@@ -144,9 +144,9 @@ public class ActiveGame extends AppCompatActivity {
                 circleParams.setMargins(8, 0, 8, 0); // Add margin between circles
                 colorImage.setLayoutParams(circleParams);
 
-                colorImage.setOnClickListener(v -> {
-                    onColorPicked(getResources().getResourceEntryName(color));
-                });
+                colorImage.setOnClickListener(v ->
+                        onColorPicked(getResources().getResourceEntryName(color))
+                );
 
                 playedGaiaColors.addView(colorImage);
                 playedGaiaColors.setVisibility(View.VISIBLE);
