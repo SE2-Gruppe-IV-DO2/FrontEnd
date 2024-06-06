@@ -3,7 +3,6 @@ package at.aau.serg.websocketdemoapp.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,7 +10,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -30,6 +28,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Comparator;
 import java.util.List;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -39,6 +38,7 @@ import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
+import at.aau.serg.websocketdemoapp.helper.ShakeDetector;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
@@ -53,6 +53,8 @@ public class ActiveGame extends AppCompatActivity {
 
     private boolean pendingFragmentTransaction = false;
     private boolean isResumed = false;
+
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,8 @@ public class ActiveGame extends AppCompatActivity {
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
         getData();
+
+        mShakeDetector = new ShakeDetector(this, this::sortCardsInHand);
     }
 
     public void refreshActiveGame() {
@@ -101,7 +105,7 @@ public class ActiveGame extends AppCompatActivity {
             int marginLeft = midPoint + (c - Math.round(gameData.getCardList().size() / 2f)) * overlapPx;
             float rotation = (c - Math.round(gameData.getCardList().size() / 2f)) * 0.75f;
             CardFragment cardFragment = CardFragment
-                    .newInstance(gameData.getCardList().get(c-1).getImgPath(), cardWidthPx, marginLeft, rotation);
+                    .newInstance(gameData.getCardList().get(c - 1).getImgPath(), cardWidthPx, marginLeft, rotation);
             cardFragment.setFlingListener(activeGameService);
             transaction.add(container.getId(), cardFragment, "card_" + (c));
         }
@@ -216,6 +220,19 @@ public class ActiveGame extends AppCompatActivity {
                 }))).start();
     }
 
+    private void sortCardsInHand() {
+        Comparator<Card> noColorFirst = Comparator.comparing(card -> card.getColor().isEmpty(), Comparator.reverseOrder());
+        Comparator<Card> nameComparator = Comparator.comparing(card -> card.getCardType().getName());
+        Comparator<Card> valueComparator = Comparator.comparingInt(Card::getValue);
+
+        gameData.getCardList().sort(noColorFirst
+                .thenComparing(nameComparator)
+                .thenComparing(valueComparator)
+        );
+
+        this.refreshActiveGame();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -224,11 +241,13 @@ public class ActiveGame extends AppCompatActivity {
             displayCardsInHand();
             pendingFragmentTransaction = false;
         }
+        mShakeDetector.startListening();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         isResumed = false;
+        mShakeDetector.stopListening();
     }
 }
