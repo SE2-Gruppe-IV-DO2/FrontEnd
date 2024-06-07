@@ -20,4 +20,5 @@
     <string name="points_view">Punkteuebersicht</string>
     <string name="active_player">Aktiver Spieler:</string>
     <string name="qr_code_image_description">QR Code um einer Lobby beizutreten</string>
+    <string name="play_gaia">Du hast die Gaia. Wähle eine Farbe.</string>
 </resources>

@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -139,6 +140,7 @@ class ActiveGameServiceTest {
         cardList.add(mockCard);
         when(mockGameData.findCardByCardName(anyString())).thenReturn(mockCard);
         when(mockGameData.getCardList()).thenReturn(cardList);
+        activeGameService.setActivePlayer(PLAYER_ID);
 
         activeGameService.onCardFling(cardName);
 
@@ -150,6 +152,7 @@ class ActiveGameServiceTest {
     @Test
     void testHandlePlayCardResponse() throws JsonProcessingException {
         CardPlayedRequest cardPlayedRequest = new CardPlayedRequest();
+        cardPlayedRequest.setCardType(CardType.RED);
         cardPlayedRequest.setColor("red");
         cardPlayedRequest.setValue("5");
         Card expectedCard = new Card(CardType.RED, 5);
@@ -183,8 +186,40 @@ class ActiveGameServiceTest {
         when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
         when(mockDataHandler.getPlayerID()).thenReturn(playerID);
 
-        activeGameService.playCard(color, value);
+        activeGameService.playCard(color, color, value);
 
         verify(mockStompHandler).playCard(anyString());
+    }
+
+    @Test
+    void testPlayGaia(){
+        CardType cardType = CardType.GAIA;
+        String color = "green";
+        int value = 0;
+        String lobbyCode = "testLobby";
+        String playerID = "player1";
+
+        when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
+        when(mockDataHandler.getPlayerID()).thenReturn(playerID);
+
+        activeGameService.playCard(cardType.getName(), color, value);
+
+        verify(mockStompHandler).playCard(anyString());
+    }
+
+    @Test
+    void testCardFlingWhenNotAllowed(){
+        String cardName = "testCard";
+        Card mockCard = new Card(CardType.RED, 5);
+        List<Card> cardList = new ArrayList<>();
+        cardList.add(mockCard);
+        when(mockGameData.findCardByCardName(anyString())).thenReturn(mockCard);
+        when(mockGameData.getCardList()).thenReturn(cardList);
+
+        activeGameService.setActivePlayer("someOtherPlayerId");
+
+        activeGameService.onCardFling(cardName);
+
+        verifyNoMoreInteractions(mockGameData);
     }
 }

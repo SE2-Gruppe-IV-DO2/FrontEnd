@@ -15,6 +15,7 @@ import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
+import lombok.Setter;
 
 public class ActiveGameService implements FlingListener {
     private final DataHandler dataHandler;
@@ -24,6 +25,8 @@ public class ActiveGameService implements FlingListener {
     private final GameData gameData;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private boolean isCurrentlyActivePlayer = false;
+    @Setter
+    private boolean preventCardFling = false;
 
     public ActiveGameService(Context context, ActiveGame activeGame, GameData gameData) {
         dataHandler = DataHandler.getInstance(context);
@@ -37,9 +40,10 @@ public class ActiveGameService implements FlingListener {
 
     @Override
     public void onCardFling(String cardName) {
+        if (!isCurrentlyActivePlayer() || preventCardFling) return;
         Card card = gameData.findCardByCardName(cardName);
         Log.d("CARD FOUND", card.getColor() + card.getValue());
-        playCard(card.getColor(), card.getValue());
+        playCard(card.getName(), card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
@@ -79,9 +83,10 @@ public class ActiveGameService implements FlingListener {
                 CardPlayedRequest cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
                 Log.d(TAG, "Card played: " + cardPlayedRequest);
                 Card c = new Card();
+                c.setCardType(cardPlayedRequest.getCardType());
                 c.setValue(Integer.valueOf(cardPlayedRequest.getValue()));
                 c.setColor(cardPlayedRequest.getColor());
-                c.setImgPath("card_" + cardPlayedRequest.getColor() + cardPlayedRequest.getValue());
+                c.createImagePath();
                 gameData.getCardsPlayed().add(c);
                 Log.d("CARD PLAYED", "Added card to played list: " + c);
                 activeGame.displayCardsPlayed();
@@ -90,12 +95,12 @@ public class ActiveGameService implements FlingListener {
             }
         });
     }
-
-    public void playCard(String color, int value) {
+    public void playCard(String name, String color, int value) {
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
-        playCardRequest.setColor(color);
+        playCardRequest.setName(name);
+        playCardRequest.setColor(color.replace("color_", ""));
         playCardRequest.setValue(String.valueOf(value));
 
         String jsonPayload = new Gson().toJson(playCardRequest);
