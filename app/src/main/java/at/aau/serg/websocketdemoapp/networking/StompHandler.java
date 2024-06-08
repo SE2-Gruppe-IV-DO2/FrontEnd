@@ -182,6 +182,13 @@ public class StompHandler {
         stompClient.send("/app/get_points", jsonPayload).subscribe();
     }
 
+    public void subscribeToRoundEndEvent(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/round_end/" + lobbyCode).subscribe(topicMessage -> {
+           String data = extractData(topicMessage.getPayload());
+           dataCallback.accept(data);
+        });
+    }
+
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_RECEIVED, topicMessage.getPayload())

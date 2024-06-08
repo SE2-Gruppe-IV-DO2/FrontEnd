@@ -33,6 +33,7 @@ public class ActiveGameService implements FlingListener {
 
         subscribeForPlayerChangedEvent();
         subscribeForPlayCardEvent();
+        subscribeForRoundEndEvent();
     }
 
     @Override
@@ -100,5 +101,15 @@ public class ActiveGameService implements FlingListener {
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
+    }
+
+    public void handleRoundEnd() {
+        gameData.getCardsPlayed().clear();
+        gameData.getCardList().clear();
+        activeGame.getData();
+    }
+
+    private void subscribeForRoundEndEvent() {
+        stompHandler.subscribeToRoundEndEvent(dataHandler.getLobbyCode(), response -> handleRoundEnd());
     }
 }
