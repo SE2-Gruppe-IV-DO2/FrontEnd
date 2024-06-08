@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.MainActivity;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
@@ -22,6 +23,7 @@ public class MainActivityService {
         stompHandler = StompHandler.getInstance();
         dataHandler = DataHandler.getInstance(context);
         this.mainActivity = activity;
+        checkAndSetPlayerName(activity.findViewById(R.id.playerName));
     }
 
     public void createGameService(EditText editText, TextView textView) {
@@ -66,6 +68,13 @@ public class MainActivityService {
         if (nameIsValid(playerName)) {
             dataHandler.setPlayerName(playerName);
             dataHandler.setPlayerID(String.valueOf(System.currentTimeMillis() / 1000));
+        }
+    }
+
+    private void checkAndSetPlayerName(EditText editText) {
+        String storedPlayerName = dataHandler.getPlayerName();
+        if (!storedPlayerName.isEmpty()) {
+            editText.setText(storedPlayerName);
         }
     }
 }
