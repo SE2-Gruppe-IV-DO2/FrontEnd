@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
