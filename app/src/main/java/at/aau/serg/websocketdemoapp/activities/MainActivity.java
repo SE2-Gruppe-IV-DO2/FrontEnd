@@ -43,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         tutorialButton.setOnClickListener(v -> tutorialButtonClicked());
     }
 
+    public void setPlayerNameView(String playerName) {
+        editText.setText(playerName);
+    }
+
     public void createGameButtonClicked() {
         Log.v("Create Game", "Button Clicked");
         // Create Game Button Click handling here

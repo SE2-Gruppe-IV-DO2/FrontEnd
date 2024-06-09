@@ -19,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 
 import at.aau.serg.websocketdemoapp.activities.JoinLobby;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
-import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.JoinLobbyService;
 
 class JoinLobbyServiceTest {
