@@ -2,15 +2,18 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
@@ -36,6 +39,7 @@ public class ActiveGameService implements FlingListener {
 
         subscribeForPlayerChangedEvent();
         subscribeForPlayCardEvent();
+        subscribeForPlayerWonTrickEvent();
     }
 
     @Override
@@ -77,6 +81,14 @@ public class ActiveGameService implements FlingListener {
         });
     }
 
+    private void subscribeForPlayerWonTrickEvent() {
+        stompHandler.subscribeForPlayerWonTrickEvent(response -> {
+            Log.d(TAG, "Received won trick response: " + response);
+            handleTrickWon(response);
+            gameData.getCardsPlayed().clear();
+        });
+    }
+
     public void handlePlayCardResponse(String playCardJSON) {
         activeGame.runOnUiThread(() -> {
             try {
@@ -95,6 +107,20 @@ public class ActiveGameService implements FlingListener {
             }
         });
     }
+
+    public void handleTrickWon(String trickWonJson) {
+        activeGame.runOnUiThread(() -> {
+            try {
+                TrickWonMessage trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
+                String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
+                Toast.makeText(activeGame, playerWonMessage, Toast.LENGTH_SHORT).show();
+
+            } catch (JsonProcessingException e) {
+                Log.e(TAG, "Error parsing play card response", e);
+            }
+        });
+    }
+
     public void playCard(String name, String color, int value) {
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
