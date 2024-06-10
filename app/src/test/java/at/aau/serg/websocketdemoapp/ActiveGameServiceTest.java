@@ -202,7 +202,6 @@ class ActiveGameServiceTest {
     @Test
     void testWonTrickEventExceptionForWrongJson() throws JsonProcessingException {
         TrickWonMessage trickWonMessage = new TrickWonMessage();
-        when(mockObjectMapper.readValue(gson.toJson(trickWonMessage), TrickWonMessage.class)).thenReturn(trickWonMessage);
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(0);
