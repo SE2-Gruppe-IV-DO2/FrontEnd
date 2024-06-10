@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoapp;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -200,16 +201,15 @@ class ActiveGameServiceTest {
     }
 
     @Test
-    void testWonTrickEventExceptionForWrongJson() throws JsonProcessingException {
-        TrickWonMessage trickWonMessage = new TrickWonMessage();
-
+    void testWonTrickEventExceptionForWrongJson() {
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(0);
             runnable.run();
             return null;
         }).when(mockActiveGame).runOnUiThread(any(Runnable.class));
-        activeGameService.handleTrickWon(gson.toJson(trickWonMessage));
-        verify(mockActiveGame).showPlayerWonTrickMessage(anyString());
+        assertThrows(IllegalArgumentException.class, ()-> {
+            activeGameService.handleTrickWon("test");
+        });
     }
 
     @Test

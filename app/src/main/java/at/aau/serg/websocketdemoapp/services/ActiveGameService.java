@@ -112,7 +112,7 @@ public class ActiveGameService implements FlingListener {
                 String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
                 activeGame.showPlayerWonTrickMessage(playerWonMessage);
             } catch (JsonProcessingException e) {
-                Log.e(TAG, "Error parsing play card response", e);
+                throw new IllegalArgumentException("Wrong message type!");
             }
         });
     }
