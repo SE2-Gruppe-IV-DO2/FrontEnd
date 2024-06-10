@@ -200,6 +200,20 @@ class ActiveGameServiceTest {
     }
 
     @Test
+    void testWonTrickEventExceptionForWrongJson() throws JsonProcessingException {
+        TrickWonMessage trickWonMessage = new TrickWonMessage();
+        when(mockObjectMapper.readValue(gson.toJson(trickWonMessage), TrickWonMessage.class)).thenReturn(trickWonMessage);
+
+        doAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(0);
+            runnable.run();
+            return null;
+        }).when(mockActiveGame).runOnUiThread(any(Runnable.class));
+        activeGameService.handleTrickWon(gson.toJson(trickWonMessage));
+        verify(mockActiveGame).showPlayerWonTrickMessage(anyString());
+    }
+
+    @Test
     void testPlayCard() {
         String color = "red";
         int value = 5;

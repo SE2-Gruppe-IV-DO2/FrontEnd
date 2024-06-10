@@ -75,14 +75,12 @@ public class ActiveGameService implements FlingListener {
 
     private void subscribeForPlayCardEvent() {
         stompHandler.subscribeForPlayCard(response -> {
-            Log.d(TAG, "Received play card response: " + response);
             handlePlayCardResponse(response);
         });
     }
 
     private void subscribeForPlayerWonTrickEvent() {
         stompHandler.subscribeForPlayerWonTrickEvent(response -> {
-            Log.d(TAG, "Received won trick response: " + response);
             handleTrickWon(response);
             gameData.getCardsPlayed().clear();
         });
