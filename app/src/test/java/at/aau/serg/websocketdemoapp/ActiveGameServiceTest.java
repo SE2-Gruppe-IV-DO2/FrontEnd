@@ -22,11 +22,13 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +37,14 @@ import java.util.function.Consumer;
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
 
+@RunWith(RobolectricTestRunner.class)
 class ActiveGameServiceTest {
     @Mock
     Context context;
@@ -174,6 +178,25 @@ class ActiveGameServiceTest {
         assertEquals(expectedCard.getColor(), cardList.get(0).getColor());
         verify(mockActiveGame).displayCardsPlayed();
         verify(mockGameData).getCardsPlayed();
+    }
+
+    @Test
+    void testWonTrickEvent() throws JsonProcessingException {
+        TrickWonMessage trickWonMessage = new TrickWonMessage();
+        trickWonMessage.setWinningPlayerId("Test1");
+        trickWonMessage.setWinningPlayerName("Test1");
+
+        when(mockObjectMapper.readValue(gson.toJson(trickWonMessage), TrickWonMessage.class)).thenReturn(trickWonMessage);
+
+        doAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(0);
+            runnable.run();
+            return null;
+        }).when(mockActiveGame).runOnUiThread(any(Runnable.class));
+
+        activeGameService.handleTrickWon(gson.toJson(trickWonMessage));
+
+        verify(mockActiveGame).showPlayerWonTrickMessage(anyString());
     }
 
     @Test

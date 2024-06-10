@@ -112,8 +112,7 @@ public class ActiveGameService implements FlingListener {
             try {
                 TrickWonMessage trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
                 String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
-                Toast.makeText(activeGame, playerWonMessage, Toast.LENGTH_SHORT).show();
-
+                activeGame.showPlayerWonTrickMessage(playerWonMessage);
             } catch (JsonProcessingException e) {
                 Log.e(TAG, "Error parsing play card response", e);
             }
