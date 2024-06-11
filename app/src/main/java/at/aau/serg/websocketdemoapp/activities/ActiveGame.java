@@ -199,6 +199,10 @@ public class ActiveGame extends AppCompatActivity {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show());
     }
 
+    public void showPlayerWonTrickMessage(String playerWonMessage) {
+        Toast.makeText(this, playerWonMessage, Toast.LENGTH_SHORT).show();
+    }
+
     public void getData() {
         new Thread(() -> stompHandler.dealNewRound(dataHandler.getLobbyCode(), dataHandler.getPlayerID(),
                 response -> new Handler(Looper.getMainLooper()).post(() -> {

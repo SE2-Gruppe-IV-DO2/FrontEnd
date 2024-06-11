@@ -24,7 +24,7 @@ public class StompHandler {
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
     private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    //private static final String actualServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
@@ -163,6 +163,13 @@ public class StompHandler {
 
     public void subscribeForPlayerJoinedLobbyEvent(Consumer<String> dataCallback) {
         stompClient.topic("/topic/player_joined_lobby").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+    }
+
+    public void subscribeForPlayerWonTrickEvent(Consumer<String> dataCallback) {
+        stompClient.topic("/topic/trick_won").subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
