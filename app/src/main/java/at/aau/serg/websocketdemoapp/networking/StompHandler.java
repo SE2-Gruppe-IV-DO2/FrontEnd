@@ -27,7 +27,7 @@ public class StompHandler {
     //private static final String localServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP,actualServerUrl);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
         connectToServer();
     }
 
