@@ -45,7 +45,7 @@ public class PointsViewService {
                 throw new JsonParsingException("JSON Parse Exception", e);
             }
             playerPoints = pointsResponse.getPlayerPoints();
-           pointsView.updateUI();
+            pointsView.updateUI();
         });
     }
 }
