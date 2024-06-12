@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import at.aau.serg.websocketdemoapp.activities.ActiveGame;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
+import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
@@ -37,6 +39,7 @@ public class ActiveGameService implements FlingListener {
         subscribeForPlayerChangedEvent();
         subscribeForPlayCardEvent();
         subscribeForRoundEndEvent();
+        subscribeForPlayerWonTrickEvent();
     }
 
     @Override
@@ -73,8 +76,14 @@ public class ActiveGameService implements FlingListener {
 
     private void subscribeForPlayCardEvent() {
         stompHandler.subscribeForPlayCard(response -> {
-            Log.d(TAG, "Received play card response: " + response);
             handlePlayCardResponse(response);
+        });
+    }
+
+    private void subscribeForPlayerWonTrickEvent() {
+        stompHandler.subscribeForPlayerWonTrickEvent(response -> {
+            handleTrickWon(response);
+            gameData.getCardsPlayed().clear();
         });
     }
 
@@ -96,6 +105,19 @@ public class ActiveGameService implements FlingListener {
             }
         });
     }
+
+    public void handleTrickWon(String trickWonJson) {
+        activeGame.runOnUiThread(() -> {
+            try {
+                TrickWonMessage trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
+                String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
+                activeGame.showPlayerWonTrickMessage(playerWonMessage);
+            } catch (JsonProcessingException e) {
+                throw new IllegalArgumentException("Wrong message type!");
+            }
+        });
+    }
+
     public void playCard(String name, String color, int value) {
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());

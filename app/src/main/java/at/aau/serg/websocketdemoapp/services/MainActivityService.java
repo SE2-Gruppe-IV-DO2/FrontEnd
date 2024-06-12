@@ -22,6 +22,7 @@ public class MainActivityService {
         stompHandler = StompHandler.getInstance();
         dataHandler = DataHandler.getInstance(context);
         this.mainActivity = activity;
+        checkAndSetPlayerName();
     }
 
     public void createGameService(EditText editText, TextView textView) {
@@ -66,6 +67,13 @@ public class MainActivityService {
         if (nameIsValid(playerName)) {
             dataHandler.setPlayerName(playerName);
             dataHandler.setPlayerID(String.valueOf(System.currentTimeMillis() / 1000));
+        }
+    }
+
+    private void checkAndSetPlayerName() {
+        String storedPlayerName = dataHandler.getPlayerName();
+        if (storedPlayerName != null) {
+            mainActivity.setPlayerNameView(storedPlayerName);
         }
     }
 }
