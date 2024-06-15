@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -63,7 +61,6 @@ class ActiveGameServiceTest {
     GameData mockGameData;
     @Mock
     ObjectMapper mockObjectMapper;
-    @InjectMocks
     private ActiveGameService activeGameService;
     @Captor
     private ArgumentCaptor<Consumer<String>> responseHandlerCaptor;
@@ -77,15 +74,15 @@ class ActiveGameServiceTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
 
-        when(sharedPreferences.edit()).thenReturn(mock(SharedPreferences.Editor.class));
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
-
+        when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(mockDataHandler.getPlayerID()).thenReturn(PLAYER_ID);
         when(mockDataHandler.getLobbyCode()).thenReturn(LOBBY_CODE);
         when(mockDataHandler.getPlayerName()).thenReturn(PLAYER_NAME);
         when(mockDataHandler.getGameData()).thenReturn(GAME_DATA);
+
         StompHandler.setInstance(mockStompHandler);
         DataHandler.setInstance(mockDataHandler);
+
         activeGameService = new ActiveGameService(context, mockActiveGame, mockGameData);
         gson = new Gson();
     }

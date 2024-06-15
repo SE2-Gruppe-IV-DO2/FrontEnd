@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
