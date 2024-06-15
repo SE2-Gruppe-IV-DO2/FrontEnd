@@ -120,6 +120,7 @@ public class ActiveGameService implements FlingListener {
             } catch (JsonProcessingException e) {
                 throw new IllegalArgumentException("Wrong message type!");
             }
+            activeGame.clearPlayedCards();
         });
     }
 

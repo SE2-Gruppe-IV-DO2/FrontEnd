@@ -237,6 +237,15 @@ public class ActiveGame extends AppCompatActivity {
         this.refreshActiveGame();
     }
 
+    public void clearPlayedCards() {
+        gameData.getCardsPlayed().clear();
+        for (int imageViewId : imageViewIds) {
+            ImageView imageView = findViewById(imageViewId);
+            imageView.setImageDrawable(null); // Remove the image
+            imageView.setVisibility(View.INVISIBLE); // Make the ImageView invisible
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
