@@ -102,16 +102,19 @@ public class LobbyRoomService {
 
     public void getPlayersInLobby() {
         this.stompHandler.getPlayersInLobbyMessage(dataHandler.getLobbyCode(), response -> new Handler(Looper.getMainLooper()).post(() -> {
-            GetPlayersInLobbyMessage playersInLobby;
-            try {
-                playersInLobby = objectMapper.readValue(response, GetPlayersInLobbyMessage.class);
-            } catch (JsonProcessingException e) {
-                throw new JsonParsingException("Failed to parse JSON response", e);
-            }
-            List<String> playerNames = playersInLobby.getPlayerNames();
-            addPlayerNamesToLobby(playerNames);
-
+            getPlayersInLobbyWithResponse(response);
         }));
+    }
+
+    public void getPlayersInLobbyWithResponse(String response) {
+        GetPlayersInLobbyMessage playersInLobby;
+        try {
+            playersInLobby = objectMapper.readValue(response, GetPlayersInLobbyMessage.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonParsingException("Failed to parse JSON response", e);
+        }
+        List<String> playerNames = playersInLobby.getPlayerNames();
+        addPlayerNamesToLobby(playerNames);
     }
 
     public void startGame() {

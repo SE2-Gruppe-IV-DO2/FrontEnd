@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
@@ -63,6 +65,7 @@ class LobbyRoomServiceTest {
 
     @Mock
     DataHandler dataHandler;
+    private Gson gson;
 
 
     LobbyRoomService lobbyRoomService;
@@ -70,6 +73,7 @@ class LobbyRoomServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
+        gson = new Gson();
 
         when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
@@ -149,5 +153,20 @@ class LobbyRoomServiceTest {
             lobbyRoomService = new LobbyRoomService(dataHandler, mockLobbyActivity);
             lobbyRoomService.createLobbyQRCode("");
         });
+    }
+
+    @Test
+    void testGetPlayersInLobbyWithResponse() {
+        String playerName1 = "TestPlayer1";
+
+        GetPlayersInLobbyMessage message = new GetPlayersInLobbyMessage();
+        message.setLobbyCode("lobbyCode");
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        message.setPlayerNames(playerNames);
+
+        lobbyRoomService.getPlayersInLobbyWithResponse(gson.toJson(message));
+        verify(lobbyRoomService.getParticipants()).append(playerName1 + "\n");
+
     }
 }
