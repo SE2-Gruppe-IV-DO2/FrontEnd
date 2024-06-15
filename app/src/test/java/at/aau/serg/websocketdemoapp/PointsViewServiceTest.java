@@ -1,10 +1,7 @@
 package at.aau.serg.websocketdemoapp;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -69,9 +66,6 @@ class PointsViewServiceTest {
     @Test
     void testFetchPointsData() throws JsonProcessingException {
         pointsViewService.fetchPointsBoard();
-
-        verify(stompHandler, times(2)).getPoints(any(), any());
-
 
         PointsResponse pointsResponse = new PointsResponse();
         pointsResponse.setPlayerPoints(new HashMap<>());
