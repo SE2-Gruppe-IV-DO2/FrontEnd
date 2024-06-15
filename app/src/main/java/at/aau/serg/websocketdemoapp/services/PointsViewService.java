@@ -35,7 +35,7 @@ public class PointsViewService {
         new Thread(() -> stompHandler.getPoints(dataHandler.getLobbyCode(), this::processPointData)).start();
     }
 
-    private void processPointData(String data) {
+    public void processPointData(String data) {
         pointsView.runOnUiThread(() -> {
             Log.d("Point Response", data);
             PointsResponse pointsResponse;
