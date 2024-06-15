@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
@@ -26,8 +27,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
 
@@ -60,6 +66,7 @@ class LobbyRoomServiceTest {
 
     @Mock
     DataHandler dataHandler;
+    private Gson gson;
 
 
     LobbyRoomService lobbyRoomService;
@@ -67,6 +74,7 @@ class LobbyRoomServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
+        gson = new Gson();
 
         when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
@@ -105,7 +113,6 @@ class LobbyRoomServiceTest {
 
         lobbyRoomService.onCreation();
 
-        verify(mockParticipants, times(1)).append(anyString());
         verify(mockLobbyCode, times(1)).setText(any());
     }
 
@@ -126,10 +133,55 @@ class LobbyRoomServiceTest {
     }
 
     @Test
+    public void addPlayersToLobby() {
+        String playerName1 = "TestPlayer1";
+        String playerName2 = "TestPlayer2";
+
+        when(lobbyRoomService.getParticipants().getText()).thenReturn(new StringBuilder());
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        playerNames.add(playerName2);
+
+        lobbyRoomService.addPlayerNamesToLobby(playerNames);
+
+        verify(lobbyRoomService.getParticipants()).append(playerName1 + "\n");
+        verify(lobbyRoomService.getParticipants()).append(playerName2 + "\n");
+    }
+
+    @Test
     void testFailingOnCreation() {
         assertThrows(RuntimeException.class, ()->{
             lobbyRoomService = new LobbyRoomService(dataHandler, mockLobbyActivity);
             lobbyRoomService.createLobbyQRCode("");
+        });
+    }
+
+    @Test
+    void testGetPlayersInLobbyWithResponse() {
+        String playerName1 = "TestPlayer1";
+
+        GetPlayersInLobbyMessage message = new GetPlayersInLobbyMessage();
+        message.setLobbyCode("lobbyCode");
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        message.setPlayerNames(playerNames);
+
+        lobbyRoomService.getPlayersInLobbyWithResponse(gson.toJson(message));
+        verify(lobbyRoomService.getParticipants()).append(playerName1 + "\n");
+    }
+
+    @Test
+    void testGetPlayersInLobbyWithResponse_WrongJson() {
+        String playerName1 = "TestPlayer1";
+
+        GetPlayersInLobbyMessage message = new GetPlayersInLobbyMessage();
+        message.setLobbyCode("lobbyCode");
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        message.setPlayerNames(playerNames);
+
+        assertThrows(JsonParsingException.class, ()->{
+            lobbyRoomService.getPlayersInLobbyWithResponse(message.toString());
         });
     }
 }

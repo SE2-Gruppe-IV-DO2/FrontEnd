@@ -10,6 +10,9 @@ import java.util.function.Consumer;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
 import at.aau.serg.websocketdemoapp.dto.PointsRequest;
+import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
+import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyRequest;
+import io.reactivex.Scheduler;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -125,6 +128,17 @@ public class StompHandler {
         });
 
         stompClient.send("/app/deal_new_round", gson.toJson(dealRoundRequest)).subscribe();
+    }
+
+    public void getPlayersInLobbyMessage(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/players_in_lobby").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+
+        GetPlayersInLobbyRequest playersInLobbyRequest = new GetPlayersInLobbyRequest();
+        playersInLobbyRequest.setLobbyCode(lobbyCode);
+        stompClient.send("/app/get_players_in_lobby", gson.toJson(playersInLobbyRequest)).subscribe();
     }
 
     public void initGameStartSubscription(LobbyRoom roomActivity) {
