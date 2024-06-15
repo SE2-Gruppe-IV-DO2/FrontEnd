@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
+import at.aau.serg.websocketdemoapp.dto.ActivePlayerMessage;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
@@ -54,11 +57,10 @@ class ActiveGameServiceTest {
     @Mock
     private StompHandler mockStompHandler;
     @Mock
-    private Context mockContext;
-    @Mock
     SharedPreferences sharedPreferences;
     @Mock
     GameData mockGameData;
+    ObjectMapper objectMapper;
     @Mock
     ObjectMapper mockObjectMapper;
     private ActiveGameService activeGameService;
@@ -85,12 +87,14 @@ class ActiveGameServiceTest {
 
         activeGameService = new ActiveGameService(context, mockActiveGame, mockGameData);
         gson = new Gson();
+        objectMapper = new ObjectMapper();
     }
 
     @AfterEach
     public void tearDown() {
         activeGameService = null;
         gson = null;
+        objectMapper = null;
     }
 
     @Test
@@ -122,14 +126,28 @@ class ActiveGameServiceTest {
 
     @Test
     void testSetActivePlayer_ActivePlayer() {
-        activeGameService.setActivePlayer(PLAYER_ID);
+        ActivePlayerMessage activePlayerMessage = new ActivePlayerMessage();
+        activePlayerMessage.setActivePlayerId(PLAYER_ID);
+        activePlayerMessage.setActivePlayerName(PLAYER_NAME);
+        try {
+            activeGameService.setActivePlayer(objectMapper.writeValueAsString(activePlayerMessage));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         assertTrue(activeGameService.isCurrentlyActivePlayer());
     }
 
     @Test
     void testSetActivePlayer_InactivePlayer() {
-        activeGameService.setActivePlayer("player2");
+        ActivePlayerMessage activePlayerMessage = new ActivePlayerMessage();
+        activePlayerMessage.setActivePlayerId("player2");
+        activePlayerMessage.setActivePlayerName(PLAYER_NAME);
+        try {
+            activeGameService.setActivePlayer(objectMapper.writeValueAsString(activePlayerMessage));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         assertFalse(activeGameService.isCurrentlyActivePlayer());
     }
@@ -142,7 +160,15 @@ class ActiveGameServiceTest {
         cardList.add(mockCard);
         when(mockGameData.findCardByCardName(anyString())).thenReturn(mockCard);
         when(mockGameData.getCardList()).thenReturn(cardList);
-        activeGameService.setActivePlayer(PLAYER_ID);
+
+        ActivePlayerMessage activePlayerMessage = new ActivePlayerMessage();
+        activePlayerMessage.setActivePlayerId(PLAYER_ID);
+        activePlayerMessage.setActivePlayerName(PLAYER_NAME);
+        try {
+            activeGameService.setActivePlayer(objectMapper.writeValueAsString(activePlayerMessage));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         activeGameService.onCardFling(cardName);
 
@@ -249,10 +275,30 @@ class ActiveGameServiceTest {
         when(mockGameData.findCardByCardName(anyString())).thenReturn(mockCard);
         when(mockGameData.getCardList()).thenReturn(cardList);
 
-        activeGameService.setActivePlayer("someOtherPlayerId");
+        ActivePlayerMessage activePlayerMessage = new ActivePlayerMessage();
+        activePlayerMessage.setActivePlayerId("player2");
+        activePlayerMessage.setActivePlayerName(PLAYER_NAME);
+        try {
+            activeGameService.setActivePlayer(objectMapper.writeValueAsString(activePlayerMessage));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         activeGameService.onCardFling(cardName);
 
         verifyNoMoreInteractions(mockGameData);
+    }
+
+    @Test
+    void testHandleRoundEnd() {
+        List<Card> actualList = new ArrayList<>();
+        when(mockGameData.getCardList()).thenReturn(actualList);
+        when(mockGameData.getCardsPlayed()).thenReturn(actualList);
+
+        activeGameService.handleRoundEnd();
+
+        Assertions.assertEquals(new ArrayList<>().size(), mockGameData.getCardList().size());
+        Assertions.assertEquals(new ArrayList<>().size(), mockGameData.getCardList().size());
+        verify(mockActiveGame, times(1)).getData();
     }
 }

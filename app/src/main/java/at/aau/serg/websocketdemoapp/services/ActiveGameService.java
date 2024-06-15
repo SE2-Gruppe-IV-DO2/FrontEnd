@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
+import at.aau.serg.websocketdemoapp.dto.ActivePlayerMessage;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
@@ -15,6 +16,7 @@ import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import lombok.Setter;
 
@@ -58,8 +60,14 @@ public class ActiveGameService implements FlingListener {
         stompHandler.subscribeForPlayerChangedEvent(this::setActivePlayer);
     }
 
-    public void setActivePlayer(String activePlayerId) {
-        if (dataHandler.getPlayerID().equals(activePlayerId)) {
+    public void setActivePlayer(String data) {
+        ActivePlayerMessage activePlayerMessage;
+        try {
+            activePlayerMessage = objectMapper.readValue(data, ActivePlayerMessage.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonParsingException("JSON PARSE ERROR", e);
+        }
+        if (dataHandler.getPlayerID().equals(activePlayerMessage.getActivePlayerId())) {
             isCurrentlyActivePlayer = true;
             activeGame.updateActivePlayerInformation(dataHandler.getPlayerName());
         }
@@ -74,9 +82,7 @@ public class ActiveGameService implements FlingListener {
     }
 
     private void subscribeForPlayCardEvent() {
-        stompHandler.subscribeForPlayCard(response -> {
-            handlePlayCardResponse(response);
-        });
+        stompHandler.subscribeForPlayCard(this::handlePlayCardResponse);
     }
 
     private void subscribeForPlayerWonTrickEvent() {
