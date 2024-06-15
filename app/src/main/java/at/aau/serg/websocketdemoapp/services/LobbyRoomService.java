@@ -20,7 +20,6 @@ import java.util.List;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
-import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
@@ -91,6 +90,7 @@ public class LobbyRoomService {
     }
 
     public void addPlayerNamesToLobby(List<String> playerNames) {
+        lobbyActivity.clearParticipantView();
         for (String playerName : playerNames) {
             addPlayerNameToLobby(playerName);
         }
