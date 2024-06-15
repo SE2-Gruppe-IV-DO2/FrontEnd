@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import at.aau.serg.websocketdemoapp.activities.PointsView;
 import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
 class PointsViewServiceTest {
@@ -16,11 +17,13 @@ class PointsViewServiceTest {
 
     @Mock
     Context context;
+    @Mock
+    PointsView pointsView;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        //pointsViewService = new PointsViewService(context, );
+        pointsViewService = new PointsViewService(pointsView, context);
     }
 
     @AfterEach
