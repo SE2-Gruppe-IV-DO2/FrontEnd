@@ -36,7 +36,6 @@ public class PointsViewService {
     }
 
     public void processPointData(String data) {
-        pointsView.runOnUiThread(() -> {
             Log.d("Point Response", data);
             PointsResponse pointsResponse;
             try {
@@ -45,7 +44,6 @@ public class PointsViewService {
                 throw new JsonParsingException("JSON Parse Exception", e);
             }
             playerPoints = pointsResponse.getPlayerPoints();
-            pointsView.updateUI();
-        });
+            pointsView.runOnUiThread(pointsView::updateUI);
     }
 }

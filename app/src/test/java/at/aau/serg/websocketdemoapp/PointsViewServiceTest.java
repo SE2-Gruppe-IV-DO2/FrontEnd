@@ -1,7 +1,10 @@
 package at.aau.serg.websocketdemoapp;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import at.aau.serg.websocketdemoapp.activities.PointsView;
 import at.aau.serg.websocketdemoapp.dto.PointsResponse;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
@@ -74,5 +78,24 @@ class PointsViewServiceTest {
         pointsViewService.processPointData(sampleJson);
 
         Assertions.assertEquals(0, pointsViewService.getPlayerPoints().size());
+    }
+
+    @Test
+    void testProcessPointData_Success() throws JsonProcessingException {
+        PointsResponse pointsResponse = new PointsResponse();
+        pointsResponse.setPlayerPoints(new HashMap<>());
+        String sampleJson = objectMapper.writeValueAsString(pointsResponse);
+
+        pointsViewService.processPointData(sampleJson);
+
+        Assertions.assertEquals(pointsResponse.getPlayerPoints(), pointsViewService.getPlayerPoints());
+        verify(pointsView).runOnUiThread(any(Runnable.class));
+    }
+
+    @Test
+    void testProcessPointData_JsonProcessingException() {
+        String invalidJson = "invalid json";
+        Assertions.assertThrows(JsonParsingException.class, () -> pointsViewService.processPointData(invalidJson));
+        verify(pointsView, never()).runOnUiThread(any(Runnable.class));
     }
 }
