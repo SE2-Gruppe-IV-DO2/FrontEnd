@@ -33,6 +33,7 @@ import java.util.List;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.LobbyRoomService;
 
@@ -167,6 +168,20 @@ class LobbyRoomServiceTest {
 
         lobbyRoomService.getPlayersInLobbyWithResponse(gson.toJson(message));
         verify(lobbyRoomService.getParticipants()).append(playerName1 + "\n");
+    }
 
+    @Test
+    void testGetPlayersInLobbyWithResponse_WrongJson() {
+        String playerName1 = "TestPlayer1";
+
+        GetPlayersInLobbyMessage message = new GetPlayersInLobbyMessage();
+        message.setLobbyCode("lobbyCode");
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        message.setPlayerNames(playerNames);
+
+        assertThrows(JsonParsingException.class, ()->{
+            lobbyRoomService.getPlayersInLobbyWithResponse(message.toString());
+        });
     }
 }
