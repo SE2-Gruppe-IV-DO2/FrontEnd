@@ -2,16 +2,27 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.util.List;
+
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
+import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
+import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import lombok.Getter;
 
@@ -23,6 +34,7 @@ public class LobbyRoomService {
     private final TextView participants;
     private final DataHandler dataHandler;
     private final TextView lobbyCodeTextfield;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private BarcodeEncoder mEncoder;
 
@@ -36,6 +48,8 @@ public class LobbyRoomService {
         this.lobbyActivity = activity;
         participants = lobbyActivity.findViewById(R.id.participants);
         lobbyCodeTextfield = lobbyActivity.findViewById(R.id.lobbyCode);
+
+        getPlayersInLobby();
 
         initPlayerJoinedLobbySubscription();
         initGameStartSubscription();
@@ -51,16 +65,11 @@ public class LobbyRoomService {
 
     public void startButtonClicked() {this.startGame();}
 
-    private void setPlayerName() {
-        addPlayerNameToLobby(dataHandler.getPlayerName());
-    }
-
     public void setLobbyCode() {
         lobbyCodeTextfield.setText(dataHandler.getLobbyCode());
     }
 
     public void onCreation() {
-        setPlayerName();
         setLobbyCode();
         try {
             createLobbyQRCode(dataHandler.getLobbyCode());
@@ -81,16 +90,31 @@ public class LobbyRoomService {
         participants.append(playerName + "\n");
     }
 
+    public void addPlayerNamesToLobby(List<String> playerNames) {
+        for (String playerName : playerNames) {
+            addPlayerNameToLobby(playerName);
+        }
+    }
+
     public void initPlayerJoinedLobbySubscription() {
         this.stompHandler.subscribeForPlayerJoinedLobbyEvent(this::addPlayerNameToLobby);
     }
 
+    public void getPlayersInLobby() {
+        this.stompHandler.getPlayersInLobbyMessage(dataHandler.getLobbyCode(), response -> new Handler(Looper.getMainLooper()).post(() -> {
+            GetPlayersInLobbyMessage playersInLobby;
+            try {
+                playersInLobby = objectMapper.readValue(response, GetPlayersInLobbyMessage.class);
+            } catch (JsonProcessingException e) {
+                throw new JsonParsingException("Failed to parse JSON response", e);
+            }
+            List<String> playerNames = playersInLobby.getPlayerNames();
+            addPlayerNamesToLobby(playerNames);
+
+        }));
+    }
+
     public void startGame() {
-        // Fügt 2 virtuelle Spieler zur Lobby um starten zu können
-        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test1", "test1", callback -> {
-        //});
-        //stompHandler.joinLobby(dataHandler.getLobbyCode(), "Test2", "test2", callback -> {
-        //});
         this.stompHandler.startGameForLobby(this.dataHandler.getLobbyCode());
     }
 

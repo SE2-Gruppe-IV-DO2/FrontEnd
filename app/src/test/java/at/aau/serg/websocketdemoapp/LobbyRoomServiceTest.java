@@ -26,6 +26,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
@@ -105,7 +108,6 @@ class LobbyRoomServiceTest {
 
         lobbyRoomService.onCreation();
 
-        verify(mockParticipants, times(1)).append(anyString());
         verify(mockLobbyCode, times(1)).setText(any());
     }
 
@@ -123,6 +125,22 @@ class LobbyRoomServiceTest {
         lobbyRoomService.addPlayerNameToLobby(playerName);
 
         verify(lobbyRoomService.getParticipants()).append(playerName + "\n");
+    }
+
+    @Test
+    public void addPlayersToLobby() {
+        String playerName1 = "TestPlayer1";
+        String playerName2 = "TestPlayer2";
+
+        when(lobbyRoomService.getParticipants().getText()).thenReturn(new StringBuilder());
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(playerName1);
+        playerNames.add(playerName2);
+
+        lobbyRoomService.addPlayerNamesToLobby(playerNames);
+
+        verify(lobbyRoomService.getParticipants()).append(playerName1 + "\n");
+        verify(lobbyRoomService.getParticipants()).append(playerName2 + "\n");
     }
 
     @Test
