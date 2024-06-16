@@ -89,6 +89,7 @@ public class PointsView extends AppCompatActivity {
                 tableLayout.addView(createRoundRow(i, playerPoints));
             }
         }
+        tableLayout.addView(createCheatRow(playerPoints));
         tableLayout.addView(createSumRow(playerPoints));
         return tableLayout;
     }
@@ -107,8 +108,9 @@ public class PointsView extends AppCompatActivity {
 
 
     public TableRow createRoundRow(int round, Map<String, HashMap<Integer, Integer>> playerPoints) {
+        String roundName = getResources().getString(R.string.roundName);
         TableRow roundRow = new TableRow(this);
-        roundRow.addView(createTextView("Round " + (round + 1)));
+        roundRow.addView(createTextView(roundName + " " + (round + 1)));
 
         for (int i = 0; i < playerPoints.keySet().size(); i++) {
             TextView t = createTextView("");
@@ -125,6 +127,18 @@ public class PointsView extends AppCompatActivity {
             playerRow.addView(createTextView(player));
         }
         return playerRow;
+    }
+
+    public TableRow createCheatRow(Map<String, HashMap<Integer, Integer>> playerPoints) {
+        TableRow cheatRow = new TableRow(this);
+        String cheatName = getResources().getString(R.string.cheatName);
+        cheatRow.addView(createTextView(cheatName));
+        for (Map.Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
+            Integer cheatPoints = entry.getValue().get(-1);
+            TextView t = createTextView(String.valueOf(cheatPoints));
+            cheatRow.addView(t);
+        }
+        return cheatRow;
     }
 
     private void setPointViews() {
