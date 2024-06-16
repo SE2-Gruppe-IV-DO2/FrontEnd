@@ -1,54 +1,101 @@
 package at.aau.serg.websocketdemoapp;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
+import at.aau.serg.websocketdemoapp.activities.PointsView;
+import at.aau.serg.websocketdemoapp.dto.PointsResponse;
+import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.PointsViewService;
 
 class PointsViewServiceTest {
     private PointsViewService pointsViewService;
 
+    @Mock
+    Context context;
+    @Mock
+    PointsView pointsView;
+    @Mock
+    SharedPreferences sharedPreferences;
+    @Mock
+    DataHandler dataHandler;
+    @Mock
+    StompHandler stompHandler;
+    ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp() {
-        pointsViewService = new PointsViewService();
+        MockitoAnnotations.openMocks(this);
+
+        when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
+
+        DataHandler.setInstance(dataHandler);
+        StompHandler.setInstance(stompHandler);
+        pointsViewService = new PointsViewService(pointsView, context);
+        objectMapper = new ObjectMapper();
     }
 
     @AfterEach
     void tearDown() {
         pointsViewService = null;
-    }
-
-    @Test
-    void testGetSumArrayNull() {
-        assertNull(pointsViewService.getSumArray());
-    }
-
-    @Test
-    void testCalcSum() {
-        Map<String, HashMap<Integer, Integer>> testMap = pointsViewService.getPlayerPoints();
-        testMap.put("Test 1", new HashMap<>());
-        testMap.put("Test 2", new HashMap<>());
-        testMap.put("Test 3", new HashMap<>());
-
-        Objects.requireNonNull(testMap.get("Test 1")).put(1, 35);
-        Objects.requireNonNull(testMap.get("Test 2")).put(1, -3);
-        Objects.requireNonNull(testMap.get("Test 3")).put(1, 18);
-        pointsViewService.calcSum();
-        int[] result = {-3, 18, 35};
-
-        Assertions.assertArrayEquals(result, pointsViewService.getSumArray());
+        objectMapper = null;
     }
 
     @Test
     void testGetPlayerPoints() {
         Assertions.assertEquals(0, pointsViewService.getPlayerPoints().size());
+    }
+
+    @Test
+    void testFetchPointsData() throws JsonProcessingException {
+        pointsViewService.fetchPointsBoard();
+
+        PointsResponse pointsResponse = new PointsResponse();
+        pointsResponse.setPlayerPoints(new HashMap<>());
+        String sampleJson = objectMapper.writeValueAsString(pointsResponse);
+
+        pointsViewService.processPointData(sampleJson);
+
+        Assertions.assertEquals(0, pointsViewService.getPlayerPoints().size());
+    }
+
+    @Test
+    void testProcessPointData_Success() throws JsonProcessingException {
+        PointsResponse pointsResponse = new PointsResponse();
+        pointsResponse.setPlayerPoints(new HashMap<>());
+        String sampleJson = objectMapper.writeValueAsString(pointsResponse);
+
+        pointsViewService.processPointData(sampleJson);
+
+        Assertions.assertEquals(pointsResponse.getPlayerPoints(), pointsViewService.getPlayerPoints());
+        verify(pointsView).runOnUiThread(any(Runnable.class));
+    }
+
+    @Test
+    void testProcessPointData_JsonProcessingException() {
+        String invalidJson = "invalid json";
+        Assertions.assertThrows(JsonParsingException.class, () -> pointsViewService.processPointData(invalidJson));
+        verify(pointsView, never()).runOnUiThread(any(Runnable.class));
     }
 }

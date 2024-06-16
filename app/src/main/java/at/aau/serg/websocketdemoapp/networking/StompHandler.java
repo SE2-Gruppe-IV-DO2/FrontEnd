@@ -9,9 +9,8 @@ import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
-import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyRequest;
-import io.reactivex.Scheduler;
+import at.aau.serg.websocketdemoapp.dto.PointsRequest;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
@@ -179,6 +178,26 @@ public class StompHandler {
         stompClient.topic("/topic/player_joined_lobby").subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
+        });
+    }
+
+    public void getPoints (String lobbyCode, Consumer<String> dataCallback) {
+        PointsRequest pointsRequest = new PointsRequest();
+        pointsRequest.setLobbyCode(lobbyCode);
+
+        stompClient.topic("/topic/points/" + lobbyCode).subscribe( topicMessage -> {
+           String data = extractData(topicMessage.getPayload());
+           dataCallback.accept(data);
+        });
+
+        String jsonPayload = gson.toJson(pointsRequest);
+        stompClient.send("/app/get_points", jsonPayload).subscribe();
+    }
+
+    public void subscribeToRoundEndEvent(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/round_end/" + lobbyCode).subscribe(topicMessage -> {
+           String data = extractData(topicMessage.getPayload());
+           dataCallback.accept(data);
         });
     }
 

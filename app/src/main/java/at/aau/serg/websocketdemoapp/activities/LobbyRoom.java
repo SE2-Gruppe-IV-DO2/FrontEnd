@@ -56,4 +56,8 @@ public class LobbyRoom extends AppCompatActivity {
         Intent intent = new Intent(LobbyRoom.this, ActiveGame.class);
         startActivity(intent);
     }
+
+    public void clearParticipantView() {
+        participants.setText("");
+    }
 }

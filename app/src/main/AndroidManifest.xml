@@ -32,7 +32,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.ActiveGame"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">

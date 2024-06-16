@@ -32,4 +32,6 @@
     <string name="active_player">"Active player: "</string>
     <string name="play_gaia">You have the Gaia. Choose a color.</string>
     <string name="qr_code_image_description">QR Code to enter a Lobby</string>
+    <string name="roundName">Round</string>
+    <string name="cheatName">Cheat</string>
 </resources>

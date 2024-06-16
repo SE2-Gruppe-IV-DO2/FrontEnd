@@ -2,13 +2,13 @@ package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
+import at.aau.serg.websocketdemoapp.dto.ActivePlayerMessage;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
@@ -16,6 +16,7 @@ import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
+import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import lombok.Setter;
 
@@ -38,6 +39,7 @@ public class ActiveGameService implements FlingListener {
 
         subscribeForPlayerChangedEvent();
         subscribeForPlayCardEvent();
+        subscribeForRoundEndEvent();
         subscribeForPlayerWonTrickEvent();
     }
 
@@ -58,8 +60,14 @@ public class ActiveGameService implements FlingListener {
         stompHandler.subscribeForPlayerChangedEvent(this::setActivePlayer);
     }
 
-    public void setActivePlayer(String activePlayerId) {
-        if (dataHandler.getPlayerID().equals(activePlayerId)) {
+    public void setActivePlayer(String data) {
+        ActivePlayerMessage activePlayerMessage;
+        try {
+            activePlayerMessage = objectMapper.readValue(data, ActivePlayerMessage.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonParsingException("JSON PARSE ERROR", e);
+        }
+        if (dataHandler.getPlayerID().equals(activePlayerMessage.getActivePlayerId())) {
             isCurrentlyActivePlayer = true;
             activeGame.updateActivePlayerInformation(dataHandler.getPlayerName());
         }
@@ -74,9 +82,7 @@ public class ActiveGameService implements FlingListener {
     }
 
     private void subscribeForPlayCardEvent() {
-        stompHandler.subscribeForPlayCard(response -> {
-            handlePlayCardResponse(response);
-        });
+        stompHandler.subscribeForPlayCard(this::handlePlayCardResponse);
     }
 
     private void subscribeForPlayerWonTrickEvent() {
@@ -114,6 +120,7 @@ public class ActiveGameService implements FlingListener {
             } catch (JsonProcessingException e) {
                 throw new IllegalArgumentException("Wrong message type!");
             }
+            activeGame.clearPlayedCards();
         });
     }
 
@@ -127,5 +134,15 @@ public class ActiveGameService implements FlingListener {
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
+    }
+
+    public void handleRoundEnd() {
+        gameData.getCardsPlayed().clear();
+        gameData.getCardList().clear();
+        activeGame.getData();
+    }
+
+    private void subscribeForRoundEndEvent() {
+        stompHandler.subscribeToRoundEndEvent(dataHandler.getLobbyCode(), response -> handleRoundEnd());
     }
 }
