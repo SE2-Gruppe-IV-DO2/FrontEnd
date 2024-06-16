@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.text.Editable;
 import android.widget.EditText;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 
 import at.aau.serg.websocketdemoapp.activities.JoinLobby;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
+import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.JoinLobbyService;
 
 class JoinLobbyServiceTest {
@@ -33,6 +36,9 @@ class JoinLobbyServiceTest {
     Context context;
     @Mock
     SharedPreferences sharedPreferences;
+    @Mock
+    StompHandler stompHandler;
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -41,11 +47,13 @@ class JoinLobbyServiceTest {
         when(sharedPreferences.edit()).thenReturn(mock(SharedPreferences.Editor.class));
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(sharedPreferences.getString(anyString(), anyString())).thenReturn("Test");
+        objectMapper = new ObjectMapper();
         joinLobbyService = new JoinLobbyService(context, joinLobby);
     }
 
     @AfterEach
     void tearDown() {
+        objectMapper = null;
         joinLobbyService = null;
     }
 
@@ -65,5 +73,19 @@ class JoinLobbyServiceTest {
 
         joinLobbyService.joinLobbyWithIDClicked("lobbyCode");
         verify(joinLobby).changeToLobbyRoomActivity();
+    }
+
+    @Test
+    void testJoinLobbyWithIDButton_StompHandlerCalled() {
+        when(dataHandler.getPlayerID()).thenReturn("playerId");
+        when(dataHandler.getPlayerName()).thenReturn("playerName");
+        Editable editable = mock(Editable.class);
+        when(editable.toString()).thenReturn("12345");
+        when(editText.getText()).thenReturn(editable);
+
+        joinLobbyService.joinLobbyWithIDClicked("lobbyCode");
+        /*
+        verify(stompHandler, times(1)).joinLobby(eq("lobbyCode"), eq("playerId"), eq("playerName"), any());
+         */
     }
 }
