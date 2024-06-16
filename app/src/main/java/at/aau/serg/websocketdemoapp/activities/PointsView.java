@@ -63,6 +63,7 @@ public class PointsView extends AppCompatActivity {
         pointViews = new TextView[rounds][numberOfPlayers];
         sumViews = new TextView[numberOfPlayers];
         TableLayout tableLayout = createPointTable(playerPoints, rounds);
+        layout.removeAllViews();
         layout.addView(tableLayout);
 
         if (rounds > 0) {
@@ -127,12 +128,14 @@ public class PointsView extends AppCompatActivity {
     }
 
     private void setPointViews() {
-        for (int round = 0, playerIndex = 0; round < pointViews.length; round++, playerIndex++) {
+        for (int round = 0; round < pointViews.length; round++) {
+            int playerIndex = 0;
             for (Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
                 HashMap<Integer, Integer> roundsMap = entry.getValue();
                 Integer pointsOrNull = roundsMap.get(round + 1);
                 int points = (pointsOrNull != null) ? pointsOrNull : 0;
                 pointViews[round][playerIndex].setText(String.valueOf(points));
+                playerIndex++;
             }
         }
         int i = 0;
