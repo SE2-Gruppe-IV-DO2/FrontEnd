@@ -55,9 +55,9 @@ public class PointsView extends AppCompatActivity {
             displayPlayerNamesOnly();
             return;
         }
-        int numberOfPlayers = playerPoints.size();
-        int rounds = playerPoints.values().stream().findFirst().map(Map::size).orElse(0);
 
+        int numberOfPlayers = playerPoints.size();
+        int rounds = calculateRounds();
         calcSum();
 
         pointViews = new TextView[rounds][numberOfPlayers];
@@ -69,6 +69,17 @@ public class PointsView extends AppCompatActivity {
         if (rounds > 0) {
             setPointViews();
         }
+    }
+
+    private int calculateRounds() {
+        int rounds = 0;
+        for (Map.Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
+            if (entry.getValue() != null) {
+                rounds = entry.getValue().size();
+                break;
+            }
+        }
+        return rounds;
     }
 
     private void displayPlayerNamesOnly() {
