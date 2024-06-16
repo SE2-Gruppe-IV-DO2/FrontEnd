@@ -57,7 +57,7 @@ public class ActiveGameService implements FlingListener {
     }
 
     private void subscribeForPlayerChangedEvent() {
-        stompHandler.subscribeForPlayerChangedEvent(this::setActivePlayer);
+        stompHandler.subscribeForPlayerChangedEvent(dataHandler.getLobbyCode(), this::setActivePlayer);
     }
 
     public void setActivePlayer(String data) {
@@ -82,11 +82,11 @@ public class ActiveGameService implements FlingListener {
     }
 
     private void subscribeForPlayCardEvent() {
-        stompHandler.subscribeForPlayCard(this::handlePlayCardResponse);
+        stompHandler.subscribeForPlayCard(dataHandler.getLobbyCode(), this::handlePlayCardResponse);
     }
 
     private void subscribeForPlayerWonTrickEvent() {
-        stompHandler.subscribeForPlayerWonTrickEvent(response -> {
+        stompHandler.subscribeForPlayerWonTrickEvent(dataHandler.getLobbyCode(), response -> {
             handleTrickWon(response);
             gameData.getCardsPlayed().clear();
         });

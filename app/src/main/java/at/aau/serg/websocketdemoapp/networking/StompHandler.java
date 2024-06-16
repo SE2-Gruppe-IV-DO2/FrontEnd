@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyRequest;
 import at.aau.serg.websocketdemoapp.dto.PointsRequest;
@@ -25,8 +24,8 @@ public class StompHandler {
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
-    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    //private static final String actualServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    //private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    private static final String actualServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
@@ -84,7 +83,7 @@ public class StompHandler {
         payload.put("userName", userName);
         String jsonPayload = gson.toJson(payload);
 
-        stompClient.topic("/topic/lobby-created").subscribe(topicMessage -> {
+        stompClient.topic("/topic/lobby-created/" + userID).subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String lobbyCode = extractData(topicMessage.getPayload());
             lobbyCodeCallback.accept(lobbyCode);
@@ -104,7 +103,7 @@ public class StompHandler {
         payload.put("userName", userName);
         String jsonPayload = gson.toJson(payload);
 
-        stompClient.topic("/topic/lobby-joined").subscribe(topicMessage -> {
+        stompClient.topic("/topic/lobby-joined/" + lobbyCode + "/" + userID).subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
@@ -118,10 +117,9 @@ public class StompHandler {
         dealRoundRequest.setLobbyCode(lobbyCode);
         dealRoundRequest.setUserID(userID);
 
-        stompClient.topic("/topic/new-round-dealt").subscribe(topicMessage -> {
+        stompClient.topic("/topic/new-round-dealt/" + lobbyCode + "/" + userID).subscribe(topicMessage -> {
             Log.d(TAG_RECEIVED, topicMessage.getPayload());
             String data = extractData(topicMessage.getPayload());
-            Log.d("DealRound", data);
             dataCallback.accept(data);
         });
 
@@ -129,7 +127,7 @@ public class StompHandler {
     }
 
     public void getPlayersInLobbyMessage(String lobbyCode, Consumer<String> dataCallback) {
-        stompClient.topic("/topic/players_in_lobby").subscribe(topicMessage -> {
+        stompClient.topic("/topic/players_in_lobby/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
@@ -139,11 +137,10 @@ public class StompHandler {
         stompClient.send("/app/get_players_in_lobby", gson.toJson(playersInLobbyRequest)).subscribe();
     }
 
-    public void initGameStartSubscription(LobbyRoom roomActivity) {
-        stompClient.topic("/topic/game_for_lobby_started").subscribe(topicMessage -> {
+    public void initGameStartSubscription(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/game_for_lobby_started/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
-
-            roomActivity.changeToGameActivity();
+            dataCallback.accept(data);
         });
     }
 
@@ -155,15 +152,15 @@ public class StompHandler {
         stompClient.send("/app/start_game_for_lobby", jsonPayload).subscribe();
     }
 
-    public void subscribeForPlayerChangedEvent(Consumer<String> dataCallback) {
-        stompClient.topic("/topic/active_player_changed").subscribe(topicMessage -> {
+    public void subscribeForPlayerChangedEvent(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/active_player_changed/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
     }
 
-    public void subscribeForPlayCard(Consumer<String> dataCallback) {
-        stompClient.topic("/topic/card_played").subscribe(topicMessage ->{
+    public void subscribeForPlayCard(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/card_played/" + lobbyCode).subscribe(topicMessage ->{
            String data = extractData(topicMessage.getPayload());
            Log.d("PLAY CARD RESPONSE", data);
            dataCallback.accept(data);
@@ -174,8 +171,8 @@ public class StompHandler {
         stompClient.send("/app/play_card", jsonPayload).subscribe();
     }
 
-    public void subscribeForPlayerJoinedLobbyEvent(Consumer<String> dataCallback) {
-        stompClient.topic("/topic/player_joined_lobby").subscribe(topicMessage -> {
+    public void subscribeForPlayerJoinedLobbyEvent(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/player_joined_lobby/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
@@ -201,8 +198,8 @@ public class StompHandler {
         });
     }
 
-    public void subscribeForPlayerWonTrickEvent(Consumer<String> dataCallback) {
-        stompClient.topic("/topic/trick_won").subscribe(topicMessage -> {
+    public void subscribeForPlayerWonTrickEvent(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/trick_won/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });

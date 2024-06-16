@@ -104,7 +104,7 @@ class ActiveGameServiceTest {
             Consumer<String> callback = invocation.getArgument(0);
             callback.accept(PLAYER_ID); // Simulate server response that the player is active
             return null;
-        }).when(mockStompHandler).subscribeForPlayerChangedEvent(any());
+        }).when(mockStompHandler).subscribeForPlayerChangedEvent(anyString(), any());
 
         // Assert
         //verify(mockActiveGame, times(1)).updateActivePlayerInformation(PLAYER_NAME);
@@ -118,7 +118,7 @@ class ActiveGameServiceTest {
             Consumer<String> callback = invocation.getArgument(0);
             callback.accept("otherPlayerId"); // Simulate server response that the player is inactive
             return null;
-        }).when(mockStompHandler).subscribeForPlayerChangedEvent(any());
+        }).when(mockStompHandler).subscribeForPlayerChangedEvent(anyString(), any());
 
         // Assert
         assert (!activeGameService.isCurrentlyActivePlayer());

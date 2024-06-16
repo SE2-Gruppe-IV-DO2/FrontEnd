@@ -20,6 +20,7 @@ import java.util.List;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
+import at.aau.serg.websocketdemoapp.dto.StartGameResponse;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
@@ -82,7 +83,20 @@ public class LobbyRoomService {
     }
 
     public void initGameStartSubscription() {
-        this.stompHandler.initGameStartSubscription(this.lobbyActivity);
+        this.stompHandler.initGameStartSubscription(dataHandler.getLobbyCode(), this::handleStartGameResponse);
+    }
+
+    private void handleStartGameResponse(String data) {
+        StartGameResponse startGameResponse;
+        try {
+            startGameResponse = objectMapper.readValue(data, StartGameResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (startGameResponse.getResponse().equals("Game started!")) {
+            lobbyActivity.changeToGameActivity();
+        }
     }
 
     public void addPlayerNameToLobby(String playerName) {
@@ -97,7 +111,7 @@ public class LobbyRoomService {
     }
 
     public void initPlayerJoinedLobbySubscription() {
-        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(this::addPlayerNameToLobby);
+        this.stompHandler.subscribeForPlayerJoinedLobbyEvent(dataHandler.getLobbyCode(), this::addPlayerNameToLobby);
     }
 
     public void getPlayersInLobby() {
