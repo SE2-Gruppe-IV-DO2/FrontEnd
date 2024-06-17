@@ -91,7 +91,7 @@ public class LobbyRoomService {
         try {
             startGameResponse = objectMapper.readValue(data, StartGameResponse.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonParsingException("JSON PARSE", e);
         }
 
         if (startGameResponse.getResponse().equals("Game started!")) {
