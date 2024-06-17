@@ -4,6 +4,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,14 +22,20 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.activities.LobbyRoom;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyMessage;
@@ -90,6 +97,8 @@ class LobbyRoomServiceTest {
         when(dataHandler.getPlayerID()).thenReturn("playerId");
         when(dataHandler.getPlayerName()).thenReturn("playerName");
         when(dataHandler.getLobbyCode()).thenReturn("lobbyCode");
+
+        StompHandler.setInstance(stompHandler);
 
         lobbyRoomService = new LobbyRoomService(dataHandler, mockLobbyActivity);
         lobbyRoomService.setmEncoder(mockBarcodeEncoder);
@@ -183,5 +192,70 @@ class LobbyRoomServiceTest {
         assertThrows(JsonParsingException.class, ()->{
             lobbyRoomService.getPlayersInLobbyWithResponse(message.toString());
         });
+    }
+
+    @Test
+    void testStartGameException() throws Exception {
+        when(dataHandler.getPlayerID()).thenReturn("playerId");
+        when(dataHandler.getPlayerName()).thenReturn("playerName");
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Consumer<String> callback = invocation.getArgument(1); // Fixing the index to 1
+                new Thread(() -> {
+                    try {
+                        callback.accept("invalid JSON");
+                    } catch (JsonParsingException e) {
+                        future.completeExceptionally(e);
+                    } catch (Exception e) {
+                        future.completeExceptionally(new RuntimeException("Unexpected exception", e));
+                    }
+                }).start();
+                return null;
+            }
+        }).when(stompHandler).initGameStartSubscription(anyString(), any());
+
+        Assertions.assertThrows(JsonParsingException.class, () -> {
+            lobbyRoomService.initGameStartSubscription();
+            try {
+                future.get(5, TimeUnit.SECONDS); // Wait with timeout
+            } catch (Exception e) {
+                if (e.getCause() instanceof JsonParsingException) {
+                    throw (JsonParsingException) e.getCause();
+                } else {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    @Test
+    void testStartGameSuccess() {
+        String successfulResponse = "{\"response\":\"Game started!\"}";
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Consumer<String> callback = invocation.getArgument(1);
+                new Thread(() -> {
+                    callback.accept(successfulResponse);
+                    future.complete(null);
+                }).start();
+                return null;
+            }
+        }).when(stompHandler).initGameStartSubscription(anyString(), any());
+
+        lobbyRoomService.initGameStartSubscription();
+
+        try {
+            future.get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        verify(mockLobbyActivity, times(1)).changeToGameActivity();
     }
 }

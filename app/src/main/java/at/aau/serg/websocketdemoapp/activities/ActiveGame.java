@@ -212,14 +212,11 @@ public class ActiveGame extends AppCompatActivity {
                     } catch (JsonProcessingException e) {
                         throw new JsonParsingException("Failed to parse JSON response", e);
                     }
-                    if (handCardsRequest.getPlayerID().equals(dataHandler.getPlayerID())) {
-                        gameData.setCardList(handCardsRequest.getHandCards());
-                        dataHandler.setGameData(response);
-
-                        if (!isFinishing() && !isDestroyed()) {
+                    gameData.setCardList(handCardsRequest.getHandCards());
+                    dataHandler.setGameData(response);
+                    if (!isFinishing() && !isDestroyed()) {
                             runOnUiThread(this::refreshActiveGame);
                             runOnUiThread(this::checkForGaiaAndChooseColor);
-                        }
                     }
                 }))).start();
     }
