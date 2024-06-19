@@ -57,7 +57,7 @@ public class CheatingAccusationService {
         new Thread(() -> this.stompHandler.sendCheatingAccusation(dataHandler.getLobbyCode(), dataHandler.getPlayerID(), accusedPlayerId, this::handleCheatingResult)).start();
     }
 
-    private void handleCheatingResult(String data) {
+    public void handleCheatingResult(String data) {
         CheatingAccusationRequest cheatingAccusationRequest;
         try{
             cheatingAccusationRequest = objectMapper.readValue(data, CheatingAccusationRequest.class);
