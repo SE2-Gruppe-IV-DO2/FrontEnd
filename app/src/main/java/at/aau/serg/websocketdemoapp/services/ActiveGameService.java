@@ -73,7 +73,7 @@ public class ActiveGameService implements FlingListener {
         }
         else {
             isCurrentlyActivePlayer = false;
-            activeGame.updateActivePlayerInformation("OTHER_PLAYER_NAME");
+            activeGame.updateActivePlayerInformation(activePlayerMessage.getActivePlayerName());
         }
     }
 

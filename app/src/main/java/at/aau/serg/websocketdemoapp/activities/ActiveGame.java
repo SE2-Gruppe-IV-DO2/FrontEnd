@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -196,7 +197,10 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     public void updateActivePlayerInformation(String activePlayerName) {
-        runOnUiThread(() -> Toast.makeText(getApplicationContext(), getString(R.string.active_player) + activePlayerName, Toast.LENGTH_SHORT).show());
+        runOnUiThread(() -> {
+            TextView activePlayerNameView = findViewById(R.id.active_player_name);
+            activePlayerNameView.setText(activePlayerName);
+        });
     }
 
     public void showPlayerWonTrickMessage(String playerWonMessage) {
