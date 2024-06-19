@@ -110,6 +110,7 @@ class JoinLobbyServiceTest {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
+        // Mocking stompHandler.joinLobby to throw an exception with invalid JSON
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -117,7 +118,7 @@ class JoinLobbyServiceTest {
                 new Thread(() -> {
                     try {
                         callback.accept("invalid JSON");
-                    } catch (JsonParsingException e) {
+                    } catch (JsonParsingException e) { // Catching specific JsonParsingException
                         future.completeExceptionally(e);
                     } catch (Exception e) {
                         future.completeExceptionally(new RuntimeException("Unexpected exception", e));
@@ -127,16 +128,13 @@ class JoinLobbyServiceTest {
             }
         }).when(stompHandler).joinLobby(anyString(), anyString(), anyString(), any());
 
-        assertThrows(JsonParsingException.class, () -> {
+        // Asserting that JsonParsingException is thrown and properly handled
+        JsonParsingException exception = assertThrows(JsonParsingException.class, () -> {
             joinLobbyService.joinLobbyWithIDClicked("lobbyCode");
             try {
                 future.get(5, TimeUnit.SECONDS); // Wait with timeout
             } catch (Exception e) {
-                if (e.getCause() instanceof JsonParsingException) {
-                    throw (JsonParsingException) e.getCause();
-                } else {
-                    throw new RuntimeException(e);
-                }
+                throw (Exception) e.getCause();
             }
         });
     }
