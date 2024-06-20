@@ -54,6 +54,7 @@ public class ActiveGame extends AppCompatActivity {
 
     private boolean pendingFragmentTransaction = false;
     private boolean isResumed = false;
+    private boolean alreadyShown = false;
 
     private ShakeDetector mShakeDetector;
 
@@ -218,9 +219,10 @@ public class ActiveGame extends AppCompatActivity {
                     }
                     gameData.setCardList(handCardsRequest.getHandCards());
                     dataHandler.setGameData(response);
+                    alreadyShown = false;
                     if (!isFinishing() && !isDestroyed()) {
-                            runOnUiThread(this::refreshActiveGame);
-                            runOnUiThread(this::checkForGaiaAndChooseColor);
+                        runOnUiThread(this::refreshActiveGame);
+                        runOnUiThread(this::checkForGaiaAndChooseColor);
                     }
                 }))).start();
     }
@@ -245,6 +247,12 @@ public class ActiveGame extends AppCompatActivity {
             imageView.setImageDrawable(null); // Remove the image
             imageView.setVisibility(View.INVISIBLE); // Make the ImageView invisible
         }
+    }
+
+    public void showCheatingAccusationView() {
+        alreadyShown = true;
+        Intent intent = new Intent(ActiveGame.this, CheatingAccusationActivity.class);
+        startActivity(intent);
     }
 
     @Override

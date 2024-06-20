@@ -35,4 +35,6 @@
     <string name="roundName">Round</string>
     <string name="cheatName">Cheat</string>
     <string name="active_player_label">Active player:</string>
+    <string name="nobodyCheated">Nobody</string>
+    <string name="has_any_player_cheated">Has any player cheated?</string>
 </resources>

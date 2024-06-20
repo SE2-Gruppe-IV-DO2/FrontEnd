@@ -70,8 +70,7 @@ public class ActiveGameService implements FlingListener {
         if (dataHandler.getPlayerID().equals(activePlayerMessage.getActivePlayerId())) {
             isCurrentlyActivePlayer = true;
             activeGame.updateActivePlayerInformation(dataHandler.getPlayerName());
-        }
-        else {
+        } else {
             isCurrentlyActivePlayer = false;
             activeGame.updateActivePlayerInformation(activePlayerMessage.getActivePlayerName());
         }
@@ -139,6 +138,9 @@ public class ActiveGameService implements FlingListener {
     public void handleRoundEnd() {
         gameData.getCardsPlayed().clear();
         gameData.getCardList().clear();
+
+        activeGame.showCheatingAccusationView();
+
         activeGame.getData();
     }
 
