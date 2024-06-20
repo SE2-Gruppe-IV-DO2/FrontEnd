@@ -23,4 +23,6 @@
     <string name="play_gaia">Du hast die Gaia. Wähle eine Farbe.</string>
     <string name="roundName">Runde</string>
     <string name="cheatName">Schummel</string>
+    <string name="nobodyCheated">Niemand</string>
+    <string name="has_any_player_cheated">Hat jemand geschummelt?</string>
 </resources>

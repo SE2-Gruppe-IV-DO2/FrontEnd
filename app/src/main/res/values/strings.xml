@@ -34,4 +34,6 @@
     <string name="qr_code_image_description">QR Code to enter a Lobby</string>
     <string name="roundName">Round</string>
     <string name="cheatName">Cheat</string>
+    <string name="nobodyCheated">Nobody</string>
+    <string name="has_any_player_cheated">Has any player cheated?</string>
 </resources>

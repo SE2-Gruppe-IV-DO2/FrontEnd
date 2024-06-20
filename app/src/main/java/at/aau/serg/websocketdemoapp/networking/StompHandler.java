@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import at.aau.serg.websocketdemoapp.dto.CheatingAccusationRequest;
 import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyRequest;
 import at.aau.serg.websocketdemoapp.dto.PointsRequest;
@@ -192,10 +193,25 @@ public class StompHandler {
     }
 
     public void subscribeToRoundEndEvent(String lobbyCode, Consumer<String> dataCallback) {
-        stompClient.topic("/topic/round_end/" + lobbyCode).subscribe(topicMessage -> {
+        stompClient.topic("/topic/round_ended/" + lobbyCode).subscribe(topicMessage -> {
            String data = extractData(topicMessage.getPayload());
            dataCallback.accept(data);
         });
+    }
+
+    public void sendCheatingAccusation(String lobbyCode, String playerId, String accusedPlayerId, Consumer<String> dataCallback) {
+        CheatingAccusationRequest cheatingAccusationRequest = new CheatingAccusationRequest();
+        cheatingAccusationRequest.setLobbyCode(lobbyCode);
+        cheatingAccusationRequest.setUserID(playerId);
+        cheatingAccusationRequest.setAccusedUserId(accusedPlayerId);
+
+        stompClient.topic("/topic/accusation_result").subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+
+        String jsonPayLoad = gson.toJson(cheatingAccusationRequest);
+        stompClient.send("/app/accuse_player_of_cheating", jsonPayLoad).subscribe();
     }
 
     public void subscribeForPlayerWonTrickEvent(String lobbyCode, Consumer<String> dataCallback) {
