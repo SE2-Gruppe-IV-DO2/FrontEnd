@@ -100,7 +100,11 @@
         app:layout_constraintBottom_toTopOf="@+id/playedCardPlayer2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="10dp"
+        app:cardBackgroundColor="@color/mystical_purple"
+        app:cardCornerRadius="20dp"
+
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -109,13 +113,15 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
             >
+
             <TextView
                 android:id="@+id/active_player_label"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
+                android:fontFamily="sans-serif-medium"
                 android:text="@string/active_player_label"
-                style="@style/TextViewStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
