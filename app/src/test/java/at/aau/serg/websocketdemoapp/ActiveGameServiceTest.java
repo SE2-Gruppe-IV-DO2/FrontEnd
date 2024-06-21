@@ -85,7 +85,7 @@ class ActiveGameServiceTest {
         StompHandler.setInstance(mockStompHandler);
         DataHandler.setInstance(mockDataHandler);
 
-        activeGameService = new ActiveGameService(context, mockActiveGame, mockGameData);
+        activeGameService = ActiveGameService.getInstance(context, mockActiveGame, mockGameData);
         gson = new Gson();
         objectMapper = new ObjectMapper();
     }

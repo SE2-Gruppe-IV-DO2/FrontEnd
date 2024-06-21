@@ -22,7 +22,7 @@ import lombok.Setter;
 
 public class ActiveGameService implements FlingListener {
     private final DataHandler dataHandler;
-    private final ActiveGame activeGame;
+    private ActiveGame activeGame;
     private final StompHandler stompHandler;
     private static final String TAG = "DealRound";
     private final GameData gameData;
@@ -30,8 +30,10 @@ public class ActiveGameService implements FlingListener {
     private boolean isCurrentlyActivePlayer = false;
     @Setter
     private boolean preventCardFling = false;
+    private static ActiveGameService instance = null;
 
-    public ActiveGameService(Context context, ActiveGame activeGame, GameData gameData) {
+    private ActiveGameService(Context context, ActiveGame activeGame, GameData gameData) {
+        Log.d("ActiveGameService", "Constructor called");
         dataHandler = DataHandler.getInstance(context);
         this.activeGame = activeGame;
         stompHandler = StompHandler.getInstance();
@@ -43,8 +45,20 @@ public class ActiveGameService implements FlingListener {
         subscribeForPlayerWonTrickEvent();
     }
 
+    public static ActiveGameService getInstance(Context context, ActiveGame activeGame, GameData gameData) {
+        if (instance == null) {
+            instance = new ActiveGameService(context, activeGame, gameData);
+        }
+        return instance;
+    }
+
+    public void updateActiveGame(ActiveGame activeGame) {
+        this.activeGame = activeGame;
+    }
+
     @Override
     public void onCardFling(String cardName) {
+        Log.d("FLING", cardName);
         if (!isCurrentlyActivePlayer() || preventCardFling) return;
         Card card = gameData.findCardByCardName(cardName);
         Log.d("CARD FOUND", card.getColor() + card.getValue());
@@ -53,7 +67,7 @@ public class ActiveGameService implements FlingListener {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
         Log.d("FLING", card.toString());
-        activeGame.refreshActiveGame();
+        activeGame.runOnUiThread(activeGame::refreshActiveGame);
     }
 
     private void subscribeForPlayerChangedEvent() {
@@ -124,6 +138,7 @@ public class ActiveGameService implements FlingListener {
     }
 
     public void playCard(String name, String color, int value) {
+        Log.d("PLAY CARD", "Attempting to play card: " + name + ", " + color + ", " + value);
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
@@ -133,6 +148,7 @@ public class ActiveGameService implements FlingListener {
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
+        Log.d("PLAY CARD", "Attempting to play card: " + name + ", " + color + ", " + value);
     }
 
     public void handleRoundEnd() {

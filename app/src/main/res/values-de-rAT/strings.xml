@@ -26,4 +26,7 @@
     <string name="nobodyCheated">Niemand</string>
     <string name="has_any_player_cheated">Hat jemand geschummelt?</string>
     <string name="active_player_label">Aktiver Spieler:</string>
+    <string name="table">Tisch</string>
+    <string name="points">Punkte</string>
+    <string name="hand">Hand</string>
 </resources>

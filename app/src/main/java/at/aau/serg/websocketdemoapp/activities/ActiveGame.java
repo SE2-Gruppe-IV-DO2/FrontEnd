@@ -35,6 +35,7 @@ import java.util.List;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
+import at.aau.serg.websocketdemoapp.dto.PlayerNamesResponse;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
@@ -71,21 +72,28 @@ public class ActiveGame extends AppCompatActivity {
         });
         stompHandler = StompHandler.getInstance();
         dataHandler = DataHandler.getInstance(this);
-        gameData = new GameData();
-        activeGameService = new ActiveGameService(this, ActiveGame.this, gameData);
+        gameData = GameData.getInstance();
+        activeGameService = ActiveGameService.getInstance(this, this, gameData);
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
+        Button tableButton = findViewById(R.id.tableButton);
+        tableButton.setOnClickListener(v -> tableButtonClicked());
+        activeGameService.updateActiveGame(this);
+        getPlayerNames();
         getData();
 
         mShakeDetector = new ShakeDetector(this, this::sortCardsInHand);
     }
 
     public void refreshActiveGame() {
-        this.displayCardsInHand();
+        if (isResumed && !pendingFragmentTransaction) {
+            this.displayCardsInHand();
+        } else {
+            pendingFragmentTransaction = true;
+        }
     }
 
     public void displayCardsInHand() {
-
         if (!isResumed) {
             pendingFragmentTransaction = true;
             return;
@@ -112,6 +120,7 @@ public class ActiveGame extends AppCompatActivity {
             transaction.add(container.getId(), cardFragment, "card_" + (c));
         }
         transaction.commitAllowingStateLoss();
+        pendingFragmentTransaction = false;
     }
 
     private void checkForGaiaAndChooseColor() {
@@ -156,6 +165,21 @@ public class ActiveGame extends AppCompatActivity {
         }
     }
 
+    public void getPlayerNames() {
+        new Thread(() -> {
+            String lobbyCode = dataHandler.getLobbyCode();
+            stompHandler.getPlayerNames(lobbyCode, response -> {
+                PlayerNamesResponse playerNamesResponse;
+                try {
+                    playerNamesResponse = objectMapper.readValue(response, PlayerNamesResponse.class);
+                    gameData.setPlayerNames(playerNamesResponse.getPlayerNames());
+                } catch (JsonProcessingException e) {
+                    throw new JsonParsingException("JSON PARSE", e);
+                }
+            });
+        }).start();
+    }
+
     private void onColorPicked(String pickedColor) {
         Toast.makeText(this, "Picked :" + pickedColor, Toast.LENGTH_SHORT).show();
 
@@ -174,6 +198,7 @@ public class ActiveGame extends AppCompatActivity {
 
     @SuppressLint("DiscouragedApi")
     public void displayCardsPlayed() {
+        Log.d("PLAYED CARDS", gameData.getCardsPlayed().toString());
         List<Card> cardsPlayed = gameData.getCardsPlayed();
         for (int i = 0; i < cardsPlayed.size(); i++) {
             Card card = cardsPlayed.get(i);
@@ -255,12 +280,17 @@ public class ActiveGame extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void tableButtonClicked() {
+        Intent intent = new Intent(ActiveGame.this, TableView.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         isResumed = true;
         if (pendingFragmentTransaction) {
-            displayCardsInHand();
+            refreshActiveGame();
             pendingFragmentTransaction = false;
         }
         mShakeDetector.startListening();
