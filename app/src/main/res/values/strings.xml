@@ -40,4 +40,8 @@
     <string name="table">Table</string>
     <string name="points">Points</string>
     <string name="hand">Hand</string>
+    <string name="confirm_exit">Confirm Exit</string>
+    <string name="are_you_sure_you_want_to_leave_this_screen">Are you sure you want to leave this game?</string>
+    <string name="yes">Yes</string>
+    <string name="keep_playing">Keep Playing!</string>
 </resources>

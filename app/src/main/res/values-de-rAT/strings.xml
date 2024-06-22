@@ -29,4 +29,8 @@
     <string name="table">Tisch</string>
     <string name="points">Punkte</string>
     <string name="hand">Hand</string>
+    <string name="confirm_exit">Verlassen?</string>
+    <string name="are_you_sure_you_want_to_leave_this_screen">Sind Sie sicher, dass Sie das Spiel verlassen wollen?</string>
+    <string name="yes">Ja</string>
+    <string name="keep_playing">Weiter Spielen!</string>
 </resources>
