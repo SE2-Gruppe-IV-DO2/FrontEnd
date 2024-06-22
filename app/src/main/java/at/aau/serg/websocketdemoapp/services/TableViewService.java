@@ -11,11 +11,13 @@ import at.aau.serg.websocketdemoapp.dto.PlayerTrickResponse;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
+import lombok.Getter;
 
 public class TableViewService {
     private final GameData gameData;
     private final DataHandler dataHandler;
     private final StompHandler stompHandler;
+    @Getter
     private TableView tableView;
     ObjectMapper objectMapper;
 

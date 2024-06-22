@@ -222,10 +222,6 @@ public class StompHandler {
         });
     }
 
-    public void subscribePlayerTricks(String lobbyCode, Consumer<String> dataCallback) {
-
-    }
-
     public void getPlayerTricks(String lobbyCode, Consumer<String> dataCallback) {
         stompClient.topic("/topic/player_tricks/" + lobbyCode).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
