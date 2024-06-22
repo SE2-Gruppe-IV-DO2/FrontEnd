@@ -22,20 +22,22 @@ import lombok.Setter;
 
 public class ActiveGameService implements FlingListener {
     private final DataHandler dataHandler;
-    private final ActiveGame activeGame;
+    private ActiveGame activeGame;
     private final StompHandler stompHandler;
-    private static final String TAG = "DealRound";
+    private static final String TAG = "JSON PARSE ERROR";
     private final GameData gameData;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Setter
     private boolean isCurrentlyActivePlayer = false;
     @Setter
     private boolean preventCardFling = false;
+    private static ActiveGameService instance = null;
 
-    public ActiveGameService(Context context, ActiveGame activeGame, GameData gameData) {
+    private ActiveGameService(Context context, ActiveGame activeGame) {
         dataHandler = DataHandler.getInstance(context);
         this.activeGame = activeGame;
         stompHandler = StompHandler.getInstance();
-        this.gameData = gameData;
+        this.gameData = GameData.getInstance();
 
         subscribeForPlayerChangedEvent();
         subscribeForPlayCardEvent();
@@ -43,17 +45,26 @@ public class ActiveGameService implements FlingListener {
         subscribeForPlayerWonTrickEvent();
     }
 
+    public static ActiveGameService getInstance(Context context, ActiveGame activeGame) {
+        if (instance == null) {
+            instance = new ActiveGameService(context, activeGame);
+        }
+        return instance;
+    }
+
+    public void updateActiveGame(ActiveGame activeGame) {
+        this.activeGame = activeGame;
+    }
+
     @Override
     public void onCardFling(String cardName) {
         if (!isCurrentlyActivePlayer() || preventCardFling) return;
         Card card = gameData.findCardByCardName(cardName);
-        Log.d("CARD FOUND", card.getColor() + card.getValue());
         playCard(card.getName(), card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
-        Log.d("FLING", card.toString());
-        activeGame.refreshActiveGame();
+        activeGame.runOnUiThread(activeGame::refreshActiveGame);
     }
 
     private void subscribeForPlayerChangedEvent() {
@@ -65,7 +76,7 @@ public class ActiveGameService implements FlingListener {
         try {
             activePlayerMessage = objectMapper.readValue(data, ActivePlayerMessage.class);
         } catch (JsonProcessingException e) {
-            throw new JsonParsingException("JSON PARSE ERROR", e);
+            throw new JsonParsingException(TAG, e);
         }
         if (dataHandler.getPlayerID().equals(activePlayerMessage.getActivePlayerId())) {
             isCurrentlyActivePlayer = true;
@@ -92,34 +103,32 @@ public class ActiveGameService implements FlingListener {
     }
 
     public void handlePlayCardResponse(String playCardJSON) {
-        activeGame.runOnUiThread(() -> {
+        CardPlayedRequest cardPlayedRequest;
             try {
-                CardPlayedRequest cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
-                Log.d(TAG, "Card played: " + cardPlayedRequest);
-                Card c = new Card();
-                c.setCardType(cardPlayedRequest.getCardType());
-                c.setValue(Integer.valueOf(cardPlayedRequest.getValue()));
-                c.setColor(cardPlayedRequest.getColor());
-                c.createImagePath();
-                gameData.getCardsPlayed().add(c);
-                Log.d("CARD PLAYED", "Added card to played list: " + c);
-                activeGame.displayCardsPlayed();
+                cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
             } catch (JsonProcessingException e) {
-                Log.e(TAG, "Error parsing play card response", e);
+                throw new JsonParsingException(TAG, e);
             }
-        });
+            Card c = new Card();
+            c.setCardType(cardPlayedRequest.getCardType());
+            c.setValue(Integer.valueOf(cardPlayedRequest.getValue()));
+            c.setColor(cardPlayedRequest.getColor());
+            c.createImagePath();
+            gameData.getCardsPlayed().add(c);
+            activeGame.runOnUiThread(() -> activeGame.displayCardsPlayed());
     }
 
     public void handleTrickWon(String trickWonJson) {
+        TrickWonMessage trickWonMessage;
+        try {
+            trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonParsingException(TAG, e);
+        }
+        String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
         activeGame.runOnUiThread(() -> {
-            try {
-                TrickWonMessage trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
-                String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
                 activeGame.showPlayerWonTrickMessage(playerWonMessage);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Wrong message type!");
-            }
-            activeGame.clearPlayedCards();
+                activeGame.clearPlayedCards();
         });
     }
 

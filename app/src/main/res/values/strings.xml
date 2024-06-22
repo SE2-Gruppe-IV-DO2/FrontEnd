@@ -37,4 +37,7 @@
     <string name="active_player_label">Active player:</string>
     <string name="nobodyCheated">Nobody</string>
     <string name="has_any_player_cheated">Has any player cheated?</string>
+    <string name="table">Table</string>
+    <string name="points">Points</string>
+    <string name="hand">Hand</string>
 </resources>

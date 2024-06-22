@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/game_background"
+    tools:context=".activities.TableView">
+
+    <ImageView
+        android:id="@+id/tablePlayedCard1"
+        android:visibility="invisible"
+        android:layout_width="100dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="84dp"
+        android:contentDescription="@string/playedcard1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/card_back" />
+
+    <ImageView
+        android:id="@+id/tablePlayedCard4"
+        android:visibility="invisible"
+        android:layout_width="100dp"
+        android:layout_height="175dp"
+        android:contentDescription="@string/playedcard4"
+        android:rotation="235"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/card_back" />
+
+    <ImageView
+        android:id="@+id/tablePlayedCard5"
+        android:visibility="invisible"
+        android:layout_width="100dp"
+        android:layout_height="175dp"
+        android:contentDescription="@string/playedcard5"
+        android:rotation="315"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.572"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.309"
+        app:srcCompat="@drawable/card_back" />
+
+    <ImageView
+        android:id="@+id/tablePlayedCard3"
+        android:visibility="invisible"
+        android:layout_width="100dp"
+        android:layout_height="175dp"
+        android:contentDescription="@string/playedcard3"
+        android:rotation="140"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.033"
+        app:srcCompat="@drawable/card_back" />
+
+    <ImageView
+        android:id="@+id/tablePlayedCard2"
+        android:visibility="invisible"
+        android:layout_width="100dp"
+        android:layout_height="175dp"
+        android:contentDescription="@string/playedcard2"
+        android:rotation="36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.309"
+        app:srcCompat="@drawable/card_back" />
+
+
+    <FrameLayout
+        android:id="@+id/tableTricksPlayer1"
+        android:layout_width="485dp"
+        android:layout_height="220dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintStart_toStartOf="parent" >
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tableTricksPlayer2"
+        android:layout_width="485dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="56dp"
+        android:rotation="53"
+        app:layout_constraintEnd_toStartOf="@+id/tableTricksPlayer1"
+        app:layout_constraintHorizontal_bias="0.381"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <FrameLayout
+        android:id="@+id/tableTricksPlayer4"
+        android:layout_width="485dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="24dp"
+        android:rotation="134"
+        app:layout_constraintBottom_toTopOf="@+id/tablePlayedCard5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <FrameLayout
+        android:id="@+id/tableTricksPlayer3"
+        android:layout_width="485dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="248dp"
+        android:rotation="-36"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.789"
+        app:layout_constraintStart_toEndOf="@+id/tablePlayedCard4"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tableTricksPlayer5"
+        android:layout_width="485dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="92dp"
+        android:rotation="-121"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/pointsViewButton"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="104dp"
+        android:text="@string/points"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/handCardsButton"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="204dp"
+        android:text="@string/hand"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playerNameView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="260dp"
+        android:layout_marginEnd="150dp"
+        android:rotation="-36"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playerNameView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="290dp"
+        android:layout_marginEnd="610dp"
+        android:rotation="53"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playerNameView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="630dp"
+        android:rotation="134"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playerNameView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="65dp"
+        android:rotation="-121"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
