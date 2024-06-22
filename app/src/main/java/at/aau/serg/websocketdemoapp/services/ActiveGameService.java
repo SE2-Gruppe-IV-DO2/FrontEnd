@@ -24,7 +24,7 @@ public class ActiveGameService implements FlingListener {
     private final DataHandler dataHandler;
     private ActiveGame activeGame;
     private final StompHandler stompHandler;
-    private static final String TAG = "DealRound";
+    private static final String TAG = "JSON PARSE ERROR";
     private final GameData gameData;
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Setter
@@ -64,7 +64,6 @@ public class ActiveGameService implements FlingListener {
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
-        Log.d("FLING", card.toString());
         activeGame.runOnUiThread(activeGame::refreshActiveGame);
     }
 
@@ -77,7 +76,7 @@ public class ActiveGameService implements FlingListener {
         try {
             activePlayerMessage = objectMapper.readValue(data, ActivePlayerMessage.class);
         } catch (JsonProcessingException e) {
-            throw new JsonParsingException("JSON PARSE ERROR", e);
+            throw new JsonParsingException(TAG, e);
         }
         if (dataHandler.getPlayerID().equals(activePlayerMessage.getActivePlayerId())) {
             isCurrentlyActivePlayer = true;
@@ -108,7 +107,7 @@ public class ActiveGameService implements FlingListener {
             try {
                 cardPlayedRequest = objectMapper.readValue(playCardJSON, CardPlayedRequest.class);
             } catch (JsonProcessingException e) {
-                throw new JsonParsingException("JSON PARSE ERROR", e);
+                throw new JsonParsingException(TAG, e);
             }
             Card c = new Card();
             c.setCardType(cardPlayedRequest.getCardType());
@@ -124,7 +123,7 @@ public class ActiveGameService implements FlingListener {
         try {
             trickWonMessage = objectMapper.readValue(trickWonJson, TrickWonMessage.class);
         } catch (JsonProcessingException e) {
-            throw new JsonParsingException("JSON PARSE ERROR", e);
+            throw new JsonParsingException(TAG, e);
         }
         String playerWonMessage = "Trick was won by player: " + trickWonMessage.getWinningPlayerName();
         activeGame.runOnUiThread(() -> {
@@ -134,7 +133,6 @@ public class ActiveGameService implements FlingListener {
     }
 
     public void playCard(String name, String color, int value) {
-        Log.d("PLAY CARD", "Attempting to play card: " + name + ", " + color + ", " + value);
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
@@ -144,7 +142,6 @@ public class ActiveGameService implements FlingListener {
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
-        Log.d("PLAY CARD", "Attempting to play card: " + name + ", " + color + ", " + value);
     }
 
     public void handleRoundEnd() {
