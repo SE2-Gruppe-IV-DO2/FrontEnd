@@ -73,7 +73,7 @@ public class ActiveGame extends AppCompatActivity {
         stompHandler = StompHandler.getInstance();
         dataHandler = DataHandler.getInstance(this);
         gameData = GameData.getInstance();
-        activeGameService = ActiveGameService.getInstance(this, this, gameData);
+        activeGameService = ActiveGameService.getInstance(this, this);
         Button pointView = findViewById(R.id.pointsView);
         pointView.setOnClickListener(v -> pointViewClicked());
         Button tableButton = findViewById(R.id.tableButton);
