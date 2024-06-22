@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -83,6 +85,28 @@ public class ActiveGame extends AppCompatActivity {
         getData();
 
         mShakeDetector = new ShakeDetector(this, this::sortCardsInHand);
+
+        OnBackPressedCallback backPressedCallback =
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        // Show a confirmation dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ActiveGame.this);
+                        builder.setTitle(R.string.confirm_exit);
+                        builder.setMessage(R.string.are_you_sure_you_want_to_leave_this_screen);
+                        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+                            // Handle the user's confirmation (e.g., finish the activity)
+                            finish();
+                        });
+                        builder.setNegativeButton(R.string.keep_playing, (dialog, which) -> {
+                            // User canceled, do nothing or handle differently
+                        });
+                        builder.show();
+                    }
+
+            };
+
+        this.getOnBackPressedDispatcher().addCallback(backPressedCallback);
     }
 
     public void refreshActiveGame() {
