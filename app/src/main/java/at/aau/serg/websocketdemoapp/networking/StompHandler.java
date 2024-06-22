@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import at.aau.serg.websocketdemoapp.dto.CheatingAccusationRequest;
 import at.aau.serg.websocketdemoapp.dto.DealRoundRequest;
+import at.aau.serg.websocketdemoapp.dto.GetPlayerNamesRequest;
 import at.aau.serg.websocketdemoapp.dto.GetPlayersInLobbyRequest;
 import at.aau.serg.websocketdemoapp.dto.PointsRequest;
 import ua.naiksoftware.stomp.Stomp;
@@ -219,6 +220,29 @@ public class StompHandler {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });
+    }
+
+    public void getPlayerTricks(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/player_tricks/" + lobbyCode).subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+
+        stompClient.send("/app/get-player-tricks", lobbyCode).subscribe();
+    }
+
+    public void getPlayerNames(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/player_names/" + lobbyCode).subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+
+        GetPlayerNamesRequest getPlayerNamesRequest = new GetPlayerNamesRequest();
+        getPlayerNamesRequest.setLobbyCode(lobbyCode);
+
+        String jsonPayload = gson.toJson(getPlayerNamesRequest);
+
+        stompClient.send("/app/get-player-names", jsonPayload).subscribe();
     }
 
     public void helloMessage(String message) {

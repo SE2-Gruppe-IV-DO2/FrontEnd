@@ -93,26 +93,26 @@
         android:rotation="315"
         app:srcCompat="@drawable/card_back" />
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/active_player_card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/playedCardPlayer2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="28dp"
         app:cardBackgroundColor="@color/mystical_purple"
         app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
-        >
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.064">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            >
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/active_player_label"
@@ -127,11 +127,11 @@
 
             <TextView
                 android:id="@+id/active_player_name"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="7dp"
-                style="@style/TextViewStyle"
                 app:layout_constraintStart_toEndOf="@+id/active_player_label"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -141,15 +141,23 @@
         android:id="@+id/pointsView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="279dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="7dp"
-        android:text="@string/points_view"
-        app:layout_constraintBottom_toTopOf="@+id/playedCardPlayer2"
+        android:layout_marginEnd="28dp"
+        android:text="@string/points"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.066" />
 
+    <Button
+        android:id="@+id/tableButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="136dp"
+        android:text="@string/table"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.066" />
 
     <ImageView
         android:id="@+id/playedGaia"
@@ -166,7 +174,7 @@
         app:srcCompat="@drawable/card_back"/>
 
 
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/playedGaiaColors"
             android:visibility="invisible"
             android:layout_width="wrap_content"
