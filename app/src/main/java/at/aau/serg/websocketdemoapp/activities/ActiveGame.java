@@ -313,10 +313,8 @@ public class ActiveGame extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isResumed = true;
-        if (pendingFragmentTransaction) {
-            refreshActiveGame();
-            pendingFragmentTransaction = false;
-        }
+        pendingFragmentTransaction = false;
+        refreshActiveGame();
         mShakeDetector.startListening();
     }
 

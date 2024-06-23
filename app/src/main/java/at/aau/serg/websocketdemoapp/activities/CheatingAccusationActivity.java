@@ -57,5 +57,4 @@ public class CheatingAccusationActivity extends AppCompatActivity {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), result ? "Correct" : "Not Correct", Toast.LENGTH_SHORT).show());
         finish();
     }
-
 }
