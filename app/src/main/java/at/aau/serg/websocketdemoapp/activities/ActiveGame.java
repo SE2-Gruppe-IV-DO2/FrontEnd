@@ -160,6 +160,7 @@ public class ActiveGame extends AppCompatActivity {
             gaiaImage.setVisibility(View.VISIBLE);
 
             LinearLayout playedGaiaColors = findViewById(R.id.playedGaiaColors);
+            playedGaiaColors.removeAllViews();
 
             int[] colorDrawables = {
                     R.drawable.color_green,
