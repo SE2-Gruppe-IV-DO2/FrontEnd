@@ -206,7 +206,7 @@ public class StompHandler {
         cheatingAccusationRequest.setUserID(playerId);
         cheatingAccusationRequest.setAccusedUserId(accusedPlayerId);
 
-        stompClient.topic("/topic/accusation_result").subscribe(topicMessage -> {
+        stompClient.topic("/topic/accusation_result/" + playerId).subscribe(topicMessage -> {
             String data = extractData(topicMessage.getPayload());
             dataCallback.accept(data);
         });

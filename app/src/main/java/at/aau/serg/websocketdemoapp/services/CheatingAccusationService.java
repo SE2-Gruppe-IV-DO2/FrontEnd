@@ -65,10 +65,11 @@ public class CheatingAccusationService {
             throw new JsonParsingException("JSON Parse Exception", e);
         }
 
-        if (cheatingAccusationRequest != null && cheatingAccusationRequest.getUserID().equals(dataHandler.getPlayerID())) {
+        if (cheatingAccusationRequest != null && cheatingAccusationRequest.getUserID().equals(dataHandler.getPlayerID()) && !cheatingAccusationRequest.getAccusedUserId().isEmpty()) {
             cheatingAccusationActivity.showCheatingAccusationResult(cheatingAccusationRequest.isCorrectAccusation());
         }
-
-
+        else {
+            cheatingAccusationActivity.finishActivity();
+        }
     }
 }
