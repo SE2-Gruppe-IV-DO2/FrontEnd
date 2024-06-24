@@ -44,7 +44,7 @@ public class JoinLobby extends AppCompatActivity implements View.OnClickListener
 
     public void joinLobbyWithIDButtonClicked() {
         TextView lobbyTextField = findViewById(R.id.enterLobbyCode);
-        String lobbyCode = lobbyTextField.getText().toString();
+        String lobbyCode = lobbyTextField.getText().toString().toUpperCase();
         joinLobbyService.joinLobbyWithIDClicked(lobbyCode);
     }
 

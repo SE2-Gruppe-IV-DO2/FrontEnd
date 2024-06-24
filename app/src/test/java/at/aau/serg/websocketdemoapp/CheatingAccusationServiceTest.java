@@ -144,10 +144,46 @@ class CheatingAccusationServiceTest {
 
 
     @Test
+    void testHandleCheatingResultForNoAccusedPlayer() throws JsonProcessingException {
+        // Arrange
+        CheatingAccusationRequest request = new CheatingAccusationRequest();
+        request.setUserID(PLAYER_ID);
+        request.setCorrectAccusation(true);
+        String json = new ObjectMapper().writeValueAsString(request);
+
+        when(mockObjectMapper.readValue(json, CheatingAccusationRequest.class)).thenReturn(request);
+
+        // Act
+        cheatingAccusationService.handleCheatingResult(json);
+
+        // Assert
+        verify(mockCheatingAccusationActivity).finishActivity();
+    }
+
+    @Test
+    void testHandleCheatingResultForEmptyAccusedPlayer() throws JsonProcessingException {
+        // Arrange
+        CheatingAccusationRequest request = new CheatingAccusationRequest();
+        request.setUserID(PLAYER_ID);
+        request.setAccusedUserId("");
+        request.setCorrectAccusation(true);
+        String json = new ObjectMapper().writeValueAsString(request);
+
+        when(mockObjectMapper.readValue(json, CheatingAccusationRequest.class)).thenReturn(request);
+
+        // Act
+        cheatingAccusationService.handleCheatingResult(json);
+
+        // Assert
+        verify(mockCheatingAccusationActivity).finishActivity();
+    }
+
+    @Test
     void testHandleCheatingResult() throws JsonProcessingException {
         // Arrange
         CheatingAccusationRequest request = new CheatingAccusationRequest();
         request.setUserID(PLAYER_ID);
+        request.setAccusedUserId(PLAYER_ID);
         request.setCorrectAccusation(true);
         String json = new ObjectMapper().writeValueAsString(request);
 
