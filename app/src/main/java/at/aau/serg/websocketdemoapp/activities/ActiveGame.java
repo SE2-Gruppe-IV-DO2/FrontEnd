@@ -160,6 +160,7 @@ public class ActiveGame extends AppCompatActivity {
             gaiaImage.setVisibility(View.VISIBLE);
 
             LinearLayout playedGaiaColors = findViewById(R.id.playedGaiaColors);
+            playedGaiaColors.removeAllViews();
 
             int[] colorDrawables = {
                     R.drawable.color_green,
@@ -313,10 +314,8 @@ public class ActiveGame extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isResumed = true;
-        if (pendingFragmentTransaction) {
-            refreshActiveGame();
-            pendingFragmentTransaction = false;
-        }
+        pendingFragmentTransaction = false;
+        refreshActiveGame();
         mShakeDetector.startListening();
     }
 
