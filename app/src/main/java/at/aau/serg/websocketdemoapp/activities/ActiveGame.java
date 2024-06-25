@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -125,6 +126,7 @@ public class ActiveGame extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+
         FrameLayout container = findViewById(R.id.cardsInHand);
         int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 (-2 * gameData.getCardList().size() + 65), getResources().getDisplayMetrics());
@@ -134,6 +136,9 @@ public class ActiveGame extends AppCompatActivity {
         int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2;
 
         container.removeAllViews();
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
 
         for (int c = 1; c <= gameData.getCardList().size(); c++) {
             int marginLeft = midPoint + (c - Math.round(gameData.getCardList().size() / 2f)) * overlapPx;

@@ -46,9 +46,12 @@ public class StompHandler {
     }
 
     private void setLifecycle() {
-        stompClient.lifecycle().subscribe(lifecycleEvent -> {
+        stompClient.lifecycle()
+                .doOnError(throwable -> {
+                    Log.e(TAG_NETWORK, "Error in Stomp lifecycle", throwable);
+                })
+                .subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
-
                 case OPENED:
                     Log.d(TAG_NETWORK, "Stomp connection opened");
                     break;
