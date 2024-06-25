@@ -151,8 +151,11 @@ public class ActiveGameService implements FlingListener {
         gameData.getCardList().clear();
 
         activeGame.showCheatingAccusationView();
-
-        activeGame.getData();
+        if (activeGame.isGameFinsihed()) {
+            activeGame.goToEndScreen();
+        } else {
+            activeGame.getData();
+        }
     }
 
     private void subscribeForRoundEndEvent() {

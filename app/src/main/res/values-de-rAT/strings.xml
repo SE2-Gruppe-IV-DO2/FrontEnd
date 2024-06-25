@@ -33,4 +33,5 @@
     <string name="are_you_sure_you_want_to_leave_this_screen">Sind Sie sicher, dass Sie das Spiel verlassen wollen?</string>
     <string name="yes">Ja</string>
     <string name="keep_playing">Weiter Spielen!</string>
+    <string name="result">Ergebnis</string>
 </resources>

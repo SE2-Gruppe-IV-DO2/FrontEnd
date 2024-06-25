@@ -248,6 +248,13 @@ public class StompHandler {
         stompClient.send("/app/get-player-names", jsonPayload).subscribe();
     }
 
+    public void subscribeForGameEnd(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/game_ended/" + lobbyCode).subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
+    }
+
     public void helloMessage(String message) {
         stompClient.topic("/topic/hello-response").subscribe(topicMessage ->
                 Log.d(TAG_RECEIVED, topicMessage.getPayload())
