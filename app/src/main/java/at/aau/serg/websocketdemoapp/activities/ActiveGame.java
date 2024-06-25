@@ -324,9 +324,7 @@ public class ActiveGame extends AppCompatActivity {
     }
 
     private void handleGameEnd(String response) {
-        if (response.equals("Game ended")) {
             isGameFinsihed = true;
-        }
     }
 
     public void goToEndScreen() {
