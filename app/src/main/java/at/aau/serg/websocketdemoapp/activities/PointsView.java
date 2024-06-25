@@ -75,7 +75,7 @@ public class PointsView extends AppCompatActivity {
         int rounds = 0;
         for (Map.Entry<String, HashMap<Integer, Integer>> entry : playerPoints.entrySet()) {
             if (entry.getValue() != null) {
-                rounds = entry.getValue().size();
+                rounds = entry.getValue().size() - 1;
                 break;
             }
         }

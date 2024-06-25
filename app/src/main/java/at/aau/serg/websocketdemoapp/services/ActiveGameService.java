@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoapp.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import at.aau.serg.websocketdemoapp.activities.ActiveGame;
+import at.aau.serg.websocketdemoapp.activities.GameEndView;
 import at.aau.serg.websocketdemoapp.dto.ActivePlayerMessage;
 import at.aau.serg.websocketdemoapp.dto.CardPlayRequest;
 import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
@@ -32,6 +34,7 @@ public class ActiveGameService implements FlingListener {
     @Setter
     private boolean preventCardFling = false;
     private static ActiveGameService instance = null;
+    private boolean isGameFinsihed = false;
 
     private ActiveGameService(Context context, ActiveGame activeGame) {
         dataHandler = DataHandler.getInstance(context);
@@ -43,6 +46,7 @@ public class ActiveGameService implements FlingListener {
         subscribeForPlayCardEvent();
         subscribeForRoundEndEvent();
         subscribeForPlayerWonTrickEvent();
+        subscribeForGameEndEvent();
     }
 
     public static ActiveGameService getInstance(Context context, ActiveGame activeGame) {
@@ -151,11 +155,29 @@ public class ActiveGameService implements FlingListener {
         gameData.getCardList().clear();
 
         activeGame.showCheatingAccusationView();
-
-        activeGame.getData();
+        if (isGameFinsihed) {
+            goToEndScreen();
+        } else {
+            activeGame.getData();
+        }
     }
 
     private void subscribeForRoundEndEvent() {
         stompHandler.subscribeToRoundEndEvent(dataHandler.getLobbyCode(), response -> handleRoundEnd());
+    }
+
+    private void subscribeForGameEndEvent() {
+        stompHandler.subscribeForGameEnd(dataHandler.getLobbyCode(), this::handleGameEnd);
+    }
+
+    private void handleGameEnd(String response) {
+        if (response.equals("Game ended")) {
+            isGameFinsihed = true;
+        }
+    }
+
+    public void goToEndScreen() {
+        Intent intent = new Intent(activeGame, GameEndView.class);
+        activeGame.startActivity(intent);
     }
 }

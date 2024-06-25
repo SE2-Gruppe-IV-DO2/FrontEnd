@@ -26,8 +26,8 @@ public class StompHandler {
     private static StompHandler instance;
     private static final String TAG_NETWORK = "Network";
     private static final String TAG_RECEIVED = "Received";
-    private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
-    //private static final String actualServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
+    //private static final String actualServerUrl = "ws://unified-officially-snake.ngrok-free.app/websocket-example-broker";
+    private static final String actualServerUrl = "ws://10.0.2.2:8080/websocket-example-broker";
 
     public StompHandler() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, actualServerUrl);
@@ -246,6 +246,13 @@ public class StompHandler {
         String jsonPayload = gson.toJson(getPlayerNamesRequest);
 
         stompClient.send("/app/get-player-names", jsonPayload).subscribe();
+    }
+
+    public void subscribeForGameEnd(String lobbyCode, Consumer<String> dataCallback) {
+        stompClient.topic("/topic/game_ended/" + lobbyCode).subscribe(topicMessage -> {
+            String data = extractData(topicMessage.getPayload());
+            dataCallback.accept(data);
+        });
     }
 
     public void helloMessage(String message) {
