@@ -46,6 +46,7 @@ import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.helper.ShakeDetector;
 import at.aau.serg.websocketdemoapp.networking.StompHandler;
 import at.aau.serg.websocketdemoapp.services.ActiveGameService;
+import lombok.Getter;
 
 public class ActiveGame extends AppCompatActivity {
     private GameData gameData;
@@ -59,6 +60,8 @@ public class ActiveGame extends AppCompatActivity {
     private boolean pendingFragmentTransaction = false;
     private boolean isResumed = false;
     private boolean alreadyShown = false;
+    @Getter
+    private boolean isGameFinsihed = false;
 
     private ShakeDetector mShakeDetector;
 
@@ -108,6 +111,7 @@ public class ActiveGame extends AppCompatActivity {
             };
 
         this.getOnBackPressedDispatcher().addCallback(backPressedCallback);
+        subscribeForGameEndEvent();
     }
 
     public void refreshActiveGame() {
@@ -312,6 +316,21 @@ public class ActiveGame extends AppCompatActivity {
 
     public void tableButtonClicked() {
         Intent intent = new Intent(ActiveGame.this, TableView.class);
+        startActivity(intent);
+    }
+
+    private void subscribeForGameEndEvent() {
+        stompHandler.subscribeForGameEnd(dataHandler.getLobbyCode(), this::handleGameEnd);
+    }
+
+    private void handleGameEnd(String response) {
+        if (response.equals("Game ended")) {
+            isGameFinsihed = true;
+        }
+    }
+
+    public void goToEndScreen() {
+        Intent intent = new Intent(this, GameEndView.class);
         startActivity(intent);
     }
 
