@@ -133,6 +133,8 @@ public class ActiveGameService implements FlingListener {
     }
 
     public void playCard(String name, String color, int value) {
+        isCurrentlyActivePlayer = false;                                                            //verhindern, dass noch eine Karte gespielt wird
+
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
