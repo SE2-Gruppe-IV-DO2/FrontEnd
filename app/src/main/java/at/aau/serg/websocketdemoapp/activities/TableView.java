@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -61,7 +62,7 @@ public class TableView extends AppCompatActivity {
         gameData = GameData.getInstance();
         dataHandler = DataHandler.getInstance(this);
         tableViewService = new TableViewService(this, TableView.this);
-        setPlayerNames();
+        //setPlayerNames();
         displayCardsPlayed();
         tableViewService.updateTableView(this);
     }
@@ -117,9 +118,20 @@ public class TableView extends AppCompatActivity {
                 break;
             }
             FrameLayout container = findViewById(trickViewIDs[i]);
+
             container.removeAllViews();
+            //Alte Fragmente entfernen
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+
             String playerKey = playerNames.get(i);
             Map<CardType, Integer> tricks = tricksByPlayer.get(playerKey);
+
+            if (i != 0) {
+                TextView nameView = findViewById(playerNameViewIDs[i-1]);
+                nameView.setText(playerKey);
+            }
 
             if (tricks != null) {
                 int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
