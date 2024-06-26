@@ -88,64 +88,110 @@
         android:layout_height="220dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent" >
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/tableTricksPlayer2"
-        android:layout_width="485dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="56dp"
+        android:layout_width="800dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="-100dp"
+        android:layout_marginStart="-200dp"
         android:rotation="53"
-        app:layout_constraintEnd_toStartOf="@+id/tableTricksPlayer1"
-        app:layout_constraintHorizontal_bias="0.381"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/playerNameView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="53"
+        android:layout_marginBottom="-75dp"
+        android:layout_marginStart="100dp"
+        app:layout_constraintStart_toStartOf="@+id/tableTricksPlayer2"
+        app:layout_constraintEnd_toEndOf="@+id/tableTricksPlayer2"
+        app:flow_horizontalAlign="center"
+        app:layout_constraintBottom_toTopOf="@+id/tableTricksPlayer2" />
 
     <FrameLayout
         android:id="@+id/tableTricksPlayer4"
         android:layout_width="485dp"
         android:layout_height="200dp"
+        android:layout_marginStart="64dp"
+        android:rotation="170"
         android:layout_marginBottom="24dp"
-        android:rotation="134"
-        app:layout_constraintBottom_toTopOf="@+id/tablePlayedCard5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357" />
+
+    <TextView
+        android:id="@+id/playerNameView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-80dp"
+        android:layout_marginStart="-100dp"
+        android:rotation="170"
+        app:layout_constraintTop_toBottomOf="@id/tableTricksPlayer4"
+        app:layout_constraintEnd_toEndOf="@+id/tableTricksPlayer4"
+        app:layout_constraintStart_toStartOf="@+id/tableTricksPlayer4"
+        />
 
     <FrameLayout
         android:id="@+id/tableTricksPlayer3"
         android:layout_width="485dp"
         android:layout_height="220dp"
-        android:layout_marginTop="248dp"
         android:rotation="-36"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.789"
-        app:layout_constraintStart_toEndOf="@+id/tablePlayedCard4"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/playerNameView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="-36"
+        android:layout_marginBottom="-70dp"
+        android:layout_marginStart="100dp"
+        app:layout_constraintEnd_toEndOf="@+id/tableTricksPlayer3"
+        app:layout_constraintStart_toStartOf="@+id/tableTricksPlayer3"
+        app:layout_constraintBottom_toTopOf="@id/tableTricksPlayer3"
+        />
 
     <FrameLayout
         android:id="@+id/tableTricksPlayer5"
         android:layout_width="485dp"
         android:layout_height="200dp"
-        android:layout_marginTop="92dp"
-        android:rotation="-121"
+        android:layout_marginTop="0dp"
+        android:rotation="190"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/playerNameView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-100dp"
+        android:rotation="190"
+        android:layout_marginTop="-90dp"
+        app:layout_constraintEnd_toEndOf="@+id/tableTricksPlayer5"
+        app:layout_constraintStart_toStartOf="@+id/tableTricksPlayer5"
+        app:layout_constraintTop_toBottomOf="@id/tableTricksPlayer5" />
 
     <Button
         android:id="@+id/pointsViewButton"
         android:layout_width="90dp"
         android:layout_height="45dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="104dp"
+        android:layout_marginEnd="30dp"
         android:text="@string/points"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -155,49 +201,10 @@
         android:layout_width="90dp"
         android:layout_height="45dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="204dp"
+        android:layout_marginEnd="150dp"
         android:text="@string/hand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/playerNameView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="260dp"
-        android:layout_marginEnd="150dp"
-        android:rotation="-36"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/playerNameView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="290dp"
-        android:layout_marginEnd="610dp"
-        android:rotation="53"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/playerNameView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="630dp"
-        android:rotation="134"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/playerNameView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
-        android:layout_marginEnd="65dp"
-        android:rotation="-121"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
