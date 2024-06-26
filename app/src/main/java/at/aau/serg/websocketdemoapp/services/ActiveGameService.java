@@ -110,7 +110,6 @@ public class ActiveGameService implements FlingListener {
             } catch (JsonProcessingException e) {
                 throw new JsonParsingException(TAG, e);
             }
-            Log.d("CARD PLAYED", "Card played: " + cardPlayedRequest.getCardType() + " " + cardPlayedRequest.getValue() + " " + cardPlayedRequest.getColor());
             Card c = new Card();
             c.setCardType(cardPlayedRequest.getCardType());
             c.setValue(Integer.valueOf(cardPlayedRequest.getValue()));
