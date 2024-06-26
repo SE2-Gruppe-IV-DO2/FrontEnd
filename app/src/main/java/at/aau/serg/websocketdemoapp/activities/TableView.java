@@ -59,7 +59,6 @@ public class TableView extends AppCompatActivity {
         gameData = GameData.getInstance();
         dataHandler = DataHandler.getInstance(this);
         tableViewService = new TableViewService(this, TableView.this);
-        setPlayerNames();
         displayCardsPlayed();
         tableViewService.updateTableView(this);
     }
@@ -115,9 +114,16 @@ public class TableView extends AppCompatActivity {
                 break;
             }
             FrameLayout container = findViewById(trickViewIDs[i]);
+
             container.removeAllViews();
+
             String playerKey = playerNames.get(i);
             List<Card> tricks = tricksByPlayer.get(playerKey);
+
+            if (i != 0) {
+                TextView nameView = findViewById(playerNameViewIDs[i-1]);
+                nameView.setText(playerKey);
+            }
 
             if (tricks != null) {
                 int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -139,18 +145,6 @@ public class TableView extends AppCompatActivity {
             }
         }
         transaction.commitAllowingStateLoss();
-    }
-
-    private void setPlayerNames() {
-        String devicePlayerName = dataHandler.getPlayerName();
-        int nameIndex = 0;
-        for (String playerName : gameData.getPlayerNames()) {
-            if (!playerName.equals(devicePlayerName)) {
-                TextView nameView = findViewById(playerNameViewIDs[nameIndex]);
-                nameView.setText(playerName);
-                nameIndex++;
-            }
-        }
     }
 
     private int getDeviceWidthPx() {
