@@ -41,6 +41,7 @@ import at.aau.serg.websocketdemoapp.dto.HandCardsRequest;
 import at.aau.serg.websocketdemoapp.dto.PlayerNamesResponse;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
+import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
 import at.aau.serg.websocketdemoapp.helper.ShakeDetector;
@@ -222,7 +223,7 @@ public class ActiveGame extends AppCompatActivity {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
 
-        activeGameService.playCard("gaia", pickedColor, 0);
+        activeGameService.playCard(CardType.GAIA, pickedColor, 0);
         this.refreshActiveGame();
 
         findViewById(R.id.playedGaia).setVisibility(View.INVISIBLE);

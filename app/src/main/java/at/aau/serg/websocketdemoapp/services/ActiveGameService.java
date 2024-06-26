@@ -14,6 +14,7 @@ import at.aau.serg.websocketdemoapp.dto.CardPlayedRequest;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.dto.TrickWonMessage;
 import at.aau.serg.websocketdemoapp.helper.Card;
+import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.helper.FlingListener;
 import at.aau.serg.websocketdemoapp.helper.JsonParsingException;
@@ -25,7 +26,8 @@ public class ActiveGameService implements FlingListener {
     private ActiveGame activeGame;
     private final StompHandler stompHandler;
     private static final String TAG = "JSON PARSE ERROR";
-    private final GameData gameData;
+    @Setter
+    private GameData gameData;
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Setter
     private boolean isCurrentlyActivePlayer = false;
@@ -60,7 +62,7 @@ public class ActiveGameService implements FlingListener {
     public void onCardFling(String cardName) {
         if (!isCurrentlyActivePlayer() || preventCardFling) return;
         Card card = gameData.findCardByCardName(cardName);
-        playCard(card.getName(), card.getColor(), card.getValue());
+        playCard(card.getCardType(), card.getColor(), card.getValue());
         if (gameData.getCardList().remove(card)) {
             Log.d("REMOVE CARD", "CARD REMOVED SUCCESSFULLY");
         }
@@ -132,15 +134,15 @@ public class ActiveGameService implements FlingListener {
         });
     }
 
-    public void playCard(String name, String color, int value) {
+    public void playCard(CardType cardType, String color, int value) {
         isCurrentlyActivePlayer = false;                                                            //verhindern, dass noch eine Karte gespielt wird
 
         CardPlayRequest playCardRequest = new CardPlayRequest();
         playCardRequest.setLobbyCode(dataHandler.getLobbyCode());
         playCardRequest.setUserID(dataHandler.getPlayerID());
-        playCardRequest.setName(name);
+        playCardRequest.setCardType(cardType);
         playCardRequest.setColor(color.replace("color_", ""));
-        playCardRequest.setValue(String.valueOf(value));
+        playCardRequest.setValue(value);
 
         String jsonPayload = new Gson().toJson(playCardRequest);
         stompHandler.playCard(jsonPayload);
