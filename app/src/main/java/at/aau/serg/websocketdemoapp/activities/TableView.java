@@ -39,12 +39,12 @@ public class TableView extends AppCompatActivity {
     private final int[] playerNameViewIDs = {R.id.playerNameView2, R.id.playerNameView3, R.id.playerNameView4, R.id.playerNameView5};
     private GameData gameData;
     private DataHandler dataHandler;
-    private TableViewService tableViewService;
     private boolean isResumed = false;
     private boolean pendingFragmentTransaction = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TableViewService tableViewService;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_table_view);
@@ -61,7 +61,6 @@ public class TableView extends AppCompatActivity {
         gameData = GameData.getInstance();
         dataHandler = DataHandler.getInstance(this);
         tableViewService = new TableViewService(this, TableView.this);
-        setPlayerNames();
         displayCardsPlayed();
         tableViewService.updateTableView(this);
     }
@@ -117,9 +116,16 @@ public class TableView extends AppCompatActivity {
                 break;
             }
             FrameLayout container = findViewById(trickViewIDs[i]);
+
             container.removeAllViews();
+
             String playerKey = playerNames.get(i);
             Map<CardType, Integer> tricks = tricksByPlayer.get(playerKey);
+
+            if (i != 0) {
+                TextView nameView = findViewById(playerNameViewIDs[i-1]);
+                nameView.setText(playerKey);
+            }
 
             if (tricks != null) {
                 int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -148,18 +154,6 @@ public class TableView extends AppCompatActivity {
             }
         }
         transaction.commitAllowingStateLoss();
-    }
-
-    private void setPlayerNames() {
-        String devicePlayerName = dataHandler.getPlayerName();
-        int nameIndex = 0;
-        for (String playerName : gameData.getPlayerNames()) {
-            if (!playerName.equals(devicePlayerName)) {
-                TextView nameView = findViewById(playerNameViewIDs[nameIndex]);
-                nameView.setText(playerName);
-                nameIndex++;
-            }
-        }
     }
 
     private int getDeviceWidthPx() {
