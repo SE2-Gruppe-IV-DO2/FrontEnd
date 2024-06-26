@@ -131,7 +131,8 @@ public class TableView extends AppCompatActivity {
 
                 int cardWidthPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                         120, getResources().getDisplayMetrics());
-                int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2;
+                int marginOffset = 150;
+                int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2 - marginOffset;
 
                 int c = 1;
                 for (Card card : tricks) {
