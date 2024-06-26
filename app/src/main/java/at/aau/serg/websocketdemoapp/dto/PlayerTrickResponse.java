@@ -3,13 +3,13 @@ package at.aau.serg.websocketdemoapp.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import at.aau.serg.websocketdemoapp.helper.CardType;
+import at.aau.serg.websocketdemoapp.helper.Card;
 import lombok.Data;
 
 @Data
 public class PlayerTrickResponse {
     @JsonProperty("playerTricks")
-    HashMap<String, Map<CardType, Integer>> playerTricks;
+    HashMap<String, List<Card>> playerTricks;
 }

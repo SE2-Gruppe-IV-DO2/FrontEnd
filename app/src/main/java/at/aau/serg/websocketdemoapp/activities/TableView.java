@@ -21,13 +21,11 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.dto.GameData;
 import at.aau.serg.websocketdemoapp.fragments.CardFragment;
 import at.aau.serg.websocketdemoapp.helper.Card;
-import at.aau.serg.websocketdemoapp.helper.CardType;
 import at.aau.serg.websocketdemoapp.helper.DataHandler;
 import at.aau.serg.websocketdemoapp.services.TableViewService;
 
@@ -39,12 +37,12 @@ public class TableView extends AppCompatActivity {
     private final int[] playerNameViewIDs = {R.id.playerNameView2, R.id.playerNameView3, R.id.playerNameView4, R.id.playerNameView5};
     private GameData gameData;
     private DataHandler dataHandler;
-    private TableViewService tableViewService;
     private boolean isResumed = false;
     private boolean pendingFragmentTransaction = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TableViewService tableViewService;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_table_view);
@@ -105,7 +103,7 @@ public class TableView extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        HashMap<String, Map<CardType, Integer>> tricksByPlayer = gameData.getPlayerTricks();
+        HashMap<String, List<Card>> tricksByPlayer = gameData.getPlayerTricks();
         String devicePlayerName = dataHandler.getPlayerName();
 
         List<String> playerNames = new ArrayList<>(tricksByPlayer.keySet());
@@ -119,7 +117,7 @@ public class TableView extends AppCompatActivity {
             FrameLayout container = findViewById(trickViewIDs[i]);
             container.removeAllViews();
             String playerKey = playerNames.get(i);
-            Map<CardType, Integer> tricks = tricksByPlayer.get(playerKey);
+            List<Card> tricks = tricksByPlayer.get(playerKey);
 
             if (tricks != null) {
                 int overlapPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -130,18 +128,11 @@ public class TableView extends AppCompatActivity {
                 int midPoint = getDeviceWidthPx() / 2 - cardWidthPx / 2;
 
                 int c = 1;
-                for (Map.Entry<CardType, Integer> entry : tricks.entrySet()) {
-                    CardType cardType = entry.getKey();
-                    Integer value = entry.getValue();
-
-                    Card card = new Card(cardType, value);
-                    card.createImagePath();
-                    String cardImagePath = card.getImgPath();
-
+                for (Card card : tricks) {
                     int marginLeft = midPoint + (c - Math.round(tricks.size() / 2f)) * overlapPx;
                     float rotation = (c - Math.round(tricks.size() / 2f)) * 0.75f;
                     CardFragment cardFragment = CardFragment
-                            .newInstance(cardImagePath, cardWidthPx, marginLeft, rotation);
+                            .newInstance(card.getImgPath(), cardWidthPx, marginLeft, rotation);
                     transaction.add(container.getId(), cardFragment, "trick_card_" + playerKey + "_" + c);
                     c++;
                 }

@@ -1,6 +1,8 @@
 package at.aau.serg.websocketdemoapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import at.aau.serg.websocketdemoapp.helper.CardType;
 import lombok.Data;
 
 @Data
@@ -9,10 +11,10 @@ public class CardPlayRequest {
     private String lobbyCode;
     @JsonProperty("userID")
     private String userID;
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("cardTye")
+    private CardType cardType;
     @JsonProperty("color")
     private String color;
     @JsonProperty("value")
-    private String value;
+    private Integer value;
 }

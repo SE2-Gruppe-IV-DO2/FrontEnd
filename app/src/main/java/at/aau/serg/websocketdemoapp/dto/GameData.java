@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import at.aau.serg.websocketdemoapp.helper.Card;
-import at.aau.serg.websocketdemoapp.helper.CardType;
 import lombok.Data;
 
 @Data
@@ -17,7 +15,7 @@ public class GameData {
     private List<Card> cardList;
     private List<Card> cardsPlayed;
     private List<String> playerNames;
-    private HashMap<String, Map<CardType, Integer>> playerTricks;
+    private HashMap<String, List<Card>> playerTricks;
     private static GameData instance;
 
     private GameData() {
