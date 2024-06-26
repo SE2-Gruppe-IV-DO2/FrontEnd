@@ -287,7 +287,7 @@ class ActiveGameServiceTest {
         when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
         when(mockDataHandler.getPlayerID()).thenReturn(playerID);
 
-        activeGameService.playCard(color, color, value);
+        activeGameService.playCard(CardType.getByColor(color), color, value);
 
         //verify(mockStompHandler).playCard(anyString());
     }
@@ -303,7 +303,7 @@ class ActiveGameServiceTest {
         when(mockDataHandler.getLobbyCode()).thenReturn(lobbyCode);
         when(mockDataHandler.getPlayerID()).thenReturn(playerID);
 
-        activeGameService.playCard(cardType.getName(), color, value);
+        activeGameService.playCard(CardType.getByColor(color), color, value);
 
         //verify(mockStompHandler).playCard(anyString());
     }
