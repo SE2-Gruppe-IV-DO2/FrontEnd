@@ -26,7 +26,8 @@ public class ActiveGameService implements FlingListener {
     private ActiveGame activeGame;
     private final StompHandler stompHandler;
     private static final String TAG = "JSON PARSE ERROR";
-    private final GameData gameData;
+    @Setter
+    private GameData gameData;
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Setter
     private boolean isCurrentlyActivePlayer = false;
