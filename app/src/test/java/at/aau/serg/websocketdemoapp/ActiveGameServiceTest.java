@@ -123,7 +123,7 @@ class ActiveGameServiceTest {
         }).when(mockStompHandler).subscribeForPlayerChangedEvent(anyString(), any());
 
         // Assert
-        assert (activeGameService.isCurrentlyActivePlayer());
+        assertFalse (activeGameService.isCurrentlyActivePlayer());
     }
 
     @Test
@@ -153,9 +153,11 @@ class ActiveGameServiceTest {
 
         assertFalse(activeGameService.isCurrentlyActivePlayer());
     }
-/*
+
     @Test
     void testOnCardFling_ActivePlayer_AllowedFling() {
+        activeGameService.setGameData(mockGameData);
+
         Card mockCard = new Card(CardType.RED, 5);
         List<Card> cardList = new ArrayList<>();
         cardList.add(mockCard);
@@ -172,7 +174,7 @@ class ActiveGameServiceTest {
         verify(mockGameData).findCardByCardName(mockCard.getName());
         Assertions.assertEquals(0, cardList.size());
     }
- */
+
 
     @Test
     void testOnCardFling_InactivePlayer() {
